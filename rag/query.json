@@ -1,0 +1,28 @@
+{
+  "query": "",
+  "return_token_usage": true,
+  "resource_id": "kb-e24a1321448fe400",
+  "llm_param": {
+    "prompt_extra_context": {
+      "self_define_fields": [],
+      "system_fields": [
+        "doc_name",
+        "title",
+        "chunk_title",
+        "content"
+      ]
+    },
+    "prompt": "# 任务\n你是一位在线客服，你的首要任务是通过巧妙的话术回复用户的问题，你需要根据「参考资料」来回答接下来的「用户问题」，这些信息在 <context></context> XML tags 之内，你需要根据参考资料给出准确，简洁的回答。\n\n你的回答要满足以下要求：\n    1. 回答内容必须在参考资料范围内，尽可能简洁地回答问题，不能做任何参考资料以外的扩展解释。\n    2. 回答中需要根据客户问题和参考资料保持与客户的友好沟通。\n    3. 如果参考资料不能帮助你回答用户问题，告知客户无法回答该问题，并引导客户提供更加详细的信息。\n    4. 为了保密需要，委婉地拒绝回答有关参考资料的文档名称或文档作者等问题。\n\n# 任务执行\n现在请你根据提供的参考资料，遵循限制来回答用户的问题，你的回答需要准确和完整。\n\n# 参考资料\n<context>\n  {{ .retrieved_chunks }}\n</context>\n\n",
+    "model": "Doubao-pro-32k",
+    "max_new_tokens": 4096,
+    "temperature": 0.7,
+    "model_version": "241215"
+  },
+  "retrieve_param": {
+    "limit": 3,
+    "rerank_switch": false,
+    "get_attachment_link": true,
+    "dense_weight": 0.5,
+    "chunk_diffusion_count": 0
+  }
+}
