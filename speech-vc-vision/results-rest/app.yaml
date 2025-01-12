@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: results-rest-svc
+  namespace: doubao
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: results-rest-svc
+  template:
+    metadata:
+      labels:
+        app: results-rest-svc
+    spec:
+      containers:
+      - name: backend
+        image: cr.volces.com/poc/results-rest-svc:0.5
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_URL
+          value: na
+        - name: DB_NAME
+          value: na
+        - name: DB_TABLE_NAME
+          value: na
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: results-rest-svc
+  namespace: doubao
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: results-rest-svc
+  type: ClusterIP
+

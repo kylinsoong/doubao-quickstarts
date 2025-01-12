@@ -1,0 +1,41 @@
+= TOS
+:toc: manual
+
+== tosutil
+
+* link:https://www.volcengine.com/docs/6349/152742[Download & Install]
+
+
+
+== SDK
+
+[source, bash]
+.*set env variable*
+----
+export TOS_ACCESS_KEY=
+export TOS_SECRET_KEY=
+export TOS_ENDPOINT=tos-cn-shanghai.volces.com
+export TOS_REGION=cn-shanghai
+export TOS_BUCKET=
+----
+
+== PushObject
+
+[source, bash]
+.*link:tos_upload.py[tos_upload.py]*
+----
+python3 tos_upload.py 
+----
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----
+

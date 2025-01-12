@@ -1,0 +1,3 @@
+tos
+numpy
+confluent-kafka
