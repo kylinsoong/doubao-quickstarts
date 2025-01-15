@@ -70,3 +70,40 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+/* Theme Bar */
+.theme-bar {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.theme-bar .logo img {
+  height: 40px;
+}
+
+.theme-bar .theme-nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.theme-bar .theme-nav ul li {
+  margin: 0 10px;
+}
+
+.theme-bar .theme-nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.theme-bar .theme-nav ul li a:hover {
+  text-decoration: underline;
+}
+

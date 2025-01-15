@@ -36,6 +36,12 @@ app.post('/login', (req, res) => {
   res.render('login', { error: 'Invalid username or password' });
 });
 
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login'); // Redirect to login after logging out
+  });
+});
+
 const requireAuth = (req, res, next) => {
   if (req.session.user) {
     return next();
