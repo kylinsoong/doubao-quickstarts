@@ -3,7 +3,7 @@ FROM node:16-alpine
 WORKDIR /app
 
 RUN npm init -y && \
-    npm install express ejs axios
+    npm install express ejs axios express-session
 
 COPY . .
 
