@@ -1,0 +1,52 @@
+= RAG
+:toc: manual
+
+== Initialization
+
+[source, bash]
+.*1. Set Variables*
+----
+export IAM_AK=
+export IAM_SK=
+export VKB_HOST=
+export VKB_COLLECTION=
+----
+
+
+[source, bash]
+.*2. Initialization*
+----
+python3 viking_knowledgebase_init.py 
+----
+
+== Basic Process
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----

@@ -1,0 +1,67 @@
+= Performance
+
+[source, bash]
+.*Video*
+----
+$ python3 video.py 
+Function 'ark_vision_images' executed in 3.30 seconds
+Function 'ark_vision_images' executed in 3.32 seconds
+Function 'ark_vision_images' executed in 3.28 seconds
+Function 'ark_vision_images' executed in 3.35 seconds
+Function 'ark_vision_images' executed in 2.81 seconds
+Function 'ark_vision_images' executed in 3.61 seconds
+Function 'ark_vision_images' executed in 4.33 seconds
+Function 'ark_vision_images' executed in 3.89 seconds
+Function 'ark_vision_images' executed in 3.38 seconds
+Function 'ark_vision_images' executed in 4.26 seconds
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+1 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+0 completion_tokens=1 prompt_tokens=6893 total_tokens=6894 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+Function 'video_classification' executed in 35.55 seconds
+Function 'ark_vision_images' executed in 6.18 seconds
+Function 'ark_vision_images' executed in 7.48 seconds
+Function 'ark_vision_images' executed in 6.83 seconds
+Function 'ark_vision_images' executed in 6.89 seconds
+Function 'ark_vision_images' executed in 8.26 seconds
+Function 'ark_vision_images' executed in 5.80 seconds
+Function 'ark_vision_images' executed in 5.90 seconds
+Function 'ark_vision_images' executed in 7.97 seconds
+Function 'ark_vision_images' executed in 6.74 seconds
+Function 'ark_vision_images' executed in 9.38 seconds
+completion_tokens=144 prompt_tokens=6818 total_tokens=6962 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=148 prompt_tokens=6818 total_tokens=6966 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=153 prompt_tokens=6818 total_tokens=6971 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=132 prompt_tokens=6818 total_tokens=6950 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=148 prompt_tokens=6818 total_tokens=6966 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=130 prompt_tokens=6818 total_tokens=6948 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=140 prompt_tokens=6818 total_tokens=6958 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=131 prompt_tokens=6818 total_tokens=6949 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=97 prompt_tokens=6818 total_tokens=6915 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+completion_tokens=186 prompt_tokens=6818 total_tokens=7004 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+Function 'video_description' executed in 71.43 seconds
+Function 'main' executed in 107.16 seconds
+----
+
+[source, bash]
+.*Image*
+----
+$ python3 image.py 
+129 completion_tokens=73 prompt_tokens=682 total_tokens=755 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+378 completion_tokens=254 prompt_tokens=657 total_tokens=911 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+----
+
+[source, bash]
+.*Text*
+----
+$ python3 text.py 
+133 completion_tokens=82 prompt_tokens=105 total_tokens=187 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+1044 completion_tokens=630 prompt_tokens=105 total_tokens=735 prompt_tokens_details=PromptTokensDetails(cached_tokens=0)
+----
+
