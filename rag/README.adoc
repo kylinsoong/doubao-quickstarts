@@ -1,52 +1,77 @@
 = RAG
 :toc: manual
 
-== Initialization
+
+== Knowledge Base
+
+=== Preconditions & Initialization
 
 [source, bash]
-.*1. Set Variables*
+.*Install Packages*
+----
+pip3 install --upgrade volcengine --break-system-packages
+pip3 install aiohttp --break-system-packages
+pip3 install deprecated --break-system-packages
+----
+
+[source, bash]
+.*Set Variables*
 ----
 export IAM_AK=
 export IAM_SK=
-export VKB_HOST=
+export VKB_HOST=api-knowledgebase.mlp.cn-beijing.volces.com
 export VKB_COLLECTION=
+export VKB_PROJECT=project_test_kylin
+export ARK_EP_ID=
 ----
 
 
 [source, bash]
-.*2. Initialization*
+.*TEST*
 ----
 python3 viking_knowledgebase_init.py 
 ----
 
-== Basic Process
+=== get_collection 
 
 [source, bash]
-.**
+----
+python3 viking_knowledgebase_process_getcollection.py
 ----
 
-----
+NOTE: If the knowledge base is not in default project, the the `project` parameter is necessary. 
 
-[source, bash]
-.**
-----
-
-----
+=== list_collections
 
 [source, bash]
-.**
+----
+python3 viking_knowledgebase_process_list_collections.py 
 ----
 
-----
-
-[source, bash]
-.**
-----
-
-----
+=== search_collection
 
 [source, bash]
-.**
+----
+python3 viking_knowledgebase_process_search_collection.py
 ----
 
+=== search_and_generate
+
+[source, bash]
+----
+python3 viking_knowledgebase_process_search_and_generate.py
+----
+
+=== search_knowledge
+
+[source, bash]
+----
+python3 viking_knowledgebase_process_search_knowledge.py
+----
+
+=== chat_completions
+
+[source, bash]
+----
+ython3 viking_knowledgebase_process_chat_completions.py
 ----
