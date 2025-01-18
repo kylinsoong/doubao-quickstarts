@@ -19,6 +19,7 @@ results = viking_knowledgebase_service.search_and_generate(collection_name=vkb_c
 print(results['collection_name'])
 print(results['count'])
 print(results['generated_answer'])
+print("=================")
 print(results['prompt'])
-print()
+print("=================")
 print(results['usage'])

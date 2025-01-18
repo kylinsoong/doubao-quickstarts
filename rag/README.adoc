@@ -73,5 +73,5 @@ python3 viking_knowledgebase_process_search_knowledge.py
 
 [source, bash]
 ----
-ython3 viking_knowledgebase_process_chat_completions.py
+python3 viking_knowledgebase_process_chat_completions.py
 ----
