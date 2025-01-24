@@ -1,0 +1,127 @@
+= Doubao LLM
+:toc: manual
+
+== 文本生成
+
+[source, bash]
+----
+export ARK_API_KEY=
+export MODEL_ENDPOINT_ID=
+----
+
+[cols="5a"]
+|===
+|文本生成
+
+|
+
+[source, json]
+.*01.json*
+----
+{
+  "model": "",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant."
+    },
+    {
+      "role": "user",
+      "content": "Hello!"
+    }
+  ]
+}
+----
+
+[source, bash]
+----
+Payload=$(jq --arg model "$MODEL_ENDPOINT_ID" '.model = $model' 01.json)
+
+curl -s https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ARK_API_KEY" \
+  -d "$Payload" 
+----
+
+[source, json]
+----
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "Hello! How can I help you today?",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1737708243,
+  "id": "0217377082434257ffd11598f442f211b07fdfb2c21c9af52e6d2",
+  "model": "doubao-1-5-pro-32k-250115",
+  "object": "chat.completion",
+  "usage": {
+    "completion_tokens": 9,
+    "prompt_tokens": 20,
+    "total_tokens": 29,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  }
+}
+----
+
+|===
+
+[cols="5a"]
+|===
+|
+
+|
+
+[source, bash]
+----
+
+----
+
+|===
+
+[cols="5a"]
+|===
+|
+
+|
+
+[source, bash]
+----
+
+----
+
+|===
+
+[cols="5a"]
+|===
+|
+
+|
+
+[source, bash]
+----
+
+----
+
+|===
+
+[cols="5a"]
+|===
+|
+
+|
+
+[source, bash]
+----
+
+----
+
+|===
