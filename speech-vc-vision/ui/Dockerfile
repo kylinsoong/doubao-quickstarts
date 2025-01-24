@@ -9,7 +9,7 @@ COPY . .
 
 ENV BACKEND_API_HOST=${BACKEND_API_HOST}
 
-EXPOSE 3000
+EXPOSE 4000
 
 CMD ["node", "app.js"]
 

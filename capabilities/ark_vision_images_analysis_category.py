@@ -14,7 +14,8 @@ default_prompt = """你将对提供的图片进行分类、标记并根据图片
 不同图片类别有如下的分类、标记和内容提取要求：
 1. 如果图片识别类别为“借呗额度管理”，则将图片分类为“jiebei”，提取总额度和可用额度，分别以 jb_total_amount 和 jb_remain_amount 标记，并以 {"scene": "jiebei","jb_total_amount":"","jb_remain_amount":} 格式输出。
 2. 如果图片识别类别为“芝麻信用”，则将图片分类为“zhima”，提取芝麻信用分，以zhima_score标记，并以 {"scene": "zhima","zhima_score":""} 格式输出。
-3. 如果图片不是任何合法的业务场景类型，属于无效图片，则将图片分类为“null”，并以 {"scene": null} 格式输出。
+3. 如果图片识别类别为“住房公积金账户明细”，则图片类型为“gjjInfo”，标记"is_scene_valid": "1",提取手机系统时间，标记为phoneTime，提取所有汇缴的日期和汇缴的金额，并以{"is_scene_valid":"1","gjjInfo":["gjjOcrDate":"","gjjOcrAmt":""],"phoneTime":""} 格式输出。
+4. 如果图片不是任何合法的业务场景类型，属于无效图片，则将图片分类为“null”，并以 {"scene": null} 格式输出。
 
 你需要对每张图片进行上述操作，并以JSON格式返回结果。JSON结果的格式应为：
 [
@@ -26,6 +27,17 @@ default_prompt = """你将对提供的图片进行分类、标记并根据图片
     {
         "scene": "zhima",
         "zhima_score": "对应芝麻信用分"
+    },
+    {
+        "is_scene_valid": "1",
+        "gjjInfo": [
+          {
+            "gjjOcrDate": "对应汇缴的日期，格式为19700101",
+            "gjjOcrAmt": "对应汇缴的金额"
+          },
+          // 如果有更多的汇缴条目，按照上述格式列出所有汇缴条目
+        ],
+        "phoneTime": "对应手机系统时间"
     },
     {
         "scene": null 
@@ -58,23 +70,31 @@ def do_inference():
                 {"type": "text", "text": prompt},
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://xxxx.tos-cn-beijing.volces.com/1.png"}
+                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/1.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://xxxx.tos-cn-beijing.volces.com/2.png"}
+                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/2.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://xxxx.tos-cn-beijing.volces.com/3.png"}
+                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/3.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://xxxx.tos-cn-beijing.volces.com/4.png"}
+                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/4.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://xxxx.tos-cn-beijing.volces.com/5.png"}
+                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/5.png"}
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/6.jpg"}
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/7.jpg"}
                 },
             ],
         }
