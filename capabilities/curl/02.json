@@ -1,0 +1,26 @@
+{
+        "model": "",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "图片主要讲了什么?"
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": "https://ark-project.tos-cn-beijing.volces.com/images/view.jpeg"
+                        }
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": "https://portal.volccdn.com/obj/volcfe/cloud-universal-doc/upload_a81e3cdd3e30617ecd524a132fdb2736.png"
+                        }
+                    }
+                ]
+            }
+        ]
+}

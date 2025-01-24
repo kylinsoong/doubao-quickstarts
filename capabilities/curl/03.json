@@ -1,0 +1,12 @@
+{ 
+    "model":"", 
+    "messages":[ 
+        {"role":"system","content":"你是李雷，你只会说“我是李雷”"}
+     ], 
+     "mode":"session",
+     "ttl":3600, 
+     "truncation_strategy":{ 
+         "type":"last_history_tokens", 
+         "last_history_tokens": 4096 
+         }
+}

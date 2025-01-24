@@ -11,7 +11,7 @@ export MODEL_ENDPOINT_ID=
 
 [cols="5a"]
 |===
-|文本生成
+|
 
 |
 
@@ -71,8 +71,9 @@ curl -s https://ark.cn-beijing.volces.com/api/v3/chat/completions \
   }
 }
 ----
-
 |===
+
+== 视觉理解
 
 [cols="5a"]
 |===
@@ -80,48 +81,76 @@ curl -s https://ark.cn-beijing.volces.com/api/v3/chat/completions \
 
 |
 
-[source, bash]
+[source, json]
+.*02.json*
 ----
-
+{
+        "model": "",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "图片主要讲了什么?"
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": "https://ark-project.tos-cn-beijing.volces.com/images/view.jpeg"
+                        }
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": "https://portal.volccdn.com/obj/volcfe/cloud-universal-doc/upload_a81e3cdd3e30617ecd524a132fdb2736.png"
+                        }
+                    }
+                ]
+            }
+        ]
+}
 ----
-
-|===
-
-[cols="5a"]
-|===
-|
-
-|
-
-[source, bash]
-----
-
-----
-
-|===
-
-[cols="5a"]
-|===
-|
-
-|
-
-[source, bash]
-----
-
-----
-
-|===
-
-[cols="5a"]
-|===
-|
-
-|
 
 [source, bash]
 ----
+Payload=$(jq --arg model "$MODEL_ENDPOINT_ID" '.model = $model' 02.json)
 
+curl -s https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ARK_API_KEY" \
+  -d "$Payload"
+----
+
+
+[source, json]
+----
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "这两张图片传达的内容分属于不同主题。\n\n### 第一张图片\n画面展现了宁静优美的自然风光。蓝色湖面上，一人划着橙色皮划艇，周围是茂密森林，远处矗立着巍峨雪山，天空中飘浮着云朵，整体给人一种远离喧嚣、放松惬意的感觉。\n\n### 第二张图片\n是关于平台服务优势的介绍，以四个板块呈现：\n- **精选模型**：客户有更多选择，支持多行业各业务场景模型，精选多家优质大模型，有丰富平台应用与工具，可搭建专属创新场景。\n- **数据安全**：保障模型提供方和客户的数据安全，有安全可信方案，涵盖保障模型供应商模型安全、客户企业数据安全以及多方知识产权。\n- **强劲算力**：具备高性能比的训练、推理资源，基于火山的万卡资源池，有充足的高性能GPU资源，包含模型精调、评测、推理等功能。\n- **企业级服务**：可享火山ToB服务体系和团队，有专业的产品与运营团队、销售与交付团队，满足企业应用搭建与交付需求 。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1737708969,
+  "id": "021737708963141a19fa7c17c79837bd3befef3e58bc438968509",
+  "model": "doubao-1-5-vision-pro-32k-250115",
+  "object": "chat.completion",
+  "usage": {
+    "completion_tokens": 243,
+    "prompt_tokens": 989,
+    "total_tokens": 1232,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  }
+}
 ----
 
 |===
+
