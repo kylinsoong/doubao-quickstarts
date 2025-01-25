@@ -4,8 +4,9 @@ from volcenginesdkarkruntime import Ark
 API_KEY = os.environ.get("ARK_API_KEY")
 API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
 
+TIP = "提供更多 query 相关的细节，可以获得更准确的答案"
 
-print("==>", "提供更多 query 相关的细节，可以获得更准确的答案")
+print("==>", TIP)
 
 client = Ark(api_key=API_KEY)
 

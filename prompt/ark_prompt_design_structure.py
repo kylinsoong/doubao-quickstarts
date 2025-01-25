@@ -6,7 +6,9 @@ API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
 
 client = Ark(api_key=API_KEY)
 
-print("==>", "引导结构和组织要求")
+TIP = "引导结构和组织要求"
+
+print("==>", TIP)
 
 prompt = """请撰写一篇500字的文章，讨论城市绿化对空气质量改善的影响。文章应包括以下方面的内容：
   1. 引言：介绍城市绿化和其重要性。

@@ -7,7 +7,9 @@ API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
 
 client = Ark(api_key=API_KEY)
 
-print("==>", "限制模型输出格式")
+TIP = "限制模型输出格式"
+
+print("==>", TIP)
 
 prompt = """请提取参考资料中的所有病症，并且以json格式返回。
 回答满足下面的格式要求：

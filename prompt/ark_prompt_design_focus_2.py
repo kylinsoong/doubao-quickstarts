@@ -6,7 +6,9 @@ API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
 
 client = Ark(api_key=API_KEY)
 
-print("==>", "提供更多 query 相关的细节，可以获得更准确的答案")
+TIP = "提供更多 query 相关的细节，可以获得更准确的答案"
+
+print("==>", TIP)
 
 completion = client.chat.completions.create(
     model=API_EP_ID,
