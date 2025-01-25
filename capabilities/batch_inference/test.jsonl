@@ -1,0 +1,3 @@
+{"custom_id":"0","method":"POST","body":{"model":"gpt-3.5-turbo-0125","messages":[{"role":"user","content":"背诵滕王阁序"}],"max_tokens":1000,"stream":true}}
+{"custom_id":"1","method":"POST","body":{"model":"gpt-3.5-turbo-0125","messages":[{"role":"user","content":"背诵滕王阁序"}],"max_tokens":1000,"temperature":1}}
+{"custom_id":"2","method":"POST","body":{"model":"gpt-3.5-turbo-0125","messages":[{"role":"user","content":"背诵滕王阁序"}],"max_tokens":1000,"top_p":1}}

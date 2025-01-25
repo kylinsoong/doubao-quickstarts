@@ -1,0 +1,9 @@
+{"custom_id": "request-1", "body": {"messages": [{"role": "user", "content": "天空为什么这么蓝？"}],"max_tokens": 1000,"top_p":1}}
+{"custom_id": "request-2", "body": {"messages": [{"role": "system", "content": "You are an unhelpful assistant."},{"role": "user", "content": "天空为什么这么蓝？"}],"max_tokens": 1000}}
+{"custom_id": "request-3", "body": {"messages": [{"role": "system", "content": "你是豆包，是由字节跳动开发的 AI 人工智能助手"},{"role": "user", "content": "常见的十字花科植物有哪些？"}],"max_tokens": 1000,"top_p":1}}
+{"custom_id": "request-4", "body": {"messages": [{"role": "user", "content": "请将下面内容进行结构化处理：火山方舟是火山引擎推出的大模型服务平台，提供模型训练、推理、评测、精调等全方位功能与服务，并重点支撑大模型生态。 火山方舟通>过稳定可靠的安全互信方案，保障模型提供方的模型安全与模型使用者的信息安全，加速大模型能力渗透到千行百业，助力模型提供方和使用者实现商业新增长。"}],"max_tokens": 1000,"top_p":1}}
+{"custom_id": "request-5", "body": {"messages": [{"role": "system", "content": "你是一个文本转化器，能够将输入的文本进行结构化处理。你收到信息后，只返回结构化处理后的 JSON 格式内容，不应该返回其他内容。"},{"role": "user", "content": "请将下面内容进行结构化处理：火山方舟是火山引擎推出的大模型服务平台，提供模型训练、推理、评测、精调等全方位功能与服务，并重点支撑大模型生态。 火山方舟通>过稳定可靠的安全互信方案，保障模型提供方的模型安全与模型使用者的信息安全，加速大模型能力渗透到千行百业，助力模型提供方和使用者实现商业新增长"}],"max_tokens": 1000,"top_p":1}}
+{"custom_id": "request-6", "body": {"messages": [{"role": "user", "content": "如何提高睡眠质量？"}],"max_tokens": 1000,"top_p":1}}
+{"custom_id": "request-7", "body": {"messages": [{"role": "user", "content": "学习英语有哪些有效的方法？"}],"max_tokens": 1000,"top_p":1}}
+{"custom_id": "request-8", "body": {"messages": [{"role": "user", "content": "怎样进行有效的时间管理？"}],"max_tokens": 1000,"top_p":1}}
+{"custom_id": "request-9", "body": {"messages": [{"role": "user", "content": "适合初学者的健身计划有哪些？"}],"max_tokens": 1000,"top_p":1}}

@@ -1,0 +1,20 @@
+= Doubao Batch Inference
+:toc: manual
+
+[source, bash]
+.*1. Set Key*
+----
+export VE_ACCESS_KEY=
+export VE_SECRET_KEY=
+export VE_ACCOUNT_ID=
+export TOS_JSONL_BUCKET=
+export TOS_JSONL_BUCKET_KEY=task/task.jsonl
+export TOS_BATCH_INFERENCE_BUCKET=
+export TOS_BATCH_INFERENCE_OUTPUT=inference_output/
+----
+
+[source, bash]
+.*2. Run*
+----
+python main.py
+----

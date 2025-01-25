@@ -11,5 +11,7 @@ completion = client.chat.completions.create(
         {"role": "user", "content": "你好"}
     ]
 )
-print(completion.choices[0].message)
 
+print(completion.choices[0].message.content)
+
+print(completion.usage)

@@ -1,0 +1,36 @@
+= Agent
+:toc: manual
+
+== Agent SDK Install
+
+*1. Download*
+
+* https://pub-kylin.tos-cn-beijing.volces.com/whl/ark-0.1.28-py3-none-any.whl
+
+[source, bash]
+.*2. Set python version*
+----
+$ pyenv install 3.11.6
+$ pyenv global 3.11.6
+$ python --version
+Python 3.11.6
+----
+
+[source, bash]
+.*3. Install*
+----
+pip install ark-0.1.28-py3-none-any.whl
+----
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----
+
