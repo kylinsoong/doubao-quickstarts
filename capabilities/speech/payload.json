@@ -1,0 +1,13 @@
+{
+    "user": {
+        "uid": "66666688888888"
+    },
+    "audio": {
+        "format": "wav",
+        "url": "https://asr-wav-kylin.tos-cn-beijing.volces.com/IC0936W0016.wav"
+    },
+    "request": {
+        "model_name": "bigmodel",
+        "enable_itn": true
+    }
+}
