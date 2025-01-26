@@ -8,7 +8,6 @@ client = Ark(api_key=API_KEY)
 
 TIP = "引导结构和组织要求"
 
-print("==>", TIP)
 
 prompt = """请撰写一篇500字的文章，讨论城市绿化对空气质量改善的影响。文章应包括以下方面的内容：
   1. 引言：介绍城市绿化和其重要性。
@@ -18,13 +17,18 @@ prompt = """请撰写一篇500字的文章，讨论城市绿化对空气质量�
   5. 结论：总结城市绿化对空气质量的积极影响
 """
 
-completion = client.chat.completions.create(
-    model=API_EP_ID,
-    messages=[
-        {"role": "user", "content": prompt}
-    ]
-)
+def main():
+    print("==>", TIP)
+    completion = client.chat.completions.create(
+        model=API_EP_ID,
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
 
-print(completion.choices[0].message.content)
+    print(completion.choices[0].message.content)
 
-print(completion.usage)
+    print(completion.usage)
+
+if __name__ == "__main__":
+    main()

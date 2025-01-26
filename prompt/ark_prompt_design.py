@@ -1,16 +1,16 @@
-import os
+from ark_prompt_design_focus_1 import main as m1
+from ark_prompt_design_focus_2 import main as m2
+from ark_prompt_design_separator import main as m3
+from ark_prompt_design_structure import main as m4
+from ark_prompt_design_format import main as m5
 
-python_files = [
-  "ark_prompt_design_focus_1.py",
-  "ark_prompt_design_focus_2.py",
-  "ark_prompt_design_separator.py",
-  "ark_prompt_design_structure.py",
-  "ark_prompt_design_format.py",
-]
 
-for file in python_files:
-    try:
-        os.system(f"python3 {file}")
-        print()
-    except Exception as e:
-        print(f"Error running {file}: {e}")
+def main():
+    m1()
+    m2()
+    m3()
+    m4()
+    m5()
+
+if __name__ == "__main__":
+    main()

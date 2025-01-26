@@ -9,7 +9,6 @@ client = Ark(api_key=API_KEY)
 
 TIP = "限制模型输出格式"
 
-print("==>", TIP)
 
 prompt = """请提取参考资料中的所有病症，并且以json格式返回。
 回答满足下面的格式要求：
@@ -31,14 +30,19 @@ user_message = {
 
 messages = [system_message, user_message]
 
-completion = client.chat.completions.create(
-    model=API_EP_ID,
-    messages=messages
-)
+def main():
+    print("==>", TIP)
 
-response_content = completion.choices[0].message.content
-result = json.loads(response_content)
-print(json.dumps(result, indent=2, ensure_ascii=False))
+    completion = client.chat.completions.create(
+        model=API_EP_ID,
+        messages=messages
+    )
+
+    response_content = completion.choices[0].message.content
+    result = json.loads(response_content)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    print(completion.usage)
 
 
-print(completion.usage)
+if __name__ == "__main__":
+    main()
