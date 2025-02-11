@@ -1,0 +1,83 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doubao LLM Demo - 卡车加油</title>
+  <link rel="stylesheet" href="/styles/style.css">
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+  <!-- jQuery and DataTables JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+  <script>
+    function formatText(text) {
+      return text.replace(/\n/g, '<br>');
+    }
+  </script>
+</head>
+<body>
+  <header class="theme-bar">
+    <div class="logo">
+      <img src="/favicon.png" alt="Logo" />
+    </div>
+    <nav class="theme-nav">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <h1>大模型视频质检结果</h1>
+  <table id="video-table" class="display">
+    <thead>
+      <tr>
+        <th>UID</th>
+        <th>名称</th>
+        <th>时间</th>
+        <th>结果</th>
+        <th>原因</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% videos.forEach(video => { %>
+        <tr>
+          <td><%= video.uid %></td>
+          <td><a href="<%= video.url %>" target="_blank"><%= video.url %></a></td>
+          <td><%= video.timestamp || 'N/A' %></td>
+          <td><%= video.video.result || 'N/A' %></td>
+          <td><%= video.video.reason || 'N/A' %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <script>
+    // Initialize DataTables on the video table
+    $(document).ready(function () {
+      $('#video-table').DataTable({
+        paging: true, // Enable paging
+        searching: true, // Enable search
+        lengthChange: true, // Allow changing page size
+        pageLength: 10, // Default number of rows per page
+        language: {
+          paginate: {
+            previous: "上一页",
+            next: "下一页"
+          },
+          search: "搜索:",
+          lengthMenu: "每页显示 _MENU_ 条记录",
+          info: "显示第 _START_ 到 _END_ 条记录，总共 _TOTAL_ 条记录",
+        },
+      });
+    });
+
+    // Automatically apply the formatText function to the table after it's loaded
+    document.querySelectorAll('td').forEach(function (td) {
+      td.innerHTML = formatText(td.innerText);
+    });
+  </script>
+</body>
+

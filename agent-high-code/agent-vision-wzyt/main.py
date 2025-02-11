@@ -14,6 +14,9 @@ logging.info("Doubao LLM vison agent start")
 API_KEY = os.environ.get("ARK_API_KEY")
 API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
 
+default_batch_size = 10
+vision_batch_size = int(os.getenv("LLM_VISION_BATCH_SIZE", default_batch_size))
+
 kafka_endpoint = os.getenv('PUB_SUB_EP')
 kafka_topic = os.getenv('PUB_SUB_TOPIC')
 kafka_topic_results = os.getenv('PUB_SUB_TOPIC_RRSULT')
@@ -58,6 +61,13 @@ producer = Producer(conf_send)
 logging.info(f"Create producer: {producer}")
 
 
+def split_frames_into_batches(frames, batch_size=10):
+    if not frames or not isinstance(frames, list):
+        logging.warning("Invalid or empty frames input.")
+        return []
+    return [frames[i:i + batch_size] for i in range(0, len(frames), batch_size)]
+
+
 def ark_vision_images(item):
 
     messages = [
@@ -99,7 +109,14 @@ def handle_message(msg):
         logging.info(f"Doubao Vision anslysis {file_url}")
         url_list = message['split']
         new_url_list = list(map(lambda x: x.replace("ivolces.com", "volces.com"), url_list))
-        results = ark_vision_images(new_url_list)
+        batched_frames = split_frames_into_batches(new_url_list, batch_size=vision_batch_size)
+        results = None
+        for item in batched_frames:
+            results = ark_vision_images(item)
+            if results and isinstance(results, str):
+                results_json = json.loads(results)
+                if results_json.get("result") == "正常加油":
+                    break
 
         if results is not None:
             logging.info(f"{file_url} anslysis finished, results: {results}")

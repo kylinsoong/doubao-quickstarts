@@ -16,15 +16,15 @@ conf = {
 
 producer = Producer(conf)
 
+total_images_size = os.getenv('TOS_VIDEO_FRAME_SIZE', '100')
+total_images_num = min(int(total_images_size), 100) + 1
+
 ak = os.getenv('TOS_ACCESS_KEY')
 sk = os.getenv('TOS_SECRET_KEY')
 endpoint = os.getenv('TOS_ENDPOINT')
 region = os.getenv('TOS_REGION')
 bucket_name = os.getenv('TOS_BUCKET')
 video_file_prefix = "https://" + bucket_name + "." + endpoint + "/"
-
-images_size = os.getenv('TOS_VIDEO_FRAME_SIZE', '30')
-images_frames = min(int(images_size), 30)
 
 tos_client = tos.TosClientV2(ak, sk, endpoint, region)
 
@@ -71,14 +71,14 @@ def video_object_process(object_key, splittag):
 
             return processed_video_frames
         else:
-            tag1 = tos.models2.Tag('author', 'cfitc')
+            tag1 = tos.models2.Tag('author', 'wzyt')
             tag2 = tos.models2.Tag('processed', splittag)
             tos_client.put_object_tagging(bucket_name, object_key, [tag1, tag2])
             object_stream = tos_client.get_object(bucket=bucket_name, key=object_key, process="video/info")
             video_info = json.load(object_stream)
             duration = video_info['format']['duration']
             duration = int(float(duration) * 1000)
-            values = np.linspace(0, duration, images_frames, endpoint=False)[1:]
+            values = np.linspace(0, duration, total_images_num, endpoint=False)[1:]
             file_name_with_ext = os.path.basename(object_key)
             file_name = os.path.splitext(file_name_with_ext)[0]
             video_frames = []
@@ -139,7 +139,7 @@ def handler(event, context):
             msg_bytes = json.dumps(msg).encode('utf-8')
             producer.produce(kafka_topic, msg_bytes, callback=delivery_report)
             producer.flush()
-            print(object_key, " process finished.")
+            print(f"{object_key} process finished.")
 
 
     result = {

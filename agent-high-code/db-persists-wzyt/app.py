@@ -32,6 +32,7 @@ def handle_message(msg):
     uid = message.get('uid', None)  # Default to None if 'uid' is missing
     url = message.get('url', None) 
     message_type = message.get('type', None)
+    video_data = message.get('video', {})
 
     if not uid or not url or not message_type:
         logging.info("Invalid message: missing uid, url, or type.")
@@ -50,6 +51,14 @@ def handle_message(msg):
             update_data['type'] = "upsert"
 
         update_data['timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time()))
+
+        if isinstance(video_data, str):
+            try:
+                video_data = json.loads(video_data)  # Convert string to object if it's valid JSON
+            except json.JSONDecodeError:
+                logging.warning(f"Invalid JSON format for video data: {video_data}")
+                video_data = {"raw_data": video_data} 
+        update_data['video'] = video_data
 
         result = collection.update_one(
             {'url': message['url']},  
