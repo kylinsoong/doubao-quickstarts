@@ -70,31 +70,31 @@ def do_inference():
                 {"type": "text", "text": prompt},
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/1.png"}
+                    "image_url": {"url":  "https://kylin.tos-cn-beijing.volces.com/1.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/2.png"}
+                    "image_url": {"url":  "https://kylin.tos-cn-beijing.volces.com/2.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/3.png"}
+                    "image_url": {"url":  "https://kylin.tos-cn-beijing.volces.com/3.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/4.png"}
+                    "image_url": {"url":  "https://kylin.tos-cn-beijing.volces.com/4.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/5.png"}
+                    "image_url": {"url":  "https://kylin.tos-cn-beijing.volces.com/5.png"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/6.jpg"}
+                    "image_url": {"url":  "https://kylin.tos-cn-beijing.volces.com/6.jpg"}
                 },
                 {
                     "type": "image_url",
-                    "image_url": {"url":  "https://qifu.tos-cn-beijing.volces.com/7.jpg"}
+                    "image_url": {"url":  "https://kylin.tos-cn-beijing.volces.com/7.jpg"}
                 },
             ],
         }
@@ -106,7 +106,7 @@ def do_inference():
         temperature=0.5
     )
 
-    return completion.choices[0].message.content
+    return completion.choices[0].message.content, completion.usage 
 
 
 

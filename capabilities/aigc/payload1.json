@@ -1,0 +1,6 @@
+{
+  "req_key": "high_aes_general_v21_L",
+  "prompt": "一张元宵节海报,上面写着元宵节快乐",
+  "model_version": "general_v2.1_L",
+  "return_url": true
+}
