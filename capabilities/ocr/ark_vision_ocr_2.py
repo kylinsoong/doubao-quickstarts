@@ -6,7 +6,7 @@ API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
 
 prompt = """
 提取贷款基本信息，具体提取贷款人和姓名，以JSON 格式输出：
-{"loan":"贷款人","name":"姓名"}
+{"lender":"贷款人","name":"姓名"}
 """
 
 client = Ark(api_key=API_KEY)
