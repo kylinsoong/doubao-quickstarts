@@ -57,5 +57,5 @@ completion = client.chat.completions.create(
 
 print(completion.choices[0].message.content)
 
-#print(completion.usage)
+print(completion.usage)
 
