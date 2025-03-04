@@ -10,11 +10,7 @@ def clean_row(row):
     cleaned_values = list(dict.fromkeys([str(val) for val in row if pd.notna(val)])) 
     return " ".join(cleaned_values) if cleaned_values else ""
 
-ak = os.getenv('TOS_ACCESS_KEY')
-sk = os.getenv('TOS_SECRET_KEY')
-
-
-def process_excel_urls(urls, skiprows):    
+def process_excel_urls(urls, skiprows, ak, sk):
     url_array = urls.split()
     dfs = []
     dfs_headers = []
@@ -69,3 +65,10 @@ def process_excel_urls(urls, skiprows):
                 print(f"Error saving file: {e}")
 
 
+if __name__ == "__main__":
+    urls = 'https://pub-kylin.tos-cn-beijing.volces.com/0001/01/20221231-margin.xlsx https://pub-kylin.tos-cn-beijing.volces.com/0001/01/20231231-margin.xlsx https://pub-kylin.tos-cn-beijing.volces.com/0001/01/20241130-margin.xlsx'
+    skiprows = 3
+    ak = os.getenv('TOS_ACCESS_KEY')
+    sk = os.getenv('TOS_SECRET_KEY')
+
+    process_excel_urls(urls, skiprows, ak, sk)

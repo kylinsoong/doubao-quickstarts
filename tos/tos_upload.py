@@ -2,6 +2,7 @@ import os
 import tos
 import time
 
+target_base_path = "citic"
 base_path = os.getenv('TOS_BASE_PATH', "/path/to/mp4/")
 ak = os.getenv('TOS_ACCESS_KEY')
 sk = os.getenv('TOS_SECRET_KEY')
@@ -13,6 +14,7 @@ tos_client = tos.TosClientV2(ak, sk, endpoint, region)
 
 def upload_tos(object_key, object_filename):
     try:
+        print(object_key, object_filename)
         result = tos_client.put_object_from_file(bucket_name, object_key, object_filename)
         print('http status code:{}'.format(result.status_code), 'request_id: {}'.format(result.request_id), 'crc64: {}'.format(result.hash_crc64_ecma))
     except tos.exceptions.TosClientError as e:
@@ -31,7 +33,7 @@ def upload_tos(object_key, object_filename):
 video_files = [f for f in os.listdir(base_path) if f.endswith('.mp4')]
 
 for video_file in video_files:
-    object_key = video_file
+    object_key = os.path.join(target_base_path,video_file)
     object_filename = os.path.join(base_path, video_file)
     upload_tos(object_key, object_filename)
     print(f"uploaded {object_filename}")

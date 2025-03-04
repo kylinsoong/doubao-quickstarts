@@ -109,24 +109,6 @@ if __name__ == "__main__":
         help="Output detailed json"
     )
     parser.add_argument(
-        "--enable_itn",
-        action="store_true",
-        default=False,
-        help="Enable Speaker Info"
-    )
-    parser.add_argument(
-        "--enable_punc",
-        action="store_true",
-        default=False,
-        help="Enable Speaker Info"
-    )
-    parser.add_argument(
-        "--enable_ddc",
-        action="store_true",
-        default=False,
-        help="Enable Speaker Info"
-    )
-    parser.add_argument(
         "--enable_speaker_info",
         action="store_true",
         default=False,  
@@ -160,9 +142,7 @@ if __name__ == "__main__":
         },
         "request": {
             "model_name": "bigmodel",
-            "enable_itn": args.enable_itn,
-            "enable_ddc": args.enable_ddc,
-            "enable_punc": args.enable_punc,
+            "enable_itn": True,
             "enable_speaker_info": args.enable_speaker_info,
             "enable_channel_split": args.enable_channel_split
         }
