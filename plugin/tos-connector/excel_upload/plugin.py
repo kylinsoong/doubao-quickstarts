@@ -14,7 +14,7 @@ def extract_filename(url):
     return filename
 
 
-def process_xlsx(url, filename, endpoint, region, bucket_name, base_path, ak, sk):
+def process_xlsx(url, filename, endpoint, region, bucket_name, base_path, ak, sk, xlsx_files):
     object_key = os.path.join(base_path, filename)
     errorMessage = None
     client = tos.TosClientV2(ak, sk, endpoint, region)
@@ -23,6 +23,8 @@ def process_xlsx(url, filename, endpoint, region, bucket_name, base_path, ak, sk
         content = requests.get(url)
         client.put_object(bucket_name, object_key, content=content)
         content.close()
+        target = f"https://{bucket_name}.{endpoint}/{object_key}"
+        xlsx_files.append(target)
     except Exception as e:
         errorMessage = 'error: {}'.format(e)
 
@@ -57,7 +59,8 @@ def process_zip(url, filename, xlsx_files, unknown_files, endpoint, region, buck
                         object_key = os.path.join(base_path, file)
                         with open(file_path, 'rb') as f:
                             client.put_object(bucket_name, object_key, content=f)
-                        xlsx_files.append(file)
+                        target = f"https://{bucket_name}.{endpoint}/{object_key}"
+                        xlsx_files.append(target)
                     else:
                         unknown_files.append(file)
 
@@ -108,11 +111,9 @@ def handler(args: Args[Input])->Output:
             else:
                 zip_files.append(filename)
         elif filename.endswith(".xlsx"):
-            errorMessage = process_xlsx(url, filename, endpoint, region, bucket_name, base_path, ak, sk)
+            errorMessage = process_xlsx(url, filename, endpoint, region, bucket_name, base_path, ak, sk, xlsx_files)
             if errorMessage is not None:
                 errors.append(errorMessage)
-            else: 
-                xlsx_files.append(filename)
         else:
             unknown_files.append(filename)
 
