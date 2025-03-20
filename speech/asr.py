@@ -54,21 +54,22 @@ def query_task(request_id, detail, enable_speaker_info, enable_channel_split):
         response = requests.post(QUERY_URL, headers=headers, json={})
         if response.status_code == 200:
             data = response.json()
-            print(data)
+            #print(data)
             if detail:
-                print(json.dumps(data, indent=4, ensure_ascii=False))
+                #print(json.dumps(data, indent=4, ensure_ascii=False))
                 print()
                 if enable_speaker_info:
                     for item in data['result']['utterances']:
                         speaker = item['additions']['speaker']
                         content = item['text']
                         print(f"speaker {speaker}: {content}")
+                    print()
                 if enable_channel_split:
                     for item in data['result']['utterances']:
                         channel_id = item['additions']['channel_id']
                         content = item['text']
                         print(f"channel {channel_id}: {content}")
-            print()
+                    print()
             text = data['result']['text']
             print(text)
             break
