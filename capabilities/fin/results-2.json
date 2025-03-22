@@ -1,0 +1,55 @@
+[
+{
+"scene": "借呗",
+"jb_total_amount": "10000.00",
+"jb_remain_amount": "10000.00"
+},
+{
+"scene": "借呗",
+"jb_total_amount": "86000.00",
+"jb_remain_amount": "0.30"
+},
+{
+"scene": "芝麻信用",
+"zhima_score": "753"
+},
+{
+"scene": "公积金",
+"is_scene_valid": "1",
+"phoneTime": "17:03",
+"gjjInfo": [
+{
+"gjjOcrDate": "20241120",
+"gjjOcrAmt": "2304.00"
+},
+{
+"gjjOcrDate": "20241017",
+"gjjOcrAmt": "2304.00"
+},
+{
+"gjjOcrDate": "20240924",
+"gjjOcrAmt": "2304.00"
+},
+{
+"gjjOcrDate": "20240824",
+"gjjOcrAmt": "2304.00"
+},
+{
+"gjjOcrDate": "20240725",
+"gjjOcrAmt": "2304.00"
+},
+{
+"gjjOcrDate": "20240613",
+"gjjOcrAmt": "2304.00"
+},
+{
+"gjjOcrDate": "20240517",
+"gjjOcrAmt": "2304.00"
+},
+{
+"gjjOcrDate": "20240420",
+"gjjOcrAmt": "2304.00"
+}
+]
+}
+]
