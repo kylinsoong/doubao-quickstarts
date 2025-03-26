@@ -22,6 +22,7 @@ def encode_image(image_path):
 base64_image = encode_image(image_path)
 format = image_format(image_path)
 client = Ark(api_key=API_KEY)
+print(image_path, format)
 completion = client.chat.completions.create(
     model=API_EP_ID,
     messages = [
