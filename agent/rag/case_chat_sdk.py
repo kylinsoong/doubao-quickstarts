@@ -12,7 +12,7 @@ def load_prompt(filename):
         return file.read().strip() 
     
 
-query = "康复医疗行业的定义是什么"
+query = "康复医疗行业的国内主流模式是什么？"
 prompt = load_prompt("prompt.txt")
 
 messages =[
