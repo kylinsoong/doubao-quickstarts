@@ -1,3 +1,5 @@
+from runtime import Args
+from typings.search_generate_prompt.search_generate_prompt import Input, Output
 import json
 import requests
 import os
@@ -9,11 +11,6 @@ from volcengine.Credentials import Credentials
 
 collection_name = "kangfu"
 project_name = "project_test_kylin"
-query = "康复医疗行业的国内主流模式是什么？"
-
-ak = os.getenv("VE_ACCESS_KEY")
-sk = os.getenv("VE_SECRET_KEY")
-account_id = os.getenv("VE_ACCOUNT_ID")
 g_knowledge_base_domain = "api-knowledgebase.mlp.cn-beijing.volces.com"
 
 base_prompt = """
@@ -27,14 +24,13 @@ base_prompt = """
 4. 如果参考资料中不能找到与用户问题相关的内容，则回答"相关问题在知识库中不存在"。
 5. 输出采用markdown格式。
 
-
 # 参考资料
 <context>
-  {}
+{}
 </context>
 """
 
-def prepare_request(method, path, params=None, data=None, doseq=0):
+def prepare_request(ak, sk, account_id, method, path, params=None, data=None, doseq=0):
     if params:
         for key in params:
             if (isinstance(params[key], int) or isinstance(params[key], float) or isinstance(params[key], bool)):
@@ -67,7 +63,7 @@ def prepare_request(method, path, params=None, data=None, doseq=0):
     return r
 
 
-def search_knowledge():
+def search_knowledge(ak, sk, account_id, query):
     method = "POST"
     path = "/api/knowledge/collection/search_knowledge"
     request_params = {
@@ -102,7 +98,7 @@ def search_knowledge():
         }
     }
 
-    info_req = prepare_request(method=method, path=path, data=request_params)
+    info_req = prepare_request(ak=ak, sk=sk, account_id=account_id, method=method, path=path, data=request_params)
 
     rsp = requests.request(
         method=info_req.method,
@@ -112,6 +108,8 @@ def search_knowledge():
     )
 
     return rsp.text
+
+
 
 def is_vision_model(model_name):
     if model_name is None:
@@ -124,7 +122,7 @@ def get_content_for_prompt(point: dict, image_num: int) -> str:
     original_question = point.get("original_question")
     if original_question:
         return "当询问到相似问题时，请参考对应答案进行回答：问题：“{question}”。答案：“{answer}”".format(question=original_question, answer=content)
-    if image_num > 0 and "chunk_attachment" in point and point["chunk_attachment"][0]["link"] : 
+    if image_num > 0 and "chunk_attachment" in point and point["chunk_attachment"][0]["link"] :
         placeholder = f"<img>图片{image_num}</img>"
         return content + placeholder
     return content
@@ -148,7 +146,7 @@ def generate_prompt(rsp_txt):
                 image_urls.append(image_link)
                 image_cnt += 1
         doc_info = point["doc_info"]
-        for system_field in ["doc_name","title","chunk_title","content"] : 
+        for system_field in ["doc_name","title","chunk_title","content"] :
             if system_field == 'doc_name' or system_field == 'title':
                 if system_field in doc_info:
                     prompt += f"{system_field}: {doc_info[system_field]}\n"
@@ -160,7 +158,7 @@ def generate_prompt(rsp_txt):
                         prompt += f"{system_field}: {point[system_field]}\n"
         if "table_chunk_fields" in point:
             table_chunk_fields = point["table_chunk_fields"]
-            for self_field in [] : 
+            for self_field in [] :
                 find_one = next((item for item in table_chunk_fields if item["field_name"] == self_field), None)
                 if find_one:
                     prompt += f"{self_field}: {find_one['field_value']}\n"
@@ -169,11 +167,29 @@ def generate_prompt(rsp_txt):
 
     return base_prompt.format(prompt), image_urls
 
+"""
+Each file needs to export a function named `handler`. This function is the entrance to the Tool.
 
-if __name__ == "__main__":
-    rsp_txt = search_knowledge()
+Parameters:
+args: parameters of the entry function.
+args.input - input parameters, you can get test input value by args.input.xxx.
+args.logger - logger instance used to print logs, injected by runtime.
+
+Remember to fill in input/output in Metadata, it helps LLM to recognize and use tool.
+
+Return:
+The return data of the function, which should match the declared output parameters.
+"""
+def handler(args: Args[Input])->Output:
+
+    
+
+    ak = args.input.ak
+    sk = args.input.sk
+    account_id = args.input.account_id
+    query = args.input.query
+
+    rsp_txt = search_knowledge(ak, sk, account_id, query)
     prompt, image_urls = generate_prompt(rsp_txt)
 
-    print(prompt)
-    #print(len(image_urls))
-
+    return {"prompt": prompt}
