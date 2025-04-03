@@ -1,0 +1,3 @@
+from cozepy import COZE_CN_BASE_URL, COZE_COM_BASE_URL
+
+print(COZE_CN_BASE_URL, COZE_COM_BASE_URL)
