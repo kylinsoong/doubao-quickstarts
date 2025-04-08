@@ -1,8 +1,31 @@
 = RAG
 :toc: manual
 
+== Glossarys
 
-== Knowledge Base
+=== Definition
+
+RAG（检索增强生成, Retrieval-Augmented Generation） 是一种流行的范式，用于使大语言模型（LLMs）能够访问外部数据，并作为一种机制来降低幻觉现象。RAG 模型经过训练，可以从大型语料库中检索相关文档，并基于检索到的文档生成回答。
+
+=== 文本型 RAG vs 多模态 RAG
+
+[cols="2,2,2"]
+|===
+|对比项 |文本型 RAG (Text-based RAG) |多模态 RAG (Multimodal RAG)
+
+|知识获取
+|仅能访问和处理文本信息，知识来源单一
+|能够访问和处理文本和视觉信息，知识更加丰富和全面
+
+|推理能力
+|仅依赖文本进行推理，可能缺乏直观的上下文
+|结合视觉线索进行推理，提高跨模态数据的推理能力
+
+|===
+
+
+
+== Bytedance Doubao ARK
 
 === Preconditions & Initialization
 
@@ -75,3 +98,9 @@ python3 viking_knowledgebase_process_search_knowledge.py
 ----
 python3 viking_knowledgebase_process_chat_completions.py
 ----
+
+== Bytedance Coze
+
+== Google Gemini
+
+
