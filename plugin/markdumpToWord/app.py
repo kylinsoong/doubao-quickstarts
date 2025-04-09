@@ -60,4 +60,4 @@ def markdown_to_docx(md_file, ak, sk):
 ak = os.getenv('TOS_ACCESS_KEY')
 sk = os.getenv('TOS_SECRET_KEY')
 
-markdown_to_docx("example.md", ak, sk)
+markdown_to_docx("sample.md", ak, sk)
