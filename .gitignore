@@ -177,5 +177,5 @@ node_modules
 .gradio
 
 template.pptx
-.pptx
-.db
+*.pptx
+*.db
