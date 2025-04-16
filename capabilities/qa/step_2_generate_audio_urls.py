@@ -38,13 +38,21 @@ def generate_presigned_url(ak, sk, endpoint, region, bucket_name, object_key):
     return None
 
 
+def get_type(filename):
+    _, file_extension = os.path.splitext(filename)
+    type = file_extension.lstrip('.') 
+    return type
+
 def generate_presigned_urls(ak, sk, endpoint, region, bucket_name, object_keys):
     urls = []
-    for key in object_keys:
+    for index, key in enumerate(object_keys, start=1):
         url = generate_presigned_url(ak, sk, endpoint, region, bucket_name, key)
         file_name = os.path.basename(key)
+        type = get_type(file_name)
         item = {
+            "id": f"{index:04d}",
             "audio": file_name,
+            "type": type,
             "url": url
         }
         urls.append(item)
