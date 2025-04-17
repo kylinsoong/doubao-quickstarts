@@ -13,7 +13,7 @@ SUBMIT_URL = "https://openspeech.bytedance.com/api/v3/auc/bigmodel/submit"
 QUERY_URL = "https://openspeech.bytedance.com/api/v3/auc/bigmodel/query"
 API_APP_KEY = os.getenv("ASR_API_APP_KEY")
 API_ACCESS_KEY = os.getenv("ASR_API_ACCESS_KEY")
-API_RESOURCE_ID = os.getenv("ASR_API_RESOURCE_ID", "volc.bigasr.auc") 
+API_RESOURCE_ID = os.getenv("ASR_API_RESOURCE_ID", "volc.biasr.auc") 
 API_SEQUENCE = os.getenv("ASR_API_SEQUENCE", "-1") 
 
 if not all([API_APP_KEY, API_ACCESS_KEY]):
@@ -101,7 +101,7 @@ def execute(id, audio_format, url, sleep_time):
         results = query_task(request_id)
         #print(results)
         filename = f"{id}.json"
-        filepath = os.path.join(".asr", filename)
+        filepath = os.path.join("asr", filename)
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(results, f, ensure_ascii=False)
         thread_id = threading.get_ident()

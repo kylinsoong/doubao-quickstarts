@@ -69,7 +69,7 @@ def execute(filepath):
     message = completion.choices[0].message.content
     usage = completion.usage
     if message and usage:
-        target = filepath.replace(".input", ".role")
+        target = filepath.replace("input", "role")
         try:
             json_obj = json.loads(message)
         except json.JSONDecodeError:
@@ -101,5 +101,5 @@ def main(folder):
 
 
 if __name__ == "__main__":
-    folder = ".input"
+    folder = "input"
     main(folder)

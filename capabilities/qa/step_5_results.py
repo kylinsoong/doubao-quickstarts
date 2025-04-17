@@ -21,7 +21,7 @@ def extract_utterances(file_path):
                 } 
                 results.append(utterance)
 
-        target = file_path.replace(".asr", ".input")
+        target = file_path.replace("asr", "input")
         with open(target, 'w') as file:
             json.dump(results, file, ensure_ascii=False)
         print("add ", target)
@@ -43,5 +43,5 @@ def list_files_and_extract(dir_path):
             extract_utterances(file_path)
 
 if __name__ == "__main__":
-    directory = '.asr'  
+    directory = 'asr'  
     list_files_and_extract(directory)
