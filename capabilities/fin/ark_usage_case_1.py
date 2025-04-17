@@ -18,7 +18,7 @@ def ark_vision_images(item, prompt, temperature):
             messages=messages,
             temperature=temperature
         )
-        return completion.choices[0].message.content
+        return completion.choices[0].message.content, completion.usage
     except Exception as e:
         return e
 
@@ -33,10 +33,11 @@ prompt = """
 4. 表情：描述图片中人的表情。
 5. 背景：详细描述背景情况，尽可能判断可能的地点，如公司、工厂、室外等。同时，说明背景中是否有人，如果有人，描述其动作。如果没有人则不输出"未见其他人"等描述
 6. 戴眼镜：判断图片中人是否戴眼镜，只能填写“是”或“否”。
+7. 是否遮挡：判断图片中是脸部是否有遮挡
 
 以JSON格式输出分析结果，格式如下：
 [
-{"性别":"<男/女>","年龄":"<年龄>","职业":"<职业>","表情":"<表情>","背景":"<背景>","戴眼镜":"<是/否>"},
+{"性别":"<男/女>","年龄":"<年龄>","职业":"<职业>","表情":"<表情>","背景":"<背景>","戴眼镜":"<是/否>", "脸部遮挡": "<是/否>"},
 // 更多的照片的分析
 ]
 """
@@ -53,4 +54,5 @@ images = [
 
 results = ark_vision_images(images, prompt, 0.01)
 
-print(results)
+print(results[0])
+print(results[1])

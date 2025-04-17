@@ -1,1 +1,4 @@
 *.json
+.asr
+.input
+.role
