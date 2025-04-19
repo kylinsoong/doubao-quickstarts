@@ -9,25 +9,27 @@ import random
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 original_prompt = """
-你是一名催收管理员，负责处理提供的催收对话。你的任务是对客服和客户的每一句话进行情感分析，并将分析结果添加到对应的JSON结构语句中，最后输出修改后的JSON数组。
-请仔细阅读以下催收对话：
+你是一名数据分析师，任务是处理完成情感分析的催收对话，生成客服和客户情感变化的 echarts Stacked Line Chart，横坐标为时间，纵坐标为情绪分。
+请仔细阅读以下以 JSON 结构化形式呈现的催收对话：
 <催收对话>
-{{COLLECTION_DIALOG}}
+{{COLLECTION_DIALOGUE}}
 </催收对话>
-在进行情感分析时，请参考以下按情绪强度从平缓到激烈排列的五个双字情感词语：
-1. 平静（情绪稳定、无波澜）
-2. 不满（轻微不快，有所抱怨）
-3. 焦躁（心烦意乱，略显急切）
-4. 激动（情绪高涨，带有强烈反应）
-5. 愤怒（强烈的不满和敌意，情绪爆发）
-对于对话中的每一句话，仔细分析，给出分析结果，然后在对应的JSON结构语句中添加 "sentiment": <分析结果> 。分析结果只能是“平静”、“不满”、“焦躁”、“激动”或“愤怒”。
+情感分析结果对催收对话的标记有 5 种，分别代表的情绪分范围为 1 - 5：
+- 平静: 5
+- 不满: 4 
+- 焦躁: 3
+- 激动: 2
+- 愤怒: 1
+从对话中提取时间和对应的情绪分，例如，若对话中有如下内容：
 {
     "role": "客服",
-    "time": "string",
+    "time": "0.11 - 1.25",
     "text": "string",
-    "sentiment": "平静"
+    "sentiment": "焦躁"
 }
-最后，请输出修改后的JSON数组，不做额外的输出或解释。
+则横坐标为时间，取该时间段的起始值 0.11，纵坐标为情绪分 3。
+你的最终输出应为 html 格式的 echarts 脚本。
+请输出html 代码，对代码不做任何解释。
 """
 
 API_KEY = os.environ.get("ARK_API_KEY")
@@ -49,7 +51,7 @@ def execute(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as file:
             collection_dialog = json.load(file)
-        prompt = original_prompt.replace("{{COLLECTION_DIALOG}}", json.dumps(collection_dialog, ensure_ascii=False))
+        prompt = original_prompt.replace("{{COLLECTION_DIALOGUE}}", json.dumps(collection_dialog, ensure_ascii=False))
 
         #print(prompt)
     except FileNotFoundError:
@@ -74,7 +76,8 @@ def execute(filepath):
     message = completion.choices[0].message.content
     usage = completion.usage
     if message and usage:
-        target = filepath.replace("role", "sentiment")
+        target = filepath.replace("sentiment", "sentiment_chart")
+        target = target.replace(".json", ".html")
         with open(target, 'w', encoding='utf-8') as file:
             file.write(message)
         logging.info(f"文件 {filepath} 的使用情况: {usage}, resulsts: {target}")
@@ -92,5 +95,5 @@ def main(folder):
             future.result()
 
 if __name__ == "__main__":
-    folder = "role"
+    folder = "sentiment"
     main(folder)

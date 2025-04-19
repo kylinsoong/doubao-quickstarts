@@ -9,25 +9,27 @@ import random
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 original_prompt = """
-你是一名催收管理员，负责处理提供的催收对话。你的任务是对客服和客户的每一句话进行情感分析，并将分析结果添加到对应的JSON结构语句中，最后输出修改后的JSON数组。
-请仔细阅读以下催收对话：
+你是一名情感分析师，任务是处理完成情感分析的催收对话。请仔细阅读以下催收对话（结构化 JSON 格式），对话已经完成了情感标记。
 <催收对话>
-{{COLLECTION_DIALOG}}
+{{COLLECTION_CONVERSATION}}
 </催收对话>
-在进行情感分析时，请参考以下按情绪强度从平缓到激烈排列的五个双字情感词语：
+情感标记按情绪强度从平缓到激烈排列的五个双字情感词语及其含义如下：
 1. 平静（情绪稳定、无波澜）
 2. 不满（轻微不快，有所抱怨）
 3. 焦躁（心烦意乱，略显急切）
 4. 激动（情绪高涨，带有强烈反应）
 5. 愤怒（强烈的不满和敌意，情绪爆发）
-对于对话中的每一句话，仔细分析，给出分析结果，然后在对应的JSON结构语句中添加 "sentiment": <分析结果> 。分析结果只能是“平静”、“不满”、“焦躁”、“激动”或“愤怒”。
-{
-    "role": "客服",
-    "time": "string",
-    "text": "string",
-    "sentiment": "平静"
-}
-最后，请输出修改后的JSON数组，不做额外的输出或解释。
+
+请依据以上信息进行如下情感分析：
+1. 情感分析摘要：描述客服和客户对话情感变化趋势，并说明在什么时间点客服或客户的对话内容引起的情感变化。
+2. 情感变化责任方：分析情感趋向激烈画的的责任方是客服还是客户，如果没有出现焦躁、激动、愤怒，则标记为无
+3. 情感变化关键对话：引用具体引起情感变化的语句，最多不超过三句，严格按照原始内容引用，格式为<客服/客户> <time> <string>。如果情感没有变化，则本部分为空。
+4. 情绪变化关键词：分析情感发生变化时的对话，若情感发生变化，提取情绪变化关键词语，并统计该关键词出现次数，格式为 <词语1> <出现次数>, <词语2> <出现次数>。要求情绪变化关键词不能超过5个
+5. 如果客服情感出现焦躁、激动、愤怒等标记，则给出改进建议。
+
+
+请以JSON格式输出你的分析结果，不做过多解释，输出示例：
+{"情感分析摘要":"string", "情感变化责任方":"客服/客户/无","情感变化关键对话":["客服/客户 <time> <string>", "客服/客户 <time> <string>"], "情绪变化关键词": ["<词语1> 出现次数", "<词语2> 出现次数", //如果有更多，依次罗列], "改进建议": ["建议 1"，"建议 2"，//如果有更多，依次罗列]}
 """
 
 API_KEY = os.environ.get("ARK_API_KEY")
@@ -49,7 +51,7 @@ def execute(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as file:
             collection_dialog = json.load(file)
-        prompt = original_prompt.replace("{{COLLECTION_DIALOG}}", json.dumps(collection_dialog, ensure_ascii=False))
+        prompt = original_prompt.replace("{{COLLECTION_CONVERSATION}}", json.dumps(collection_dialog, ensure_ascii=False))
 
         #print(prompt)
     except FileNotFoundError:
@@ -74,7 +76,7 @@ def execute(filepath):
     message = completion.choices[0].message.content
     usage = completion.usage
     if message and usage:
-        target = filepath.replace("role", "sentiment")
+        target = filepath.replace("sentiment", "sentiment_summary")
         with open(target, 'w', encoding='utf-8') as file:
             file.write(message)
         logging.info(f"文件 {filepath} 的使用情况: {usage}, resulsts: {target}")
@@ -92,5 +94,5 @@ def main(folder):
             future.result()
 
 if __name__ == "__main__":
-    folder = "role"
+    folder = "sentiment"
     main(folder)
