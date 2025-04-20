@@ -3,7 +3,7 @@ import json
 import logging
 import time
 from volcenginesdkarkruntime import Ark
-import threading
+from concurrent.futures import ThreadPoolExecutor
 import random
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,11 +39,11 @@ original_prompt = """
 JSON 格式输出示例：
 {
 "items": {
-    [专业能力 <得分> <原因>]
-    [解决效率 <得分> <原因>]
-    [沟通技巧 <得分> <原因>]
-    [情绪管理 <得分> <原因>]
-    [服务态度 <得分> <原因>]
+    [专业能力 <得分int> <原因>]
+    [解决效率 <得分int> <原因>]
+    [沟通技巧 <得分int> <原因>]
+    [情绪管理 <得分int> <原因>]
+    [服务态度 <得分int> <原因>]
 },
 "summary": {"整体评级": <优秀/合格/一般/差>}
 "急需整改": {
@@ -119,23 +119,10 @@ def execute(filepath):
 def main(folder):
     # 获取文件夹中所有的JSON文件
     json_files = [os.path.join(folder, f) for f in os.listdir(folder) if f.endswith('.json')]
-    threads = []
-    for filepath in json_files:
-        logging.info(f"Process {filepath}")
-        #thread = threading.Thread(target=execute, args=(filepath))
-
-        thread = threading.Thread(target=execute, args=(filepath,))
-        threads.append(thread)
-        thread.start()
-
-        if len(threads) == 15:
-            for t in threads:
-                t.join()
-            threads = []
-
-    for t in threads:
-        t.join()
-
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [executor.submit(execute, filepath) for filepath in json_files]
+        for future in futures:
+            future.result()
 
 if __name__ == "__main__":
     folder = "role"
