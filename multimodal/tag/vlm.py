@@ -83,7 +83,7 @@ def process_keys(keys, expected_results):
 
 
 if __name__ == '__main__':
-    num_threads = 20
+    num_threads = 10
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = [executor.submit(process_keys, keys, expected_results) for _ in range(num_threads)]
         concurrent.futures.wait(futures)
