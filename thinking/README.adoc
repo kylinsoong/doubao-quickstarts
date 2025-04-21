@@ -1,0 +1,94 @@
+= Doubao-1.5-thinking-pro vs DeepSeek-R1
+
+[source, bash]
+.*Doubao-1.5-thinking-pro*
+----
+$ python text_analysis_large.py
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+expected:  52 model answered:  20
+expected:  5280 model answered:  3200000
+expected:  216 model answered:  40320
+Function 'main' maind in 431.86 seconds
+----
+
+[source, bash]
+.*DeepSeek-R1*
+----
+$ python text_analysis_large.py 
+correct
+correct
+correct
+expected:  21 model answered:  $\boxed{21}$
+correct
+correct
+expected:  秘书 model answered:  秘书
+
+清洁工或秘书（根据事实1），但通过事实6可知清洁工不富裕，结合事实5，清洁工不富裕并不排除他作案的可能。但根据事实7，灯灭了，而事实4指出若秘书证词不正确则灯未灭，因此秘书证词必须正确（否则矛盾）。根据事实3，若证词正确则谋杀在午夜前。但若清洁工是凶手（事实2），则谋杀不在午夜前，与午夜前矛盾，故排除清洁工，凶手为秘书。
+expected:  5 model answered:  给定集合A={a, b, c}，我们需要计算A上的等价关系的个数。
+
+等价关系与集合的划分一一对应，因此问题转化为计算A的划分数目。对于3个元素的集合，可能的划分方式有：
+
+1. **一个块（整个集合作为一个等价类）**：{{a, b, c}}，共1种。
+2. **两个块（一个块有1个元素，另一个块有2个元素）**：选择单独的元素有3种方式，对应的划分分别是{{a}, {b, c}}，{{b}, {a, c}}，{{c}, {a, b}}，共3种。
+3. **三个块（每个元素单独作为一个等价类）**：{{a}, {b}, {c}}，共1种。
+
+将这些情况相加，总共有1 + 3 + 1 = 5种划分方式，对应的贝尔数B₃ = 5。
+
+通过手动验证每种可能的等价关系，确认共有5种不同的等价关系：
+
+1. 最大等价关系：A×A。
+2. 三个不同的等价关系，分别将每个元素单独分开，另外两个元素在一个块中。
+3. 最小等价关系，每个元素单独成为一个块。
+
+因此，集合A上的等价关系共有5个。
+
+### 最终答案
+\boxed{5}
+correct
+correct
+expected:  11550 model answered:  首先，题目要求将11个人分成四组，其中第一组4人，第二组3人，第三组0人，第四组4人。需要考虑组的区分度，即每个组的位置固定，因此不需要额外调整相同人数组的顺序。
+
+1. 从11人中选出4人分到第一组，有$\binom{11}{4}$种选择方式。
+2. 剩下的7人中选出3人分到第二组，有$\binom{7}{3}$种选择方式。
+3. 剩下的4人分到第四组，第三组没有人，因此只有一种方式。
+
+计算组合数的乘积：
+\[
+\binom{11}{4} \times \binom{7}{3} = 330 \times 35 = 11550
+\]
+
+另外，使用排列公式验证：
+\[
+\frac{11!}{4! \times 3! \times 0! \times 4!} = \frac{39916800}{24 \times 6 \times 1 \times 24} = 11550
+\]
+
+最终答案为：
+\[
+\boxed{11550}
+\]
+correct
+correct
+correct
+correct
+correct
+expected:  52 model answered:  20
+expected:  5280 model answered:  24883200
+expected:  216 model answered:  576
+Function 'main' maind in 1315.11 seconds
+----
+
