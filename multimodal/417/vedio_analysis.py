@@ -27,12 +27,12 @@ def analyze_video(video_url: str):
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "仔细分析视频，总结视频的内容"},
+                    {"type": "text", "text": "仔细分析视频，分时间段说明视频内容"},
                     {
                         "type": "video_url",
                         "video_url": {
                             "url": video_url,
-                            "fps": 1.2,
+                            "fps": 2.0,
                             "detail": "low"
                         }
                     },
@@ -45,7 +45,7 @@ def analyze_video(video_url: str):
 
 @log_time
 def main():
-    video_url = "https://pub-kylin.tos-cn-beijing.volces.com/001.mp4"
+    video_url = "https://sec-kylin.tos-cn-beijing.volces.com/0002.mp4"
     summary, usage = analyze_video(video_url)
     print(summary)
     print(usage)

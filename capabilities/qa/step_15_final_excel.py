@@ -52,13 +52,13 @@ def main(json_path):
         abnormal = load_json(form_file_path(id, "abnormal"))
         form = load_json(form_file_path(id, "form"))
         figure = load_json(form_file_path(id, "figure"))
-        rows.append((id, audio, input, role, results, huankuan, complaint, sentiment, sentiment_summary, abnormal, form, figure))
+        rows.append((id, audio, input, role, results, huankuan, complaint, intent, sentiment, sentiment_summary, abnormal, form, figure))
 
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Test_Excel"
 
-    ws.append(["语音样本编号", "语音样本名称", "ASR 结果", "角色设定", "质检结果", "还款意愿", "投诉意愿", "逐句情感分析", "情感分析总结", "异常检测", "工单填写", "客服画像"])        
+    ws.append(["语音样本编号", "语音样本名称", "ASR 结果", "角色设定", "质检结果", "还款意愿", "投诉意愿", "意图分析", "逐句情感分析", "情感分析总结", "异常检测", "工单填写", "客服画像"])        
  
     for row in rows:
         ws.append(row)
