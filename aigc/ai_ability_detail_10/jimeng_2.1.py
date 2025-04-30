@@ -92,11 +92,8 @@ def signV4Request(access_key, secret_key, service, req_query, req_body):
 
 
 if __name__ == "__main__":
-    # 请求凭证，从访问控制申请
     access_key = os.getenv('ARK_ACCESS_KEY')
     secret_key = os.getenv('ARK_SECRET_KEY')
-
-
 
     # 请求Query，按照接口文档中填入即可
     query_params = {
@@ -107,12 +104,11 @@ if __name__ == "__main__":
 
     # 请求Body，按照接口文档中填入即可
     body_params = {
-        "req_key": "high_aes_general_v30l_zt2i",
+        "req_key": "jimeng_high_aes_general_v21_L",
         "prompt": "人物：东方古典鹅蛋脸，简约高发髻佩戴发饰, 眼神中充满力量, 背景有荷花、祥云元素，具有力量感与艺术感",
         "seed": -1,
-        "scale": 2.5,
-        "width": 2048,
-        "height": 2048,
+        "width": 768,
+        "height": 768,
         "return_url": True,
         "logo_info": {
             "add_logo": True,
@@ -125,4 +121,5 @@ if __name__ == "__main__":
 
     formatted_body = json.dumps(body_params)
     
-    signV4Request(access_key, secret_key, service, formatted_query, formatted_body)
+    signV4Request(access_key, secret_key, service,
+                  formatted_query, formatted_body)
