@@ -2,8 +2,8 @@ import os
 from volcengine.visual.VisualService import VisualService
 
 
-AK = os.getenv("VE_AK")
-SK = os.getenv("VE_SK")
+AK = os.getenv('ARK_ACCESS_KEY')
+SK = os.getenv('ARK_SECRET_KEY')
 
 
 visual_service = VisualService()
@@ -12,7 +12,7 @@ visual_service.set_sk(SK)
 
 form = {
     "req_key": "high_aes_general_v21_L",
-    "prompt": "鲜花",
+    "prompt": "东方美人，桥边姑娘，眼神犹豫中充满力",
     "model_version": "general_v2.1_L",
     "req_schedule_conf": "general_v20_9B_pe",
     "llm_seed": -1,
