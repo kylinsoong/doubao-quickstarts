@@ -36,7 +36,7 @@ def ark_chat():
         temperature=0.8
     )
 
-    output_dir = "results/03"
+    output_dir = "results/01"
     os.makedirs(output_dir, exist_ok=True)
 
     output_path = os.path.join(output_dir, f"{MODEL_ID}.result")
