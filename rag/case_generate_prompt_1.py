@@ -9,7 +9,6 @@ from volcengine.Credentials import Credentials
 
 collection_name = "kangfu"
 project_name = "project_test_kylin"
-query = "康复医疗行业的国内主流模式是什么？"
 
 ak = os.getenv("VE_ACCESS_KEY")
 sk = os.getenv("VE_SECRET_KEY")
@@ -67,7 +66,7 @@ def prepare_request(method, path, params=None, data=None, doseq=0):
     return r
 
 
-def search_knowledge():
+def search_knowledge(query):
     method = "POST"
     path = "/api/knowledge/collection/search_knowledge"
     request_params = {
@@ -171,8 +170,9 @@ def generate_prompt(rsp_txt):
 
 
 if __name__ == "__main__":
-    rsp_txt = search_knowledge()
-    prompt, image_urls = generate_prompt(rsp_txt)
+    query = "康复医疗行业的国内主流模式是什么？"
+    rsp_txt = search_knowledge(query)
+    prompt, _ = generate_prompt(rsp_txt)
 
     print(prompt)
     #print(len(image_urls))

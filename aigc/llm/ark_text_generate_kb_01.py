@@ -1,15 +1,18 @@
+import os
+import time
+from volcenginesdkarkruntime import Ark
 import json
 import requests
-import os
 
 from volcengine.auth.SignerV4 import SignerV4
 from volcengine.base.Request import Request
 from volcengine.Credentials import Credentials
 
+#chapters = ["", "", "", "", ""]
+chapters = ["康复医疗行业的定义是什么", "康复医疗行业存在哪些维度描述", "康复医疗行业的细分领域有哪些", "康复医疗行业体系图是什么", "康复医疗行业的学术价值和经济价值体现在哪些方面", "康复医疗行业的国内主流模式是什么", "世界上康复医疗行业市场份额前五的国家各自主流模式是什么"]
 
 collection_name = "kangfu"
 project_name = "project_test_kylin"
-query = "康复医疗行业的国内主流模式是什么？"
 
 ak = os.getenv("VE_ACCESS_KEY")
 sk = os.getenv("VE_SECRET_KEY")
@@ -21,17 +24,34 @@ base_prompt = """
 你是一位文档撰写助手，你需要根据「参考资料」和「用户问题」生成一个说明性的材料，这些信息在 <context></context> XML tags 之内，该材料类似报告的一个章节。
 
 在生成材料时，请遵循以下指南：
-1. 内容必须在参考资料范围内，根据参考资料准确专业回答问题，不能做任何参考资料以外的扩展解释。
+1. 内容必须在参考资料范围内，根据参考资料准确专业回答问题，不能做任何参考资料以外的扩展解释。如果参考资料为空，则通过大模型能力简单回答
 2. 材料的标题为用户问题，且必须与用户问题一样，不做修改, 标题为markdown格式：## 用户问题。
 3. 材料的末尾需要注明应用的参考资料的文章名称, 格式为'参考资料'：《文章名称》，如果有多个依次罗列。
 4. 如果参考资料中不能找到与用户问题相关的内容，则回答"相关问题在知识库中不存在"。
 5. 输出采用markdown格式。
 
-
 # 参考资料
 <context>
   {}
 </context>
+"""
+
+user_prompt = """
+# 用户问题
+{QUESTION}
+"""
+
+all_prompt = """
+你是医学科普文章写作助手, 根据如下<inputs>标签内各章节内容，生成一篇完整文章。
+
+<inputs>
+{MMMM}
+</inputs>
+
+## 要求
+1. 对各「章节内容」不做任何删减，各章节前后可以少许增加内容，以使文章连贯
+2. 根据章节内容，为文章增加一个开头和结尾
+3. 根据章节内容，为文章生成一个标题
 """
 
 def prepare_request(method, path, params=None, data=None, doseq=0):
@@ -67,7 +87,7 @@ def prepare_request(method, path, params=None, data=None, doseq=0):
     return r
 
 
-def search_knowledge():
+def search_knowledge(query):
     method = "POST"
     path = "/api/knowledge/collection/search_knowledge"
     request_params = {
@@ -170,10 +190,71 @@ def generate_prompt(rsp_txt):
     return base_prompt.format(prompt), image_urls
 
 
+API_KEY = os.environ.get("ARK_API_KEY")
+
+def log_time(func):
+    """Decorator to log execution time of a function."""
+    def wrapper(*args, **kwargs):
+        begin_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Function '{func.__name__}' executed in {end_time - begin_time:.2f} seconds")
+        return result
+    return wrapper
+
+
+def generate_chapter(prompt):
+    client = Ark(api_key=API_KEY)
+    MODEL_ID = os.environ.get("ARK_MODEL_ID")
+
+    completion = client.chat.completions.create(
+        model=MODEL_ID,
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=16000,
+        temperature=0.8
+    )
+  
+    return completion.choices[0].message.content
+
+
+@log_time
+def ark_chat():
+
+    contents = []
+    for query in chapters:
+        prompt_end = user_prompt.replace("{QUESTION}", query)
+        rsp_txt = search_knowledge(query)
+        prompt_start, _ = generate_prompt(rsp_txt)
+        prompt_chapter = prompt_start + "\n" + prompt_end
+        content =  generate_chapter(prompt_chapter)
+        contents.append(content)
+
+
+    prompt = all_prompt.replace("{MMMM}", "\n\n".join(contents))
+
+    API_KEY = os.environ.get("ARK_API_KEY")
+    MODEL_ID = os.environ.get("ARK_MODEL_ID")
+
+    client = Ark(api_key=API_KEY)
+    completion = client.chat.completions.create(
+        model=MODEL_ID,
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=16000,
+        temperature=0.8
+    )
+
+    output_dir = "results/kb/01"
+    os.makedirs(output_dir, exist_ok=True)
+
+    output_path = os.path.join(output_dir, f"{MODEL_ID}.result")
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(completion.choices[0].message.content)
+
+
 if __name__ == "__main__":
-    rsp_txt = search_knowledge()
-    prompt, image_urls = generate_prompt(rsp_txt)
-
-    print(prompt)
-    #print(len(image_urls))
-
+    ark_chat()
+    
