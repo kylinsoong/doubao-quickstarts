@@ -15,7 +15,7 @@ client = Ark(
     base_url="https://ark.cn-beijing.volces.com/api/v3",
 )
 
-prompt = "心脑血管治病机理与科学预防方式"
+prompt = "如何科学减肥"
 
 completion = client.bot_chat.completions.create(
     model="bot-20250403175147-xdvqj",
