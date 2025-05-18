@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 prompt = """
-请撰写一篇 1500 字的医学科普文章，内容关于乳腺癌，要求文章 markdump 结构化输出.
+请撰写一篇 1500 字的医学科普文章，内容关于艾滋病，要求文章 markdump 结构化输出.
 """
 
 def log_time(func):
@@ -36,7 +36,7 @@ def ark_chat(id):
         temperature=0.8
     )
 
-    output_dir = "md1"
+    output_dir = "md8"
     os.makedirs(output_dir, exist_ok=True)
 
     output_path = os.path.join(output_dir, f"{id}.md")

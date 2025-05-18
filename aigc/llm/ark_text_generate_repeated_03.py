@@ -45,7 +45,7 @@ def ark_chat(id):
 
 @log_time
 def main():
-    with ThreadPoolExecutor(max_workers=10) as executor:  
+    with ThreadPoolExecutor(max_workers=25) as executor:  
         executor.map(ark_chat, range(200))
 
 
