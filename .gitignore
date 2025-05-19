@@ -179,3 +179,4 @@ node_modules
 template.pptx
 *.pptx
 *.db
+__pycache__
