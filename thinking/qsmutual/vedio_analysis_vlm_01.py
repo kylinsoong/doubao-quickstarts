@@ -1,4 +1,5 @@
 import os
+import json
 from volcenginesdkarkruntime import Ark
 import time
 
@@ -15,27 +16,19 @@ def log_time(func):
         return result
     return wrapper
 
-prompt ="""
-分析单人口播视频，提取口播字幕，字幕会在口播视频图像中，要求：
+prompt = """
+你需要分析一个视频，任务是检测视频的连续性，以结构化 JSON 格式输出结果。
 
-1. 每个包括独立图像画面的字幕为独立的一句话
-2. 每句话需要记录对应的时间间隔
-3. 输出格式为 JSON 结构化格式，如下为一示例：
+分析视频画面：
+1. 如果画面超过 3 秒钟是卡顿的，则视频不连续
+2. 如果画面中一直没有人物，则视频不连续
+3. 如果画面是单一背景色（例如全白、全黑、全蓝等），则视频不连续
+4. 如果画面是黑屏，则视频不连续
 
+如果视频不连续，记录视频出现不连续的时间段，以及不连续的原因，如果视频是连续的，则值输出连续性标记，不需要记录时间段和原因
 
-[
-  {
-    "time": "0.0 - 5.19",
-    "text": "大家好，我是张医生"
-  },
-  {
-    "time": "5.47 - 11.15",
-    "text": "今天我给大家介绍过度运动带来的危害"
-  },
-  // 更多口播
-]
-
-要求只输出 JSON 结构的字幕，不做过多解释
+输出格式：
+{"consistence": true/false, "notes": ["<不连续时间段> <原因>", "//如果有更多不连续时间段，依次记录"]}
 """
 
 def analyze_video(video_url: str):
@@ -55,22 +48,27 @@ def analyze_video(video_url: str):
                         "type": "video_url",
                         "video_url": {
                             "url": video_url,
-                            "fps": 2.0,
+                            "fps": 1.0,
                             "detail": "low"
                         }
                     },
                 ],
             }
         ],
+        thinking = {
+            "type":"enabled"
+        }
     )
 
     return completion.choices[0].message.content, completion.usage
 
 @log_time
 def main():
-    video_url = "https://pub-kylin.tos-cn-beijing.volces.com/0004/003.mp4"
+    video_url = "https://pub-kylin.tos-cn-beijing.volces.com/cfitc/103.mp4"
     summary, usage = analyze_video(video_url)
-    print(summary)
+    json_obj = json.loads(summary)
+    with open("vlm.json", 'w') as file:
+        json.dump(json_obj, file, ensure_ascii=False)
     print(usage)
 
 
