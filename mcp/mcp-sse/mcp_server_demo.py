@@ -1,4 +1,5 @@
 #mcp_server_demo.py
+
 from mcp.server.fastmcp import FastMCP
 import asyncio
 
@@ -6,9 +7,6 @@ mcp = FastMCP(name="weather-demo", host="0.0.0.0", port=1234)
 
 @mcp.tool(name="get_weather", description="获取指定城市的天气信息")
 async def get_weather(city: str) -> str:
-    """
-    获取指定城市的天气信息
-    """
     weather_data = {
         "北京": "北京：晴，25°C",
         "上海": "上海：多云，27°C"
@@ -18,9 +16,6 @@ async def get_weather(city: str) -> str:
 
 @mcp.tool(name="suggest_activity", description="根据天气描述推荐适合的活动")
 async def suggest_activity(condition: str) -> str:
-    """
-    根据天气描述推荐适合的活动
-    """
     print(f"suggest_activity invoked, condition: {condition}")
 
     if "晴" in condition:
@@ -38,3 +33,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+
