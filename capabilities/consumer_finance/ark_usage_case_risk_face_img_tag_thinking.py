@@ -1,5 +1,4 @@
 import os
-import time
 from volcenginesdkarkruntime import Ark
 
 API_KEY = os.environ.get("ARK_API_KEY")
@@ -7,17 +6,6 @@ API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
 
 client = Ark(api_key=API_KEY)
 
-def log_time(func):
-    """Decorator to log execution time of a function."""
-    def wrapper(*args, **kwargs):
-        begin_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        print(f"Function '{func.__name__}' maind in {end_time - begin_time:.2f} seconds")
-        return result
-    return wrapper
-
-@log_time
 def ark_vision_images(item, prompt, temperature):
     messages = [
         {"role": "user", "content": [{"type": "text", "text": prompt}] + [
@@ -28,9 +16,6 @@ def ark_vision_images(item, prompt, temperature):
         completion = client.chat.completions.create(
             model=API_EP_ID,
             messages=messages,
-            thinking = {
-                "type":"disabled"
-            },
             temperature=temperature
         )
         return completion.choices[0].message.content, completion.usage
@@ -42,7 +27,7 @@ prompt = """
 
 请从分析图片，提取如下风控要素：
 1. 性别: 明确判断图片中人的性别，只能填写“男”或“女”。
-2. 年龄: 精准判断图片中人的年龄，以年龄段形式呈现，例如“30-35”“35-40”等。
+2. 年龄: 精准判断图片中人的年龄，以年龄段形式呈现，例如“3035”“3540”等。
 3. 表情: 清晰、准确地描述图片中人的表情。
 4. 职业: 根据图片特征判断照片中人的职业，若在办公室环境，判定为白领；若有其他明显特征可明确职业，则如实填写；若难以判断，填写“无法判断”。
 5. 背景: 详细阐述背景情况，尽可能准确判断可能的地点，如公司、工厂、室外等。同时，说明背景中是否有人，若有人，详细描述其动作。
@@ -132,10 +117,6 @@ prompt = """
     "是否在车内": "",
     "场景类型": "",
     "经营场所": "",
-    "金融字样": "",
-    "锦旗": "",
-    "是否水印": "",
-    "黑产字样": "",
     "白墙": ""
   },
   "职业特征": {
@@ -150,16 +131,22 @@ prompt = """
   "胁迫或他拍特征": {
     "是否他人拍照": "",
     "是否被胁迫": "",
-    "是否屏拍": "",
-    "他人入境1": "",
-    "他人入境2": "",
-    "其他几个人入境": "",
+    "是否屏拍": ""
   },
   "微表情特征": {
     "表情": "",
     "是否直视镜头": "",
     "脸部是否有遮挡": "",
     "眼皮是否有遮挡": ""
+  },
+  "其他": {
+    "金融字样": "",
+    "锦旗": "",
+    "他人入境1": "",
+    "他人入境2": "",
+    "其他几个人入境": "",
+    "是否水印": "",
+    "黑产字样": ""
   }
 },
 // 更多的照片的分析

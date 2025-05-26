@@ -1,24 +1,10 @@
+#!/usr/bin/env python3
+
 import os
-import time
+import argparse
 from volcenginesdkarkruntime import Ark
 
-API_KEY = os.environ.get("ARK_API_KEY")
-API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
-
-client = Ark(api_key=API_KEY)
-
-def log_time(func):
-    """Decorator to log execution time of a function."""
-    def wrapper(*args, **kwargs):
-        begin_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        print(f"Function '{func.__name__}' maind in {end_time - begin_time:.2f} seconds")
-        return result
-    return wrapper
-
-@log_time
-def ark_vision_images(item, prompt, temperature):
+def ark_vision_images(client, API_EP_ID, item, prompt, temperature):
     messages = [
         {"role": "user", "content": [{"type": "text", "text": prompt}] + [
             {"type": "image_url", "image_url": {"url": url}} for url in item
@@ -35,9 +21,23 @@ def ark_vision_images(item, prompt, temperature):
         )
         return completion.choices[0].message.content, completion.usage
     except Exception as e:
-        return e
+        return str(e)
 
-prompt = """
+def main():
+    parser = argparse.ArgumentParser(description='Process ARK API parameters and images.')
+    parser.add_argument('--ARK_API_KEY', type=str, required=True, help='ARK API Key')
+    parser.add_argument('--ARK_API_ENGPOINT_ID', type=str, required=True, help='ARK API Endpoint ID')
+    parser.add_argument('--images', nargs='+', required=True, help='List of image URLs')
+
+    args = parser.parse_args()
+
+    API_KEY = args.ARK_API_KEY
+    API_EP_ID = args.ARK_API_ENGPOINT_ID
+    images = args.images
+
+    client = Ark(api_key=API_KEY)
+
+    prompt = """
 你的任务是分析一组图片，分析结果将用于贷款授信。你需要仔细观察图片，分析图片中人的风险控制要素。
 
 请从分析图片，提取如下风控要素：
@@ -166,17 +166,11 @@ prompt = """
 ]
 """
 
+    results = ark_vision_images(client, API_EP_ID, images, prompt, 0.01)
 
-images = [
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/01.jpg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/02.jpg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/03.jpeg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/04.jpg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/05.jpg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/06.jpg",
-]
+    print(results[0])
+    print(results[1])
+ 
 
-results = ark_vision_images(images, prompt, 0.01)
-
-print(results[0])
-print(results[1])
+if __name__ == "__main__":
+    main()
