@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Temperature vs 重复率分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <style>
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+        .tabs { margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; margin-right: 10px; cursor: pointer; background: #f0f0f0; border: none; border-radius: 4px; }
+        .tab-btn.active { background: #409eff; color: white; }
+        .chart-box { width: 100%; height: 400px; margin-bottom: 30px; }
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .data-table th, .data-table td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        .data-table th { background-color: #409eff; color: white; }
+        .analysis { padding: 20px; background: #f8f9fa; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Temperature与重复率关系分析</h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-type="bar">柱状图</button>
+            <button class="tab-btn" data-type="line">折线图</button>
+        </div>
+
+        <div class="chart-box" id="mainChart"></div>
+
+        <h3>原始数据及趋势变化</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Temperature</th>
+                    <th>重复率(%)</th>
+                    <th>环比变化(%)</th>
+                </tr>
+            </thead>
+            <tbody id="dataTableBody"></tbody>
+        </table>
+
+        <div class="analysis">
+            <h3>数据分析与建议</h3>
+            <p>1. 整体趋势：随着Temperature从0.2增加至2.0，重复率呈现持续下降趋势，从19.93%降至11.19%，累计降幅达43.8%。</p>
+            <p>2. 关键节点：在Temperature=1.6时重复率降至13.05%（环比下降9.95%），为降幅最大区间；Temperature=1.0-1.2区间降幅最小（仅0.63%），稳定性较高。</p>
+            <p>3. 建议：若需控制重复率，可优先选择Temperature≥1.6的参数；若需平衡生成稳定性与重复率，建议选择Temperature=1.0-1.2区间（降幅平缓且重复率维持在15%左右）。</p>
+        </div>
+    </div>
+
+    <script>
+        // 原始数据
+        const rawData = [
+            { temp: 0.2, rate: 19.93 },
+            { temp: 0.4, rate: 17.52 },
+            { temp: 0.6, rate: 17.07 },
+            { temp: 0.8, rate: 15.88 },
+            { temp: 1.0, rate: 15.80 },
+            { temp: 1.2, rate: 14.75 },
+            { temp: 1.4, rate: 14.37 },
+            { temp: 1.6, rate: 13.05 },
+            { temp: 1.8, rate: 12.80 },
+            { temp: 2.0, rate: 11.19 }
+        ];
+
+        // 填充表格数据（含环比变化）
+        const tableBody = document.getElementById('dataTableBody');
+        rawData.forEach((item, index) => {
+            const prevRate = index > 0 ? rawData[index-1].rate : null;
+            const change = prevRate ? ((item.rate - prevRate)/prevRate*100).toFixed(2) : '-';
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${item.temp}</td>
+                    <td>${item.rate}%</td>
+                    <td>${change}%</td>
+                </tr>
+            `;
+        });
+
+        // 初始化图表
+        let myChart = echarts.init(document.getElementById('mainChart'));
+        let currentType = 'bar';
+
+        function renderChart(type) {
+            const option = {
+                title: { text: 'Temperature与重复率关系图', left: 'center' },
+                tooltip: { trigger: 'axis', formatter: '{b}<br/>重复率: {c}%' },
+                xAxis: {
+                    type: 'category',
+                    data: rawData.map(d => d.temp),
+                    axisLabel: { interval: 0 }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '重复率(%)',
+                    min: 10,
+                    max: 20,
+                    axisLine: { show: false },
+                    splitLine: { lineStyle: { type: 'dashed' } }
+                },
+                series: [{
+                    name: '重复率',
+                    data: rawData.map(d => d.rate),
+                    type: type,
+                    itemStyle: {
+                        color: type === 'bar' ? new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [{ offset: 0, color: '#ff6b6b' }, { offset: 1, color: '#ff8e53' }]
+                        ) : '#409eff'
+                    },
+                    lineStyle: { width: 3 },
+                    symbolSize: 10
+                }]
+            };
+            myChart.setOption(option);
+        }
+
+        // 切换图表类型
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentType = btn.dataset.type;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderChart(currentType);
+            });
+        });
+
+        // 初始渲染柱状图
+        renderChart('bar');
+    </script>
+</body>
+</html>
