@@ -4,11 +4,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionContentPart;
 import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest;
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest.ChatCompletionRequestThinking;
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessage;
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole;
 import com.volcengine.ark.runtime.service.ArkService;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,29 +152,92 @@ public class Main implements CommandLineRunner {
 		SpringApplication.run(Main.class, args);
 	}
 	
-	private String ark_vision_images() {
+	private Object ark_vision_images(String apiKey, String apiEP, List<String> imgs) {
 		
 		
-		return "";
+        ArkService service = ArkService.builder().apiKey(apiKey).build();
+
+		final List<ChatMessage> messages = new ArrayList<>();
+		final List<ChatCompletionContentPart> multiParts = new ArrayList<>();
+		multiParts.add(ChatCompletionContentPart.builder().type("text").text(PROMPT).build());
+		for (String img : imgs) {
+			multiParts.add(ChatCompletionContentPart.builder().type("image_url").imageUrl(new ChatCompletionContentPart.ChatCompletionContentPartImageURL(img)).build());
+		}
 		
+		final ChatMessage userMessage = ChatMessage.builder().role(ChatMessageRole.USER).multiContent(multiParts).build();
+        messages.add(userMessage);
+        
+        ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest.builder()
+                .model(apiEP)
+                .messages(messages)
+                .thinking(new ChatCompletionRequestThinking("disabled"))
+                .temperature(0.01)
+                .build();
+        
+        Object results = service.createChatCompletion(chatCompletionRequest).getChoices().get(0).getMessage().getContent();
+		
+		return results;
+		
+	}
+	
+	private void printHelp() {
+	    System.out.println("Usage: java -jar yourjarfile.jar [options]");
+	    System.out.println("Options:");
+	    System.out.println("  --ARK_API_KEY <key>       ARK API Key");
+	    System.out.println("  --ARK_API_ENGPOINT_ID <id> ARK API Endpoint ID");
+	    System.out.println("  --images <url1> <url2> ... List of image URLs");
+	    System.out.println("  --help                    Show this help message");
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
 		
+		for (String arg : args) {
+	        if ("--help".equals(arg)) {
+	            printHelp();
+	            return;
+	        }
+	    }
+		
 		String apiKey = System.getenv("ARK_API_KEY");
 		String apiEP = System.getenv("ARK_API_ENGPOINT_ID");
-        ArkService service = ArkService.builder().apiKey(apiKey).build();
+		List<String> imgs = new ArrayList<>();
+		
+		for (int i = 0; i < args.length; i++) {
+	        if ("--ARK_API_KEY".equals(args[i])) {
+	            if (i + 1 < args.length) {
+	                apiKey = args[++i];
+	            } 
+	        } else if ("--ARK_API_ENGPOINT_ID".equals(args[i])) {
+	            if (i + 1 < args.length) {
+	                apiEP = args[++i];
+	            } 
+	        } else if ("--images".equals(args[i])) {
+	            i++;
+	            while (i < args.length && !args[i].startsWith("--")) {
+	                imgs.add(args[i++]);
+	            }
+	            i--;
+	        }
+	    }
 
-		final List<ChatMessage> messages = new ArrayList<>();
-		final ChatMessage userMessage = ChatMessage.builder().role(ChatMessageRole.USER).content(PROMPT).build();
-		messages.add(userMessage);
+	    if (apiKey == null) {
+	        throw new IllegalArgumentException("ARK_API_KEY is required");
+	    }
+	    if (apiEP == null) {
+	        throw new IllegalArgumentException("ARK_API_ENGPOINT_ID is required");
+	    }
+	    if (imgs.isEmpty()) {
+	        throw new IllegalArgumentException("At least one image URL is required");
+	    }
+		
+		
+	    String content = (String) ark_vision_images(apiKey, apiEP, imgs);
 
-		ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest.builder()
-                .model(apiEP)
-                .messages(messages)
-                .build();
-
+        
+	    
+	    System.out.println(content);
+	   
 		
 		
 	}
