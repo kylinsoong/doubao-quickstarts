@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>股份制银行财务报表分析</title>
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- 引入ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <!-- 配置Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#36CBCB',
+            cmbc: '#FF6B6B',
+            hxb: '#FFD166',
+            ceb: '#06D6A0',
+            citic: '#118AB2',
+            background: '#F5F7FA',
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .card-shadow {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+    }
+  </style>
+</head>
+<body class="bg-background font-inter">
+  <!-- 顶部导航 -->
+  <header class="bg-white shadow-md sticky top-0 z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fa fa-line-chart text-primary text-2xl"></i>
+        <h1 class="text-xl font-bold text-gray-800">股份制银行财务分析平台</h1>
+      </div>
+      <nav class="hidden md:flex space-x-8">
+        <a href="#overview" class="text-gray-600 hover:text-primary transition-colors">概览</a>
+        <a href="#revenue" class="text-gray-600 hover:text-primary transition-colors">营收分析</a>
+        <a href="#profit" class="text-gray-600 hover:text-primary transition-colors">利润分析</a>
+        <a href="#comparison" class="text-gray-600 hover:text-primary transition-colors">综合对比</a>
+      </nav>
+      <button class="md:hidden text-gray-600 focus:outline-none" id="menuToggle">
+        <i class="fa fa-bars text-xl"></i>
+      </button>
+    </div>
+    <!-- 移动端菜单 -->
+    <div class="md:hidden hidden bg-white w-full" id="mobileMenu">
+      <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+        <a href="#overview" class="text-gray-600 hover:text-primary py-2 border-b border-gray-100">概览</a>
+        <a href="#revenue" class="text-gray-600 hover:text-primary py-2 border-b border-gray-100">营收分析</a>
+        <a href="#profit" class="text-gray-600 hover:text-primary py-2 border-b border-gray-100">利润分析</a>
+        <a href="#comparison" class="text-gray-600 hover:text-primary py-2">综合对比</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8">
+    <!-- 概览区域 -->
+    <section id="overview" class="mb-16">
+      <div class="text-center mb-10">
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-4">银行财务数据概览</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto">本平台展示了中国民生银行(CMBC)、华夏银行(HXB)、中国光大银行(CEB)和中信银行(CITIC)近14年的财务数据对比分析</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <!-- 民生银行卡片 -->
+        <div class="bg-white rounded-xl p-6 card-shadow card-hover border-l-4 border-cmbc">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">中国民生银行</h3>
+              <p class="text-sm text-gray-500">CMBC</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-cmbc/10 flex items-center justify-center">
+              <i class="fa fa-university text-cmbc"></i>
+            </div>
+          </div>
+          <div class="flex items-end space-x-4">
+            <p class="text-2xl font-bold text-gray-800">1363亿</p>
+            <p class="text-sm text-gray-500">2024年营收</p>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <span class="text-green-500 flex items-center"><i class="fa fa-arrow-up mr-1"></i> 2.5%</span>
+            <span class="text-gray-500 ml-2">同比增长</span>
+          </div>
+        </div>
+
+        <!-- 华夏银行卡片 -->
+        <div class="bg-white rounded-xl p-6 card-shadow card-hover border-l-4 border-hxb">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">华夏银行</h3>
+              <p class="text-sm text-gray-500">HXB</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-hxb/10 flex items-center justify-center">
+              <i class="fa fa-university text-hxb"></i>
+            </div>
+          </div>
+          <div class="flex items-end space-x-4">
+            <p class="text-2xl font-bold text-gray-800">971亿</p>
+            <p class="text-sm text-gray-500">2024年营收</p>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <span class="text-green-500 flex items-center"><i class="fa fa-arrow-up mr-1"></i> 4.2%</span>
+            <span class="text-gray-500 ml-2">同比增长</span>
+          </div>
+        </div>
+
+        <!-- 光大银行卡片 -->
+        <div class="bg-white rounded-xl p-6 card-shadow card-hover border-l-4 border-ceb">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">中国光大银行</h3>
+              <p class="text-sm text-gray-500">CEB</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-ceb/10 flex items-center justify-center">
+              <i class="fa fa-university text-ceb"></i>
+            </div>
+          </div>
+          <div class="flex items-end space-x-4">
+            <p class="text-2xl font-bold text-gray-800">1354亿</p>
+            <p class="text-sm text-gray-500">2024年营收</p>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <span class="text-red-500 flex items-center"><i class="fa fa-arrow-down mr-1"></i> 7.5%</span>
+            <span class="text-gray-500 ml-2">同比下降</span>
+          </div>
+        </div>
+
+        <!-- 中信银行卡片 -->
+        <div class="bg-white rounded-xl p-6 card-shadow card-hover border-l-4 border-citic">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">中信银行</h3>
+              <p class="text-sm text-gray-500">CITIC</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-citic/10 flex items-center justify-center">
+              <i class="fa fa-university text-citic"></i>
+            </div>
+          </div>
+          <div class="flex items-end space-x-4">
+            <p class="text-2xl font-bold text-gray-800">2136亿</p>
+            <p class="text-sm text-gray-500">2024年营收</p>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <span class="text-green-500 flex items-center"><i class="fa fa-arrow-up mr-1"></i> 3.7%</span>
+            <span class="text-gray-500 ml-2">同比增长</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 行业趋势卡片 -->
+      <div class="bg-white rounded-xl p-6 md:p-8 card-shadow mb-10">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">银行业营收与利润趋势</h3>
+            <p class="text-gray-600">展示近14年四家股份制银行的整体营收与利润变化趋势</p>
+          </div>
+          <div class="flex space-x-3 mt-4 md:mt-0">
+            <button class="px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition-colors active:scale-95" id="revenueBtn">
+              营收趋势
+            </button>
+            <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 transition-colors active:scale-95" id="profitBtn">
+              利润趋势
+            </button>
+          </div>
+        </div>
+        <div class="h-[400px] w-full" id="trendChart"></div>
+      </div>
+    </section>
+
+    <!-- 营收分析区域 -->
+    <section id="revenue" class="mb-16">
+      <div class="text-center mb-10">
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-4">营收分析</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto">深入分析各银行历年营收数据及其增长情况</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        <!-- 历年营收对比图 -->
+        <div class="bg-white rounded-xl p-6 card-shadow">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">历年营收对比 (单位: 亿元)</h3>
+          <div class="h-[400px] w-full" id="revenueLineChart"></div>
+        </div>
+
+        <!-- 营收占比饼图 -->
+        <div class="bg-white rounded-xl p-6 card-shadow">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">2024年营收占比</h3>
+          <div class="h-[400px] w-full" id="revenuePieChart"></div>
+        </div>
+      </div>
+
+      <!-- 营收增长分析 -->
+      <div class="bg-white rounded-xl p-6 card-shadow">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">营收增长分析</h3>
+        <div class="h-[400px] w-full" id="revenueGrowthChart"></div>
+      </div>
+    </section>
+
+    <!-- 利润分析区域 -->
+    <section id="profit" class="mb-16">
+      <div class="text-center mb-10">
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-4">利润分析</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto">展示各银行历年利润数据及其变化趋势</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        <!-- 历年利润对比图 -->
+        <div class="bg-white rounded-xl p-6 card-shadow">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">历年利润对比 (单位: 亿元)</h3>
+          <div class="h-[400px] w-full" id="profitLineChart"></div>
+        </div>
+
+        <!-- 利润占比饼图 -->
+        <div class="bg-white rounded-xl p-6 card-shadow">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">2024年利润占比</h3>
+          <div class="h-[400px] w-full" id="profitPieChart"></div>
+        </div>
+      </div>
+
+      <!-- 利润增长分析 -->
+      <div class="bg-white rounded-xl p-6 card-shadow">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">利润增长分析</h3>
+        <div class="h-[400px] w-full" id="profitGrowthChart"></div>
+      </div>
+    </section>
+
+    <!-- 综合对比区域 -->
+    <section id="comparison" class="mb-16">
+      <div class="text-center mb-10">
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-4">综合对比</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto">多维度对比各银行财务表现</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        <!-- 雷达图对比 -->
+        <div class="bg-white rounded-xl p-6 card-shadow">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">财务指标综合对比</h3>
+          <div class="h-[400px] w-full" id="radarChart"></div>
+        </div>
+
+        <!-- 营收利润关系图 -->
+        <div class="bg-white rounded-xl p-6 card-shadow">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">营收与利润关系</h3>
+          <div class="h-[400px] w-full" id="scatterChart"></div>
+        </div>
+      </div>
+
+      <!-- 财务指标对比表 -->
+      <div class="bg-white rounded-xl p-6 card-shadow overflow-x-auto">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">主要财务指标对比 (2024年)</h3>
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">银行</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">营收 (亿元)</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">利润 (亿元)</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">利润率</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">营收同比增长</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">利润同比增长</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">近五年营收复合增长</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">近五年利润复合增长</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="h-8 w-8 rounded-full bg-cmbc/20 flex items-center justify-center mr-3">
+                    <span class="text-cmbc font-medium">CMBC</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">中国民生银行</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1,363</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">341</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25.0%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+2.5%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-red-500">-8.6%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1.2%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-red-500">-3.2%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="h-8 w-8 rounded-full bg-hxb/20 flex items-center justify-center mr-3">
+                    <span class="text-hxb font-medium">HXB</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">华夏银行</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">971</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">359</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+4.2%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+1.4%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">7.8%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4.3%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="h-8 w-8 rounded-full bg-ceb/20 flex items-center justify-center mr-3">
+                    <span class="text-ceb font-medium">CEB</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">中国光大银行</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1,354</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">515</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-red-500">-7.5%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+3.4%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4.2%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4.7%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="h-8 w-8 rounded-full bg-citic/20 flex items-center justify-center mr-3">
+                    <span class="text-citic font-medium">CITIC</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">中信银行</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2,136</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">809</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.8%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+3.7%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+8.0%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">6.0%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">7.2%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-10">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-lg font-semibold mb-4">股份制银行财务分析平台</h3>
+          <p class="text-gray-400 text-sm">本平台提供四家股份制银行的财务数据对比分析，帮助用户深入了解银行业发展趋势。</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">快速链接</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#overview" class="text-gray-400 hover:text-white transition-colors">概览</a></li>
+            <li><a href="#revenue" class="text-gray-400 hover:text-white transition-colors">营收分析</a></li>
+            <li><a href="#profit" class="text-gray-400 hover:text-white transition-colors">利润分析</a></li>
+            <li><a href="#comparison" class="text-gray-400 hover:text-white transition-colors">综合对比</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">银行信息</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">中国民生银行</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">华夏银行</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">中国光大银行</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">中信银行</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">联系我们</h3>
+          <ul class="space-y-2 text-sm">
+            <li class="flex items-center"><i class="fa fa-envelope-o mr-2 text-gray-400"></i> <a href="mailto:contact@bankanalysis.com" class="text-gray-400 hover:text-white transition-colors">contact@bankanalysis.com</a></li>
+            <li class="flex items-center"><i class="fa fa-phone mr-2 text-gray-400"></i> <span class="text-gray-400">400-123-4567</span></li>
+          </ul>
+          <div class="mt-4 flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa fa-weibo text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa fa-wechat text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa fa-linkedin text-xl"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+        <p>© 2025 股份制银行财务分析平台. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 导航栏滚动效果
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('py-2', 'bg-white/95', 'backdrop-blur-sm');
+        navbar.classList.remove('py-3', 'bg-white');
+      } else {
+        navbar.classList.add('py-3', 'bg-white');
+        navbar.classList.remove('py-2', 'bg-white/95', 'backdrop-blur-sm');
+      }
+    });
+
+    // 移动端菜单切换
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          // 关闭移动菜单
+          if (!mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+          }
+        }
+      });
+    });
+
+    // 银行财务数据
+    const years = ['2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'];
+    
+    const revenueData = {
+      CMBC: [824, 1031, 1159, 1355, 1544, 1552, 1442, 1567, 1804, 1849, 1688, 1424, 1408, 1363],
+      HXB: [335, 397, 452, 549, 589, 640, 664, 722, 847, 953, 959, 938, 932, 971],
+      CEB: [461, 599, 653, 785, 932, 940, 919, 1102, 1328, 1425, 1527, 1516, 1457, 1354],
+      CITIC: [769, 894, 1046, 1247, 1451, 1538, 1567, 1649, 1876, 1947, 2046, 2114, 2059, 2136]
+    };
+    
+    const profitData = {
+      CMBC: [372, 507, 571, 598, 608, 602, 608, 692, 649, 371, 361, 374, 373, 341],
+      HXB: [125, 172, 207, 240, 252, 262, 263, 268, 276, 272, 315, 336, 354, 359],
+      CEB: [242, 316, 344, 386, 394, 402, 406, 409, 452, 455, 529, 560, 498, 515],
+      CITIC: [416, 416, 525, 546, 546, 546, 523, 545, 565, 578, 656, 733, 749, 809]
+    };
+
+    // 计算增长率
+    function calculateGrowthRates(data) {
+      const growthRates = {};
+      for (const bank in data) {
+        growthRates[bank] = [];
+        for (let i = 1; i < data[bank].length; i++) {
+          const growth = ((data[bank][i] - data[bank][i-1]) / data[bank][i-1]) * 100;
+          growthRates[bank].push(Number(growth.toFixed(1)));
+        }
+      }
+      return growthRates;
+    }
+    
+    const revenueGrowth = calculateGrowthRates(revenueData);
+    const profitGrowth = calculateGrowthRates(profitData);
+
+    // 计算五年复合增长率
+    function calculateCAGR(current, previous, years) {
+      return (Math.pow(current / previous, 1 / years) - 1) * 100;
+    }
+
+    // 初始化图表
+    function initCharts() {
+      // 趋势图表
+      const trendChart = echarts.init(document.getElementById('trendChart'));
+      
+      // 渐变颜色
+      const linearGradients = {
+        cmbc: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {offset: 0, color: '#FF6B6B'},
+          {offset: 1, color: 'rgba(255, 107, 107, 0.1)'}
+        ]),
+        hxb: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {offset: 0, color: '#FFD166'},
+          {offset: 1, color: 'rgba(255, 209, 102, 0.1)'}
+        ]),
+        ceb: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {offset: 0, color: '#06D6A0'},
+          {offset: 1, color: 'rgba(6, 214, 160, 0.1)'}
+        ]),
+        citic: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {offset: 0, color: '#118AB2'},
+          {offset: 1, color: 'rgba(17, 138, 178, 0.1)'}
+        ])
+      };
+
+      // 行业趋势配置
+      const trendOption = {
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          },
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        legend: {
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          top: '5%',
+          left: 'center',
+          textStyle: {
+            color: '#666'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          top: '15%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: years,
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          }
+        },
+        series: [
+          {
+            name: '中国民生银行(CMBC)',
+            type: 'line',
+            stack: '总量',
+            data: revenueData.CMBC,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#FF6B6B',
+            areaStyle: {
+              color: linearGradients.cmbc
+            },
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '华夏银行(HXB)',
+            type: 'line',
+            stack: '总量',
+            data: revenueData.HXB,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#FFD166',
+            areaStyle: {
+              color: linearGradients.hxb
+            },
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中国光大银行(CEB)',
+            type: 'line',
+            stack: '总量',
+            data: revenueData.CEB,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#06D6A0',
+            areaStyle: {
+              color: linearGradients.ceb
+            },
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中信银行(CITIC)',
+            type: 'line',
+            stack: '总量',
+            data: revenueData.CITIC,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#118AB2',
+            areaStyle: {
+              color: linearGradients.citic
+            },
+            emphasis: {
+              focus: 'series'
+            }
+          }
+        ]
+      };
+
+      trendChart.setOption(trendOption);
+
+      // 营收和利润按钮切换
+      const revenueBtn = document.getElementById('revenueBtn');
+      const profitBtn = document.getElementById('profitBtn');
+      
+      revenueBtn.addEventListener('click', () => {
+        revenueBtn.classList.remove('bg-gray-200', 'text-gray-700');
+        revenueBtn.classList.add('bg-primary', 'text-white');
+        profitBtn.classList.remove('bg-primary', 'text-white');
+        profitBtn.classList.add('bg-gray-200', 'text-gray-700');
+        
+        trendOption.series[0].data = revenueData.CMBC;
+        trendOption.series[1].data = revenueData.HXB;
+        trendOption.series[2].data = revenueData.CEB;
+        trendOption.series[3].data = revenueData.CITIC;
+        trendChart.setOption(trendOption);
+      });
+      
+      profitBtn.addEventListener('click', () => {
+        profitBtn.classList.remove('bg-gray-200', 'text-gray-700');
+        profitBtn.classList.add('bg-primary', 'text-white');
+        revenueBtn.classList.remove('bg-primary', 'text-white');
+        revenueBtn.classList.add('bg-gray-200', 'text-gray-700');
+        
+        trendOption.series[0].data = profitData.CMBC;
+        trendOption.series[1].data = profitData.HXB;
+        trendOption.series[2].data = profitData.CEB;
+        trendOption.series[3].data = profitData.CITIC;
+        trendChart.setOption(trendOption);
+      });
+
+      // 历年营收对比图
+      const revenueLineChart = echarts.init(document.getElementById('revenueLineChart'));
+      const revenueLineOption = {
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          }
+        },
+        legend: {
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          top: '5%',
+          left: 'center',
+          textStyle: {
+            color: '#666'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          top: '15%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: years,
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '亿元',
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          }
+        },
+        series: [
+          {
+            name: '中国民生银行(CMBC)',
+            type: 'line',
+            data: revenueData.CMBC,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#FF6B6B',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '华夏银行(HXB)',
+            type: 'line',
+            data: revenueData.HXB,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#FFD166',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中国光大银行(CEB)',
+            type: 'line',
+            data: revenueData.CEB,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#06D6A0',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中信银行(CITIC)',
+            type: 'line',
+            data: revenueData.CITIC,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#118AB2',
+            emphasis: {
+              focus: 'series'
+            }
+          }
+        ]
+      };
+      revenueLineChart.setOption(revenueLineOption);
+
+      // 营收占比饼图
+      const revenuePieChart = echarts.init(document.getElementById('revenuePieChart'));
+      const revenuePieOption = {
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          },
+          formatter: '{a} <br/>{b}: {c}亿元 ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          textStyle: {
+            color: '#666'
+          }
+        },
+        series: [
+          {
+            name: '2024年营收',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 5,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 18,
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: [
+              {value: revenueData.CMBC[revenueData.CMBC.length - 1], name: '中国民生银行(CMBC)', itemStyle: {color: '#FF6B6B'}},
+              {value: revenueData.HXB[revenueData.HXB.length - 1], name: '华夏银行(HXB)', itemStyle: {color: '#FFD166'}},
+              {value: revenueData.CEB[revenueData.CEB.length - 1], name: '中国光大银行(CEB)', itemStyle: {color: '#06D6A0'}},
+              {value: revenueData.CITIC[revenueData.CITIC.length - 1], name: '中信银行(CITIC)', itemStyle: {color: '#118AB2'}}
+            ]
+          }
+        ]
+      };
+      revenuePieChart.setOption(revenuePieOption);
+
+      // 营收增长分析图
+      const revenueGrowthChart = echarts.init(document.getElementById('revenueGrowthChart'));
+      const revenueGrowthOption = {
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          }
+        },
+        legend: {
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          top: '5%',
+          left: 'center',
+          textStyle: {
+            color: '#666'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          top: '15%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: years.slice(1), // 从第二年开始，因为第一年没有增长率
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '%',
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          },
+          splitNumber: 5,
+          min: -10,
+          max: 20
+        },
+        series: [
+          {
+            name: '中国民生银行(CMBC)',
+            type: 'bar',
+            data: revenueGrowth.CMBC,
+            color: '#FF6B6B',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '华夏银行(HXB)',
+            type: 'bar',
+            data: revenueGrowth.HXB,
+            color: '#FFD166',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中国光大银行(CEB)',
+            type: 'bar',
+            data: revenueGrowth.CEB,
+            color: '#06D6A0',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中信银行(CITIC)',
+            type: 'bar',
+            data: revenueGrowth.CITIC,
+            color: '#118AB2',
+            emphasis: {
+              focus: 'series'
+            }
+          }
+        ]
+      };
+      revenueGrowthChart.setOption(revenueGrowthOption);
+
+      // 历年利润对比图
+      const profitLineChart = echarts.init(document.getElementById('profitLineChart'));
+      const profitLineOption = {
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          }
+        },
+        legend: {
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          top: '5%',
+          left: 'center',
+          textStyle: {
+            color: '#666'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          top: '15%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: years,
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '亿元',
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          }
+        },
+        series: [
+          {
+            name: '中国民生银行(CMBC)',
+            type: 'line',
+            data: profitData.CMBC,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#FF6B6B',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '华夏银行(HXB)',
+            type: 'line',
+            data: profitData.HXB,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#FFD166',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中国光大银行(CEB)',
+            type: 'line',
+            data: profitData.CEB,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#06D6A0',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中信银行(CITIC)',
+            type: 'line',
+            data: profitData.CITIC,
+            symbol: 'circle',
+            symbolSize: 6,
+            color: '#118AB2',
+            emphasis: {
+              focus: 'series'
+            }
+          }
+        ]
+      };
+      profitLineChart.setOption(profitLineOption);
+
+      // 利润占比饼图
+      const profitPieChart = echarts.init(document.getElementById('profitPieChart'));
+      const profitPieOption = {
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          },
+          formatter: '{a} <br/>{b}: {c}亿元 ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          textStyle: {
+            color: '#666'
+          }
+        },
+        series: [
+          {
+            name: '2024年利润',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 5,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 18,
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: [
+              {value: profitData.CMBC[profitData.CMBC.length - 1], name: '中国民生银行(CMBC)', itemStyle: {color: '#FF6B6B'}},
+              {value: profitData.HXB[profitData.HXB.length - 1], name: '华夏银行(HXB)', itemStyle: {color: '#FFD166'}},
+              {value: profitData.CEB[profitData.CEB.length - 1], name: '中国光大银行(CEB)', itemStyle: {color: '#06D6A0'}},
+              {value: profitData.CITIC[profitData.CITIC.length - 1], name: '中信银行(CITIC)', itemStyle: {color: '#118AB2'}}
+            ]
+          }
+        ]
+      };
+      profitPieChart.setOption(profitPieOption);
+
+      // 利润增长分析图
+      const profitGrowthChart = echarts.init(document.getElementById('profitGrowthChart'));
+      const profitGrowthOption = {
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          }
+        },
+        legend: {
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          top: '5%',
+          left: 'center',
+          textStyle: {
+            color: '#666'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          top: '15%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: years.slice(1), // 从第二年开始，因为第一年没有增长率
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '%',
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          },
+          splitNumber: 5,
+          min: -20,
+          max: 20
+        },
+        series: [
+          {
+            name: '中国民生银行(CMBC)',
+            type: 'bar',
+            data: profitGrowth.CMBC,
+            color: '#FF6B6B',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '华夏银行(HXB)',
+            type: 'bar',
+            data: profitGrowth.HXB,
+            color: '#FFD166',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中国光大银行(CEB)',
+            type: 'bar',
+            data: profitGrowth.CEB,
+            color: '#06D6A0',
+            emphasis: {
+              focus: 'series'
+            }
+          },
+          {
+            name: '中信银行(CITIC)',
+            type: 'bar',
+            data: profitGrowth.CITIC,
+            color: '#118AB2',
+            emphasis: {
+              focus: 'series'
+            }
+          }
+        ]
+      };
+      profitGrowthChart.setOption(profitGrowthOption);
+
+      // 雷达图对比
+      const radarChart = echarts.init(document.getElementById('radarChart'));
+      const radarOption = {
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          }
+        },
+        legend: {
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          top: '5%',
+          left: 'center',
+          textStyle: {
+            color: '#666'
+          }
+        },
+        radar: {
+          indicator: [
+            { name: '2024年营收', max: 2500 },
+            { name: '2024年利润', max: 1000 },
+            { name: '利润率', max: 40 },
+            { name: '近五年营收复合增长', max: 10 },
+            { name: '近五年利润复合增长', max: 10 },
+            { name: '营收稳定性', max: 100 }
+          ],
+          shape: 'circle',
+          splitNumber: 5,
+          axisName: {
+            color: '#666',
+            fontSize: 10
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          },
+          splitArea: {
+            show: true,
+            areaStyle: {
+              color: ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.15)', 'rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.25)']
+            }
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          }
+        },
+        series: [
+          {
+            name: '财务指标对比',
+            type: 'radar',
+            data: [
+              {
+                value: [
+                  revenueData.CMBC[revenueData.CMBC.length - 1],
+                  profitData.CMBC[profitData.CMBC.length - 1],
+                  (profitData.CMBC[profitData.CMBC.length - 1] / revenueData.CMBC[revenueData.CMBC.length - 1]) * 100,
+                  calculateCAGR(revenueData.CMBC[revenueData.CMBC.length - 1], revenueData.CMBC[revenueData.CMBC.length - 6], 5).toFixed(1),
+                  calculateCAGR(profitData.CMBC[profitData.CMBC.length - 1], profitData.CMBC[profitData.CMBC.length - 6], 5).toFixed(1),
+                  85 // 假设值
+                ],
+                name: '中国民生银行(CMBC)',
+                itemStyle: {
+                  color: '#FF6B6B'
+                }
+              },
+              {
+                value: [
+                  revenueData.HXB[revenueData.HXB.length - 1],
+                  profitData.HXB[profitData.HXB.length - 1],
+                  (profitData.HXB[profitData.HXB.length - 1] / revenueData.HXB[revenueData.HXB.length - 1]) * 100,
+                  calculateCAGR(revenueData.HXB[revenueData.HXB.length - 1], revenueData.HXB[revenueData.HXB.length - 6], 5).toFixed(1),
+                  calculateCAGR(profitData.HXB[profitData.HXB.length - 1], profitData.HXB[profitData.HXB.length - 6], 5).toFixed(1),
+                  90 // 假设值
+                ],
+                name: '华夏银行(HXB)',
+                itemStyle: {
+                  color: '#FFD166'
+                }
+              },
+              {
+                value: [
+                  revenueData.CEB[revenueData.CEB.length - 1],
+                  profitData.CEB[profitData.CEB.length - 1],
+                  (profitData.CEB[profitData.CEB.length - 1] / revenueData.CEB[revenueData.CEB.length - 1]) * 100,
+                  calculateCAGR(revenueData.CEB[revenueData.CEB.length - 1], revenueData.CEB[revenueData.CEB.length - 6], 5).toFixed(1),
+                  calculateCAGR(profitData.CEB[profitData.CEB.length - 1], profitData.CEB[profitData.CEB.length - 6], 5).toFixed(1),
+                  88 // 假设值
+                ],
+                name: '中国光大银行(CEB)',
+                itemStyle: {
+                  color: '#06D6A0'
+                }
+              },
+              {
+                value: [
+                  revenueData.CITIC[revenueData.CITIC.length - 1],
+                  profitData.CITIC[profitData.CITIC.length - 1],
+                  (profitData.CITIC[profitData.CITIC.length - 1] / revenueData.CITIC[revenueData.CITIC.length - 1]) * 100,
+                  calculateCAGR(revenueData.CITIC[revenueData.CITIC.length - 1], revenueData.CITIC[revenueData.CITIC.length - 6], 5).toFixed(1),
+                  calculateCAGR(profitData.CITIC[profitData.CITIC.length - 1], profitData.CITIC[profitData.CITIC.length - 6], 5).toFixed(1),
+                  92 // 假设值
+                ],
+                name: '中信银行(CITIC)',
+                itemStyle: {
+                  color: '#118AB2'
+                }
+              }
+            ]
+          }
+        ]
+      };
+      radarChart.setOption(radarOption);
+
+      // 营收利润关系图
+      const scatterChart = echarts.init(document.getElementById('scatterChart'));
+      const scatterOption = {
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#eee',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          },
+          formatter: function (params) {
+            return params.seriesName + '<br/>' +
+                   '营收: ' + params.data[0] + '亿元<br/>' +
+                   '利润: ' + params.data[1] + '亿元<br/>' +
+                   '利润率: ' + (params.data[1] / params.data[0] * 100).toFixed(1) + '%';
+          }
+        },
+        legend: {
+          data: ['中国民生银行(CMBC)', '华夏银行(HXB)', '中国光大银行(CEB)', '中信银行(CITIC)'],
+          top: '5%',
+          left: 'center',
+          textStyle: {
+            color: '#666'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          top: '15%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value',
+          name: '营收 (亿元)',
+          axisLine: {
+            lineStyle: {
+              color: '#ccc'
+            }
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '利润 (亿元)',
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          }
+        },
+        series: [
+          {
+            name: '中国民生银行(CMBC)',
+            type: 'scatter',
+            data: revenueData.CMBC.map((revenue, index) => [revenue, profitData.CMBC[index]]),
+            color: '#FF6B6B',
+            symbolSize: 10,
+            emphasis: {
+              scale: true,
+              symbolSize: 15
+            }
+          },
+          {
+            name: '华夏银行(HXB)',
+            type: 'scatter',
+            data: revenueData.HXB.map((revenue, index) => [revenue, profitData.HXB[index]]),
+            color: '#FFD166',
+            symbolSize: 10,
+            emphasis: {
+              scale: true,
+              symbolSize: 15
+            }
+          },
+          {
+            name: '中国光大银行(CEB)',
+            type: 'scatter',
+            data: revenueData.CEB.map((revenue, index) => [revenue, profitData.CEB[index]]),
+            color: '#06D6A0',
+            symbolSize: 10,
+            emphasis: {
+              scale: true,
+              symbolSize: 15
+            }
+          },
+          {
+            name: '中信银行(CITIC)',
+            type: 'scatter',
+            data: revenueData.CITIC.map((revenue, index) => [revenue, profitData.CITIC[index]]),
+            color: '#118AB2',
+            symbolSize: 10,
+            emphasis: {
+              scale: true,
+              symbolSize: 15
+            }
+          }
+        ]
+      };
+      scatterChart.setOption(scatterOption);
+
+      // 图表响应式调整
+      window.addEventListener('resize', () => {
+        trendChart.resize();
+        revenueLineChart.resize();
+        revenuePieChart.resize();
+        revenueGrowthChart.resize();
+        profitLineChart.resize();
+        profitPieChart.resize();
+        profitGrowthChart.resize();
+        radarChart.resize();
+        scatterChart.resize();
+      });
+    }
+
+    // 页面加载完成后初始化图表
+    document.addEventListener('DOMContentLoaded', initCharts);
+  </script>
+</body>
+</html>
+    

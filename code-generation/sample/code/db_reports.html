@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI模型分析仪表盘</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4361EE',
+                        secondary: '#3A0CA3',
+                        accent: '#F72585',
+                        success: '#4CC9F0',
+                        warning: '#F77F00',
+                        info: '#4895EF',
+                        dark: '#1D3557',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .gradient-bg {
+                background: linear-gradient(135deg, #4361EE 0%, #3A0CA3 100%);
+            }
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .panel-gradient {
+                background: linear-gradient(145deg, #ffffff, #f0f0f0);
+                box-shadow: 5px 5px 15px #d9d9d9, -5px -5px 15px #ffffff;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-gray-800">
+    <div class="min-h-screen flex flex-col">
+        <!-- 顶部导航栏 -->
+        <header class="gradient-bg text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fa fa-bar-chart text-2xl"></i>
+                    <h1 class="text-xl md:text-2xl font-bold">AI模型分析仪表盘</h1>
+                </div>
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="#" id="tab1" class="font-medium hover:text-accent transition-colors duration-300">文生文分析</a></li>
+                        <li><a href="#" id="tab2" class="font-medium hover:text-accent transition-colors duration-300">视觉模型对比</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <!-- 文生文分析页面 -->
+            <section id="page1" class="space-y-8">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark mb-2">文生文场景分析</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto">分析不同temperature参数对生成文章重复率和余弦相似度的影响</p>
+                </div>
+
+                <!-- 第一行面板 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 余弦相似度折线图 -->
+                    <div class="panel-gradient rounded-xl p-6 card-shadow transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-dark flex items-center">
+                                <i class="fa fa-line-chart text-primary mr-2"></i>
+                                Temperature与余弦相似度关系
+                            </h3>
+                            <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                                趋势分析
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <div id="cosineChart" class="w-full h-full"></div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p>• 余弦相似度整体波动较小，在temperature=1.0时达到峰值0.5453</p>
+                            <p>• 低temperature(0.2)时相似度为0.5367，高temperature(2.0)时为0.5324，变化幅度不大</p>
+                        </div>
+                    </div>
+
+                    <!-- 重复率折线图 -->
+                    <div class="panel-gradient rounded-xl p-6 card-shadow transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-dark flex items-center">
+                                <i class="fa fa-area-chart text-accent mr-2"></i>
+                                Temperature与重复率关系
+                            </h3>
+                            <div class="bg-accent/10 text-accent px-3 py-1 rounded-full text-sm font-medium">
+                                趋势分析
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <div id="repeatChart" class="w-full h-full"></div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p>• 重复率随temperature升高显著下降，从0.2时的19.93%降至2.0时的11.19%</p>
+                            <p>• temperature在0.8-1.2区间，重复率下降趋势变缓</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第二行面板 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 综合对比图 -->
+                    <div class="panel-gradient rounded-xl p-6 card-shadow transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-dark flex items-center">
+                                <i class="fa fa-bar-chart text-secondary mr-2"></i>
+                                相似度与重复率综合对比
+                            </h3>
+                            <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm font-medium">
+                                对比分析
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <div id="combinedChart" class="w-full h-full"></div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p>• 重复率与余弦相似度呈现一定的负相关趋势</p>
+                            <p>• temperature在1.0-1.2之间时，既能保持较高的相似度，又能有效降低重复率</p>
+                        </div>
+                    </div>
+
+                    <!-- 分析总结 -->
+                    <div class="panel-gradient rounded-xl p-6 card-shadow transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex items-center mb-4">
+                            <h3 class="text-lg font-semibold text-dark flex items-center">
+                                <i class="fa fa-lightbulb-o text-warning mr-2"></i>
+                                文生文场景分析总结
+                            </h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-blue-50 border-l-4 border-primary p-4 rounded-r">
+                                <h4 class="font-medium text-primary mb-2">主要发现</h4>
+                                <ul class="list-disc pl-5 text-sm space-y-1">
+                                    <li>temperature对文本重复率影响显著，对余弦相似度影响较小</li>
+                                    <li>高temperature生成的文本多样性更高，但可能导致语义偏离</li>
+                                    <li>低temperature生成的文本更符合原意，但可能存在较多重复</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-50 border-l-4 border-success p-4 rounded-r">
+                                <h4 class="font-medium text-success mb-2">建议方案</h4>
+                                <ul class="list-disc pl-5 text-sm space-y-1">
+                                    <li>需要高精度场景推荐temperature=0.8-1.0</li>
+                                    <li>创意生成场景推荐temperature=1.4-1.6</li>
+                                    <li>兼顾质量与多样性可选择temperature=1.2</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 视觉模型对比页面 -->
+            <section id="page2" class="space-y-8 hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark mb-2">视觉模型能力对比</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto">对比不同视觉模型在准确性、推理时间、连续性等方面的性能表现</p>
+                </div>
+
+                <!-- 第一行面板 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 准确性对比柱状图 -->
+                    <div class="panel-gradient rounded-xl p-6 card-shadow transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-dark flex items-center">
+                                <i class="fa fa-bar-chart text-info mr-2"></i>
+                                模型推理准确性对比
+                            </h3>
+                            <div class="bg-info/10 text-info px-3 py-1 rounded-full text-sm font-medium">
+                                性能对比
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <div id="accuracyChart" class="w-full h-full"></div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p>• doubao-1-5-thinking-vision-pro-250428在thinking模式下准确性最高(9/10)</p>
+                            <p>• 基础模型doubao-1.5-vision-pro-250328无论是否启用thinking模式准确性均为3/10</p>
+                        </div>
+                    </div>
+
+                    <!-- 推理时间对比柱状图 -->
+                    <div class="panel-gradient rounded-xl p-6 card-shadow transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-dark flex items-center">
+                                <i class="fa fa-clock-o text-warning mr-2"></i>
+                                模型推理时间对比
+                            </h3>
+                            <div class="bg-warning/10 text-warning px-3 py-1 rounded-full text-sm font-medium">
+                                效率对比
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <div id="timeChart" class="w-full h-full"></div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p>• 启用thinking模式会显著增加推理时间，尤其是doubao-1-5-thinking-vision-pro-250428(47.97秒)</p>
+                            <p>• doubao-1-5-thinking-pro-m-250428在no-thinking模式下推理最快(2.05秒)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第二行面板 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 雷达图综合对比 -->
+                    <div class="panel-gradient rounded-xl p-6 card-shadow transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-dark flex items-center">
+                                <i class="fa fa-pie-chart text-accent mr-2"></i>
+                                模型综合性能对比
+                            </h3>
+                            <div class="bg-accent/10 text-accent px-3 py-1 rounded-full text-sm font-medium">
+                                综合评估
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <div id="radarChart" class="w-full h-full"></div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p>• doubao-1-5-thinking-vision-pro-250428在各项指标上表现均衡，尤其是连续性(10/10)</p>
+                            <p>• doubao-1-5-thinking-pro-m-250428在成本控制上表现较好(4/5)</p>
+                        </div>
+                    </div>
+
+                    <!-- 模型选择建议 -->
+                    <div class="panel-gradient rounded-xl p-6 card-shadow transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex items-center mb-4">
+                            <h3 class="text-lg font-semibold text-dark flex items-center">
+                                <i class="fa fa-check-circle text-success mr-2"></i>
+                                视觉模型选择建议
+                            </h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-blue-50 border-l-4 border-primary p-4 rounded-r">
+                                <h4 class="font-medium text-primary mb-2">应用场景推荐</h4>
+                                <ul class="list-disc pl-5 text-sm space-y-1">
+                                    <li>高精度场景：doubao-1-5-thinking-vision-pro-250428(thinking模式)</li>
+                                    <li>实时性要求高场景：doubao-1-5-thinking-pro-m-250428(no-thinking模式)</li>
+                                    <li>长序列分析场景：doubao-1-5-thinking-vision-pro-250428(thinking模式)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border-l-4 border-secondary p-4 rounded-r">
+                                <h4 class="font-medium text-secondary mb-2">性能优化建议</h4>
+                                <ul class="list-disc pl-5 text-sm space-y-1">
+                                    <li>在不需要深度推理的场景下，优先使用no-thinking模式</li>
+                                    <li>对于计算资源有限的环境，推荐使用doubao-1-5-thinking-pro-m系列</li>
+                                    <li>thinking模式适合复杂任务，但需考虑其高延迟特性</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="bg-dark text-white py-6">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-sm">&copy; 2025 AI模型分析平台. 保留所有权利.</p>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">
+                            <i class="fa fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">
+                            <i class="fa fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">
+                            <i class="fa fa-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 页面切换逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            const tab1 = document.getElementById('tab1');
+            const tab2 = document.getElementById('tab2');
+            const page1 = document.getElementById('page1');
+            const page2 = document.getElementById('page2');
+
+            tab1.addEventListener('click', function(e) {
+                e.preventDefault();
+                page1.classList.remove('hidden');
+                page2.classList.add('hidden');
+                tab1.classList.add('text-accent');
+                tab2.classList.remove('text-accent');
+                // 重新渲染图表以确保正确显示
+                initCharts();
+            });
+
+            tab2.addEventListener('click', function(e) {
+                e.preventDefault();
+                page1.classList.add('hidden');
+                page2.classList.remove('hidden');
+                tab2.classList.add('text-accent');
+                tab1.classList.remove('text-accent');
+                // 重新渲染图表以确保正确显示
+                initCharts();
+            });
+
+            // 初始化图表
+            initCharts();
+        });
+
+        // 图表初始化函数
+        function initCharts() {
+            // 文生文场景图表
+            if (!document.getElementById('page1').classList.contains('hidden')) {
+                initCosineChart();
+                initRepeatChart();
+                initCombinedChart();
+            }
+
+            // 视觉模型对比图表
+            if (!document.getElementById('page2').classList.contains('hidden')) {
+                initAccuracyChart();
+                initTimeChart();
+                initRadarChart();
+            }
+        }
+
+        // 余弦相似度图表
+        function initCosineChart() {
+            const chartDom = document.getElementById('cosineChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333'
+                    },
+                    borderColor: '#ddd',
+                    borderWidth: 1,
+                    padding: 10,
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['0.2', '0.4', '0.6', '0.8', '1.0', '1.2', '1.4', '1.6', '1.8', '2.0'],
+                    axisLabel: {
+                        color: '#666',
+                        interval: 0
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 0.53,
+                    max: 0.55,
+                    splitNumber: 4,
+                    axisLabel: {
+                        color: '#666'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    }
+                },
+                series: [{
+                    name: '余弦相似度',
+                    type: 'line',
+                    data: [0.5367, 0.5428, 0.5410, 0.5403, 0.5453, 0.5427, 0.5445, 0.5383, 0.5325, 0.5324],
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#4361EE'
+                    },
+                    lineStyle: {
+                        width: 3,
+                        color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 1, y2: 0,
+                            colorStops: [{
+                                offset: 0, color: '#4361EE' // 0% 处的颜色
+                            }, {
+                                offset: 1, color: '#3A0CA3' // 100% 处的颜色
+                            }],
+                            global: false // 缺省为 false
+                        }
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 0, y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(67, 97, 238, 0.3)'
+                            }, {
+                                offset: 1, color: 'rgba(67, 97, 238, 0)'
+                            }]
+                        }
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        }
+
+        // 重复率图表
+        function initRepeatChart() {
+            const chartDom = document.getElementById('repeatChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333'
+                    },
+                    borderColor: '#ddd',
+                    borderWidth: 1,
+                    padding: 10,
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['0.2', '0.4', '0.6', '0.8', '1.0', '1.2', '1.4', '1.6', '1.8', '2.0'],
+                    axisLabel: {
+                        color: '#666',
+                        interval: 0
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 10,
+                    max: 22,
+                    splitNumber: 6,
+                    axisLabel: {
+                        color: '#666',
+                        formatter: '{value}%'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    }
+                },
+                series: [{
+                    name: '重复率',
+                    type: 'line',
+                    data: [19.93, 17.52, 17.07, 15.88, 15.80, 14.75, 14.37, 13.05, 12.80, 11.19],
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#F72585'
+                    },
+                    lineStyle: {
+                        width: 3,
+                        color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 1, y2: 0,
+                            colorStops: [{
+                                offset: 0, color: '#F72585' // 0% 处的颜色
+                            }, {
+                                offset: 1, color: '#7209B7' // 100% 处的颜色
+                            }],
+                            global: false // 缺省为 false
+                        }
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 0, y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(247, 37, 133, 0.3)'
+                            }, {
+                                offset: 1, color: 'rgba(247, 37, 133, 0)'
+                            }]
+                        }
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        }
+
+        // 综合对比图表
+        function initCombinedChart() {
+            const chartDom = document.getElementById('combinedChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333'
+                    },
+                    borderColor: '#ddd',
+                    borderWidth: 1,
+                    padding: 10,
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['0.2', '0.4', '0.6', '0.8', '1.0', '1.2', '1.4', '1.6', '1.8', '2.0'],
+                    axisLabel: {
+                        color: '#666',
+                        interval: 0
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    }
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '余弦相似度',
+                        min: 0.53,
+                        max: 0.55,
+                        splitNumber: 4,
+                        axisLabel: {
+                            color: '#666'
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#4361EE'
+                            }
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: '#eee'
+                            }
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '重复率(%)',
+                        min: 10,
+                        max: 22,
+                        splitNumber: 6,
+                        axisLabel: {
+                            color: '#666'
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#F72585'
+                            }
+                        },
+                        splitLine: {
+                            show: false
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '余弦相似度',
+                        type: 'bar',
+                        yAxisIndex: 0,
+                        data: [0.5367, 0.5428, 0.5410, 0.5403, 0.5453, 0.5427, 0.5445, 0.5383, 0.5325, 0.5324],
+                        barWidth: '40%',
+                        itemStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 0, y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: '#4361EE' // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: '#3A0CA3' // 100% 处的颜色
+                                }],
+                                global: false // 缺省为 false
+                            }
+                        }
+                    },
+                    {
+                        name: '重复率',
+                        type: 'line',
+                        yAxisIndex: 1,
+                        data: [19.93, 17.52, 17.07, 15.88, 15.80, 14.75, 14.37, 13.05, 12.80, 11.19],
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        itemStyle: {
+                            color: '#F72585'
+                        },
+                        lineStyle: {
+                            width: 3,
+                            color: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 1, y2: 0,
+                                colorStops: [{
+                                    offset: 0, color: '#F72585' // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: '#7209B7' // 100% 处的颜色
+                                }],
+                                global: false // 缺省为 false
+                            }
+                        }
+                    }
+                ]
+            };
+            
+            myChart.setOption(option);
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        }
+
+        // 准确性对比图表
+        function initAccuracyChart() {
+            const chartDom = document.getElementById('accuracyChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333'
+                    },
+                    borderColor: '#ddd',
+                    borderWidth: 1,
+                    padding: 10
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: [
+                        'doubao-1-5-thinking-vision-pro-250428(thinking)',
+                        'doubao-1-5-thinking-vision-pro-250428(no-thinking)',
+                        'doubao-1-5-thinking-pro-m-250428(thinking)',
+                        'doubao-1.5-vision-pro-250328(thinking)',
+                        'doubao-1-5-thinking-pro-m-250428(no-thinking)',
+                        'doubao-1.5-vision-pro-250328(no-thinking)'
+                    ],
+                    axisLabel: {
+                        color: '#666',
+                        rotate: 45,
+                        align: 'left',
+                        verticalAlign: 'top',
+                        fontSize: 10
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 0,
+                    max: 10,
+                    splitNumber: 5,
+                    axisLabel: {
+                        color: '#666'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    }
+                },
+                series: [{
+                    name: '推理准确性',
+                    type: 'bar',
+                    data: [9, 10, 5, 3, 3, 3],
+                    barWidth: '40%',
+                    itemStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 0, y2: 1,
+                            colorStops: [{
+                                offset: 0, color: '#4895EF' // 0% 处的颜色
+                            }, {
+                                offset: 1, color: '#3A0CA3' // 100% 处的颜色
+                            }],
+                            global: false // 缺省为 false
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        color: '#333'
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        }
+
+        // 推理时间对比图表
+        function initTimeChart() {
+            const chartDom = document.getElementById('timeChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333'
+                    },
+                    borderColor: '#ddd',
+                    borderWidth: 1,
+                    padding: 10
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: [
+                        'doubao-1-5-thinking-pro-m-250428(no-thinking)',
+                        'doubao-1.5-vision-pro-250328(no-thinking)',
+                        'doubao-1-5-thinking-vision-pro-250428(no-thinking)',
+                        'doubao-1-5-thinking-pro-m-250428(thinking)',
+                        'doubao-1.5-vision-pro-250328(thinking)',
+                        'doubao-1-5-thinking-vision-pro-250428(thinking)'
+                    ],
+                    axisLabel: {
+                        color: '#666',
+                        rotate: 45,
+                        align: 'left',
+                        verticalAlign: 'top',
+                        fontSize: 10
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 0,
+                    max: 50,
+                    splitNumber: 5,
+                    axisLabel: {
+                        color: '#666',
+                        formatter: '{value}s'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    }
+                },
+                series: [{
+                    name: '推理时间',
+                    type: 'bar',
+                    data: [2.05, 3.01, 4.96, 9.73, 19.68, 47.97],
+                    barWidth: '40%',
+                    itemStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 0, y2: 1,
+                            colorStops: [{
+                                offset: 0, color: '#F77F00' // 0% 处的颜色
+                            }, {
+                                offset: 1, color: '#E63946' // 100% 处的颜色
+                            }],
+                            global: false // 缺省为 false
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        color: '#333',
+                        formatter: function(params) {
+                            return params.value.toFixed(2) + 's';
+                        }
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        }
+
+        // 雷达图
+        function initRadarChart() {
+            const chartDom = document.getElementById('radarChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333'
+                    },
+                    borderColor: '#ddd',
+                    borderWidth: 1,
+                    padding: 10
+                },
+                radar: {
+                    indicator: [
+                        { name: '准确性', max: 10 },
+                        { name: '推理时间', max: 10 },
+                        { name: '连续性', max: 10 },
+                        { name: 'Token总数', max: 10 },
+                        { name: '成本', max: 10 }
+                    ],
+                    shape: 'circle',
+                    splitNumber: 5,
+                    axisName: {
+                        color: '#666',
+                        fontSize: 12
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ccc'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    },
+                    splitArea: {
+                        show: true,
+                        areaStyle: {
+                            color: ['rgba(255, 255, 255, 0.1)', 'rgba(240, 240, 240, 0.1)', 
+                                   'rgba(230, 230, 230, 0.1)', 'rgba(220, 220, 220, 0.1)', 
+                                   'rgba(210, 210, 210, 0.1)']
+                        }
+                    }
+                },
+                series: [{
+                    name: '模型性能对比',
+                    type: 'radar',
+                    data: [
+                        {
+                            value: [5, 5, 4, 4, 5],
+                            name: 'doubao-1-5-thinking-vision-pro-250428(no-thinking)',
+                            itemStyle: {
+                                color: '#4361EE'
+                            },
+                            areaStyle: {
+                                color: 'rgba(67, 97, 238, 0.3)'
+                            }
+                        },
+                        {
+                            value: [5, 2, 5, 5, 4],
+                            name: 'doubao-1-5-thinking-vision-pro-250428(thinking)',
+                            itemStyle: {
+                                color: '#F72585'
+                            },
+                            areaStyle: {
+                                color: 'rgba(247, 37, 133, 0.3)'
+                            }
+                        },
+                        {
+                            value: [4, 5, 3, 5, 4],
+                            name: 'doubao-1-5-thinking-pro-m-250428(thinking)',
+                            itemStyle: {
+                                color: '#4CC9F0'
+                            },
+                            areaStyle: {
+                                color: 'rgba(76, 201, 240, 0.3)'
+                            }
+                        },
+                        {
+                            value: [3, 5, 2, 4, 5],
+                            name: 'doubao-1-5-thinking-pro-m-250428(no-thinking)',
+                            itemStyle: {
+                                color: '#F77F00'
+                            },
+                            areaStyle: {
+                                color: 'rgba(247, 127, 0, 0.3)'
+                            }
+                        },
+                        {
+                            value: [3, 5, 2, 4, 5],
+                            name: 'doubao-1.5-vision-pro-250328(no-thinking)',
+                            itemStyle: {
+                                color: '#3A0CA3'
+                            },
+                            areaStyle: {
+                                color: 'rgba(58, 12, 163, 0.3)'
+                            }
+                        },
+                        {
+                            value: [3, 4, 2, 4, 4],
+                            name: 'doubao-1.5-vision-pro-250328(thinking)',
+                            itemStyle: {
+                                color: '#7209B7'
+                            },
+                            areaStyle: {
+                                color: 'rgba(114, 9, 183, 0.3)'
+                            }
+                        }
+                    ],
+                    lineStyle: {
+                        width: 2
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        }
+    </script>
+</body>
+</html>

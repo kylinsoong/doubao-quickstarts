@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据可视化工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <!-- 配置Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        neutral: '#F5F7FA',
+                        dark: '#1D2129',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: scale(1.02);
+            }
+            .progress-bar {
+                transition: width 0.5s ease;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-dark min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fa-solid fa-chart-line text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-semibold">DataViz</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex space-x-8">
+                        <a href="#upload" class="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">上传数据</a>
+                        <a href="#visualize" class="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">可视化</a>
+                        <a href="#settings" class="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200">设置</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="p-2 rounded-md text-gray-500 hover:text-primary focus:outline-none">
+                        <i class="fa-solid fa-question-circle"></i>
+                    </button>
+                    <button class="ml-4 p-2 rounded-md text-gray-500 hover:text-primary focus:outline-none">
+                        <i class="fa-solid fa-user-circle"></i>
+                    </button>
+                    <button class="ml-4 block px-4 py-2 rounded-md text-white bg-primary hover:bg-primary/90 transition-colors duration-200 shadow-sm">
+                        <i class="fa-solid fa-download mr-1"></i> 导出
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 欢迎信息 -->
+        <section class="mb-10">
+            <h1 class="text-[clamp(1.75rem,3vw,2.5rem)] font-bold text-gray-900 mb-2">数据可视化工具</h1>
+            <p class="text-gray-600 max-w-3xl">上传您的Excel或CSV文件，快速生成交互式图表和可视化报表，帮助您更好地理解和展示数据。</p>
+        </section>
+
+        <!-- 上传区域 -->
+        <section id="upload" class="mb-12">
+            <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fa-solid fa-cloud-upload text-primary mr-2"></i> 上传数据
+                </h2>
+                
+                <div id="drop-area" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors duration-200 cursor-pointer mb-6">
+                    <input type="file" id="file-input" class="hidden" accept=".xlsx,.xls,.csv">
+                    <i class="fa-solid fa-file-excel text-5xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-500 mb-2">拖放文件到此处，或</p>
+                    <button id="browse-btn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors duration-200 shadow-sm">
+                        <i class="fa-solid fa-folder-open mr-1"></i> 浏览文件
+                    </button>
+                    <p class="text-gray-400 text-sm mt-4">支持 .xlsx, .xls, .csv 格式</p>
+                </div>
+                
+                <!-- 上传进度条 -->
+                <div id="upload-progress" class="hidden mb-4">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-sm text-gray-600">上传进度</span>
+                        <span id="progress-percentage" class="text-sm font-medium text-primary">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="progress-bar" class="bg-primary h-2 rounded-full progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- 文件信息 -->
+                <div id="file-info" class="hidden mb-6">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-file-excel text-primary mr-3 text-xl"></i>
+                            <div>
+                                <p id="file-name" class="font-medium text-gray-900 truncate max-w-xs"></p>
+                                <p id="file-size" class="text-sm text-gray-500"></p>
+                            </div>
+                        </div>
+                        <button id="remove-file" class="text-gray-400 hover:text-red-500 transition-colors duration-200">
+                            <i class="fa-solid fa-times-circle"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 数据预览 -->
+                <div id="data-preview" class="hidden mt-6">
+                    <h3 class="text-lg font-medium mb-3">数据预览</h3>
+                    <div class="overflow-x-auto bg-gray-50 rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead id="table-header" class="bg-gray-100"></thead>
+                            <tbody id="table-body" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 可视化区域 -->
+        <section id="visualize" class="mb-12">
+            <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fa-solid fa-chart-pie text-primary mr-2"></i> 可视化设置
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- 图表类型选择 -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium mb-3">图表类型</h3>
+                        <div class="space-y-2" id="chart-types">
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 chart-type-option" data-type="bar">
+                                <i class="fa-solid fa-chart-bar text-primary mr-2"></i>
+                                <span>柱状图</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 chart-type-option" data-type="line">
+                                <i class="fa-solid fa-chart-line text-primary mr-2"></i>
+                                <span>折线图</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 chart-type-option" data-type="pie">
+                                <i class="fa-solid fa-chart-pie text-primary mr-2"></i>
+                                <span>饼图</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 chart-type-option" data-type="doughnut">
+                                <i class="fa-solid fa-doughnut text-primary mr-2"></i>
+                                <span>环形图</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 chart-type-option" data-type="radar">
+                                <i class="fa-solid fa-radar text-primary mr-2"></i>
+                                <span>雷达图</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据列选择 -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium mb-3">数据列</h3>
+                        <div id="column-selectors" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">X轴/类别</label>
+                                <select id="x-axis-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200">
+                                    <option value="">请选择...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Y轴/数值</label>
+                                <select id="y-axis-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200">
+                                    <option value="">请选择...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 图表选项 -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium mb-3">图表选项</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">图表标题</label>
+                                <input type="text" id="chart-title" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200" placeholder="请输入图表标题">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">颜色主题</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button class="theme-btn h-8 rounded-md bg-blue-500" data-theme="blue"></button>
+                                    <button class="theme-btn h-8 rounded-md bg-green-500" data-theme="green"></button>
+                                    <button class="theme-btn h-8 rounded-md bg-purple-500" data-theme="purple"></button>
+                                    <button class="theme-btn h-8 rounded-md bg-red-500" data-theme="red"></button>
+                                    <button class="theme-btn h-8 rounded-md bg-yellow-500" data-theme="yellow"></button>
+                                    <button class="theme-btn h-8 rounded-md bg-gray-500" data-theme="gray"></button>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="show-legend" class="h-4 w-4 text-primary focus:ring-primary/50 border-gray-300 rounded">
+                                <label for="show-legend" class="ml-2 block text-sm text-gray-700">显示图例</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="show-grid" class="h-4 w-4 text-primary focus:ring-primary/50 border-gray-300 rounded">
+                                <label for="show-grid" class="ml-2 block text-sm text-gray-700">显示网格线</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="generate-chart" class="mt-6 px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors duration-200 shadow-sm flex items-center">
+                    <i class="fa-solid fa-refresh mr-2"></i> 生成图表
+                </button>
+            </div>
+        </section>
+
+        <!-- 图表展示区域 -->
+        <section class="mb-12">
+            <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fa-solid fa-chart-area text-primary mr-2"></i> 图表展示
+                </h2>
+                
+                <div id="chart-container" class="hidden relative h-96">
+                    <canvas id="chart-canvas"></canvas>
+                </div>
+                
+                <div id="no-chart-message" class="h-96 flex items-center justify-center text-gray-400">
+                    <div class="text-center">
+                        <i class="fa-solid fa-chart-line text-5xl mb-4"></i>
+                        <p>上传数据并生成图表后将在此处显示</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 导出设置 -->
+        <section id="settings" class="mb-12">
+            <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fa-solid fa-download text-primary mr-2"></i> 导出设置
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 导出格式 -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium mb-3">导出格式</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 export-option" data-format="png">
+                                <i class="fa-solid fa-file-image text-primary mr-2"></i>
+                                <span>PNG 图片</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 export-option" data-format="jpg">
+                                <i class="fa-solid fa-file-image text-primary mr-2"></i>
+                                <span>JPG 图片</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 export-option" data-format="svg">
+                                <i class="fa-solid fa-file-code text-primary mr-2"></i>
+                                <span>SVG 矢量图</span>
+                            </div>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer transition-colors duration-200 export-option" data-format="pdf">
+                                <i class="fa-solid fa-file-pdf text-primary mr-2"></i>
+                                <span>PDF 文件</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 导出选项 -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium mb-3">导出选项</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">文件名</label>
+                                <input type="text" id="export-filename" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200" value="data-visualization">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">图片尺寸</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-xs text-gray-500">宽度 (px)</label>
+                                        <input type="number" id="export-width" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200" value="800">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-500">高度 (px)</label>
+                                        <input type="number" id="export-height" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-200" value="600">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">背景</label>
+                                <div class="flex items-center">
+                                    <input type="radio" id="bg-transparent" name="background" class="h-4 w-4 text-primary focus:ring-primary/50 border-gray-300" checked>
+                                    <label for="bg-transparent" class="ml-2 block text-sm text-gray-700">透明</label>
+                                </div>
+                                <div class="flex items-center mt-1">
+                                    <input type="radio" id="bg-white" name="background" class="h-4 w-4 text-primary focus:ring-primary/50 border-gray-300">
+                                    <label for="bg-white" class="ml-2 block text-sm text-gray-700">白色</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="export-chart" class="mt-6 px-6 py-3 bg-secondary text-white rounded-md hover:bg-secondary/90 transition-colors duration-200 shadow-sm flex items-center">
+                    <i class="fa-solid fa-download mr-2"></i> 导出图表
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-chart-line text-primary text-xl mr-2"></i>
+                        <span class="text-lg font-semibold">DataViz</span>
+                    </div>
+                    <p class="text-gray-500 text-sm mt-1">简单易用的数据可视化工具</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-primary transition-colors duration-200">
+                        <i class="fa-brands fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-primary transition-colors duration-200">
+                        <i class="fa-brands fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-primary transition-colors duration-200">
+                        <i class="fa-brands fa-linkedin text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm">© 2025 DataViz. 保留所有权利。</p>
+                
+                <div class="mt-4 md:mt-0 flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-primary text-sm transition-colors duration-200">隐私政策</a>
+                    <a href="#" class="text-gray-500 hover:text-primary text-sm transition-colors duration-200">使用条款</a>
+                    <a href="#" class="text-gray-500 hover:text-primary text-sm transition-colors duration-200">联系我们</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 通知组件 -->
+    <div id="notification" class="fixed top-4 right-4 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full opacity-0 z-50 flex items-center">
+        <i id="notification-icon" class="mr-2"></i>
+        <span id="notification-message"></span>
+        <button class="ml-4 text-gray-400 hover:text-gray-600">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+
+    <script>
+        // 全局变量
+        let data = null;
+        let chart = null;
+        let selectedTheme = 'blue';
+        
+        // DOM 元素
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const browseBtn = document.getElementById('browse-btn');
+        const uploadProgress = document.getElementById('upload-progress');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const fileInfo = document.getElementById('file-info');
+        const fileName = document.getElementById('file-name');
+        const fileSize = document.getElementById('file-size');
+        const removeFile = document.getElementById('remove-file');
+        const dataPreview = document.getElementById('data-preview');
+        const tableHeader = document.getElementById('table-header');
+        const tableBody = document.getElementById('table-body');
+        const xAxisSelect = document.getElementById('x-axis-select');
+        const yAxisSelect = document.getElementById('y-axis-select');
+        const chartTitle = document.getElementById('chart-title');
+        const showLegend = document.getElementById('show-legend');
+        const showGrid = document.getElementById('show-grid');
+        const generateChart = document.getElementById('generate-chart');
+        const chartContainer = document.getElementById('chart-container');
+        const chartCanvas = document.getElementById('chart-canvas');
+        const noChartMessage = document.getElementById('no-chart-message');
+        const exportChart = document.getElementById('export-chart');
+        const exportFilename = document.getElementById('export-filename');
+        const exportWidth = document.getElementById('export-width');
+        const exportHeight = document.getElementById('export-height');
+        const bgTransparent = document.getElementById('bg-transparent');
+        const bgWhite = document.getElementById('bg-white');
+        const navbar = document.getElementById('navbar');
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notification-message');
+        const notificationIcon = document.getElementById('notification-icon');
+        
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                navbar.classList.add('shadow-md', 'bg-white/95', 'backdrop-blur-sm');
+            } else {
+                navbar.classList.remove('shadow-md', 'bg-white/95', 'backdrop-blur-sm');
+            }
+        });
+        
+        // 文件上传相关
+        browseBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        // 拖放功能
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.classList.add('border-primary', 'bg-primary/5');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('border-primary', 'bg-primary/5');
+        }
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+        
+        // 处理文件上传
+        function handleFile(file) {
+            // 显示上传进度
+            uploadProgress.classList.remove('hidden');
+            simulateProgress();
+            
+            // 验证文件类型
+            const fileTypes = [
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel',
+                'text/csv'
+            ];
+            
+            if (!fileTypes.includes(file.type) && 
+                !file.name.endsWith('.xlsx') && 
+                !file.name.endsWith('.xls') && 
+                !file.name.endsWith('.csv')) {
+                showNotification('错误', '请上传Excel或CSV文件', 'error');
+                uploadProgress.classList.add('hidden');
+                return;
+            }
+            
+            // 读取文件
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    // 处理Excel文件
+                    if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                        const workbook = XLSX.read(e.target.result, { type: 'binary' });
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    } 
+                    // 处理CSV文件
+                    else if (file.name.endsWith('.csv')) {
+                        const text = e.target.result;
+                        const lines = text.split('\n');
+                        data = lines.map(line => line.split(','));
+                    }
+                    
+                    // 检查数据是否有效
+                    if (!data || data.length <= 1) {
+                        showNotification('错误', '文件中没有足够的数据', 'error');
+                        uploadProgress.classList.add('hidden');
+                        return;
+                    }
+                    
+                    // 更新文件信息
+                    fileName.textContent = file.name;
+                    fileSize.textContent = formatFileSize(file.size);
+                    
+                    // 显示文件信息和数据预览
+                    fileInfo.classList.remove('hidden');
+                    dataPreview.classList.remove('hidden');
+                    
+                    // 填充表格预览
+                    populateTablePreview();
+                    
+                    // 填充列选择器
+                    populateColumnSelectors();
+                    
+                    // 隐藏进度条
+                    uploadProgress.classList.add('hidden');
+                    
+                    showNotification('成功', '文件上传成功', 'success');
+                } catch (error) {
+                    console.error('Error processing file:', error);
+                    showNotification('错误', '处理文件时出错', 'error');
+                    uploadProgress.classList.add('hidden');
+                }
+            };
+            
+            reader.onerror = function() {
+                showNotification('错误', '读取文件时出错', 'error');
+                uploadProgress.classList.add('hidden');
+            };
+            
+            if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                reader.readAsBinaryString(file);
+            } else {
+                reader.readAsText(file);
+            }
+        }
+        
+        // 模拟上传进度
+        function simulateProgress() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                }
+                
+                progressBar.style.width = `${progress}%`;
+                progressPercentage.textContent = `${Math.round(progress)}%`;
+            }, 200);
+        }
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // 填充表格预览
+        function populateTablePreview() {
+            // 清空表格
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+            
+            // 添加表头
+            const headerRow = document.createElement('tr');
+            data[0].forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                th.className = 'px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider';
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+            
+            // 添加数据行（最多显示10行）
+            const rowsToDisplay = Math.min(data.length - 1, 10);
+            for (let i = 1; i <= rowsToDisplay; i++) {
+                const row = document.createElement('tr');
+                row.className = i % 2 === 0 ? 'bg-gray-50' : 'bg-white';
+                
+                data[i].forEach((cell, index) => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    td.className = 'px-4 py-3 whitespace-nowrap text-sm text-gray-500';
+                    row.appendChild(td);
+                });
+                
+                tableBody.appendChild(row);
+            }
+            
+            // 如果有更多数据，显示省略行
+            if (data.length > 11) {
+                const moreRow = document.createElement('tr');
+                const moreTd = document.createElement('td');
+                moreTd.colSpan = data[0].length;
+                moreTd.className = 'px-4 py-3 text-center text-sm text-gray-400';
+                moreTd.textContent = `... 和 ${data.length - 10} 更多行`;
+                moreRow.appendChild(moreTd);
+                tableBody.appendChild(moreRow);
+            }
+        }
+        
+        // 填充列选择器
+        function populateColumnSelectors() {
+            // 清空选择器
+            xAxisSelect.innerHTML = '<option value="">请选择...</option>';
+            yAxisSelect.innerHTML = '<option value="">请选择...</option>';
+            
+            // 添加列选项
+            data[0].forEach((column, index) => {
+                const xOption = document.createElement('option');
+                xOption.value = index;
+                xOption.textContent = column;
+                xAxisSelect.appendChild(xOption);
+                
+                const yOption = document.createElement('option');
+                yOption.value = index;
+                yOption.textContent = column;
+                yAxisSelect.appendChild(yOption);
+            });
+        }
+        
+        // 移除文件
+        removeFile.addEventListener('click', () => {
+            fileInput.value = '';
+            data = null;
+            fileInfo.classList.add('hidden');
+            dataPreview.classList.add('hidden');
+            xAxisSelect.innerHTML = '<option value="">请选择...</option>';
+            yAxisSelect.innerHTML = '<option value="">请选择...</option>';
+            
+            // 如果有图表，销毁它
+            if (chart) {
+                chart.destroy();
+                chart = null;
+                chartContainer.classList.add('hidden');
+                noChartMessage.classList.remove('hidden');
+            }
+            
+            showNotification('信息', '文件已移除', 'info');
+        });
+        
+        // 图表类型选择
+        document.querySelectorAll('.chart-type-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // 移除所有选中状态
+                document.querySelectorAll('.chart-type-option').forEach(opt => {
+                    opt.classList.remove('bg-primary/10', 'text-primary');
+                });
+                
+                // 添加选中状态
+                option.classList.add('bg-primary/10', 'text-primary');
+            });
+        });
+        
+        // 颜色主题选择
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 移除所有选中状态
+                document.querySelectorAll('.theme-btn').forEach(b => {
+                    b.classList.remove('ring-2', 'ring-offset-2');
+                });
+                
+                // 添加选中状态
+                btn.classList.add('ring-2', 'ring-offset-2', 'ring-primary');
+                
+                // 保存选中的主题
+                selectedTheme = btn.dataset.theme;
+            });
+        });
+        
+        // 生成图表
+        generateChart.addEventListener('click', () => {
+            if (!data) {
+                showNotification('错误', '请先上传数据文件', 'error');
+                return;
+            }
+            
+            const xAxisIndex = parseInt(xAxisSelect.value);
+            const yAxisIndex = parseInt(yAxisSelect.value);
+            
+            if (isNaN(xAxisIndex) || isNaN(yAxisIndex)) {
+                showNotification('错误', '请选择X轴和Y轴数据列', 'error');
+                return;
+            }
+            
+            if (xAxisIndex === yAxisIndex) {
+                showNotification('错误', 'X轴和Y轴不能选择同一列', 'error');
+                return;
+            }
+            
+            // 准备图表数据
+            const labels = [];
+            const values = [];
+            
+            // 从第2行开始，因为第1行是表头
+            for (let i = 1; i < data.length; i++) {
+                // 跳过空行
+                if (!data[i][xAxisIndex] || !data[i][yAxisIndex]) continue;
+                
+                labels.push(data[i][xAxisIndex]);
+                
+                // 尝试转换为数字
+                const value = parseFloat(data[i][yAxisIndex]);
+                values.push(isNaN(value) ? data[i][yAxisIndex] : value);
+            }
+            
+            if (labels.length === 0 || values.length === 0) {
+                showNotification('错误', '所选列中没有有效数据', 'error');
+                return;
+            }
+            
+            // 获取选中的图表类型
+            let chartType = 'bar';
+            const selectedChartType = document.querySelector('.chart-type-option.bg-primary\\/10');
+            if (selectedChartType) {
+                chartType = selectedChartType.dataset.type;
+            }
+            
+            // 准备图表配置
+            const config = {
+                type: chartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: chartTitle.value || data[0][yAxisIndex],
+                        data: values,
+                        backgroundColor: getThemeColors(labels.length),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: showLegend.checked,
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: chartTitle.value || `${data[0][yAxisIndex]} 图表`,
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1D2129',
+                            bodyColor: '#4E5969',
+                            borderColor: '#E5E6EB',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${data[0][yAxisIndex]}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: showGrid.checked,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                color: '#4E5969'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: showGrid.checked,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                color: '#4E5969',
+                                callback: function(value) {
+                                    // 格式化大数字
+                                    if (value >= 1000 && value < 1000000) {
+                                        return (value / 1000).toFixed(1) + 'k';
+                                    } else if (value >= 1000000) {
+                                        return (value / 1000000).toFixed(1) + 'M';
+                                    }
+                                    return value;
+                                }
+                            }
+                        }
+                    },
+                    animations: {
+                        tension: {
+                            duration: 1000,
+                            easing: 'linear'
+                        }
+                    }
+                }
+            };
+            
+            // 特殊配置
+            if (chartType === 'pie' || chartType === 'doughnut') {
+                delete config.options.scales;
+                config.options.cutout = chartType === 'doughnut' ? '65%' : '0%';
+            }
+            
+            // 如果已有图表，销毁它
+            if (chart) {
+                chart.destroy();
+            }
+            
+            // 创建新图表
+            chart = new Chart(chartCanvas, config);
+            
+            // 显示图表容器，隐藏无图表消息
+            chartContainer.classList.remove('hidden');
+            noChartMessage.classList.add('hidden');
+            
+            showNotification('成功', '图表生成成功', 'success');
+        });
+        
+        // 根据主题获取颜色
+        function getThemeColors(count) {
+            const themes = {
+                blue: [
+                    'rgba(22, 93, 255, 0.8)',
+                    'rgba(22, 93, 255, 0.6)',
+                    'rgba(22, 93, 255, 0.4)',
+                    'rgba(22, 93, 255, 0.3)',
+                    'rgba(22, 93, 255, 0.2)',
+                    'rgba(22, 93, 255, 0.1)'
+                ],
+                green: [
+                    'rgba(0, 191, 165, 0.8)',
+                    'rgba(0, 191, 165, 0.6)',
+                    'rgba(0, 191, 165, 0.4)',
+                    'rgba(0, 191, 165, 0.3)',
+                    'rgba(0, 191, 165, 0.2)',
+                    'rgba(0, 191, 165, 0.1)'
+                ],
+                purple: [
+                    'rgba(156, 39, 176, 0.8)',
+                    'rgba(156, 39, 176, 0.6)',
+                    'rgba(156, 39, 176, 0.4)',
+                    'rgba(156, 39, 176, 0.3)',
+                    'rgba(156, 39, 176, 0.2)',
+                    'rgba(156, 39, 176, 0.1)'
+                ],
+                red: [
+                    'rgba(255, 82, 82, 0.8)',
+                    'rgba(255, 82, 82, 0.6)',
+                    'rgba(255, 82, 82, 0.4)',
+                    'rgba(255, 82, 82, 0.3)',
+                    'rgba(255, 82, 82, 0.2)',
+                    'rgba(255, 82, 82, 0.1)'
+                ],
+                yellow: [
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(255, 193, 7, 0.6)',
+                    'rgba(255, 193, 7, 0.4)',
+                    'rgba(255, 193, 7, 0.3)',
+                    'rgba(255, 193, 7, 0.2)',
+                    'rgba(255, 193, 7, 0.1)'
+                ],
+                gray: [
+                    'rgba(108, 117, 125, 0.8)',
+                    'rgba(108, 117, 125, 0.6)',
+                    'rgba(108, 117, 125, 0.4)',
+                    'rgba(108, 117, 125, 0.3)',
+                    'rgba(108, 117, 125, 0.2)',
+                    'rgba(108, 117, 125, 0.1)'
+                ]
+            };
+            
+            const colors = themes[selectedTheme];
+            const result = [];
+            
+            for (let i = 0; i < count; i++) {
+                result.push(colors[i % colors.length]);
+            }
+            
+            return result;
+        }
+        
+        // 导出图表
+        exportChart.addEventListener
+        exportChart.addEventListener('click', () => {
+            if (!chart) {
+                showNotification('错误', '请先生成图表', 'error');
+                return;
+            }
+            
+            const format = document.querySelector('.export-option.bg-primary\\/10')?.dataset.format || 'png';
+            const filename = exportFilename.value || 'chart';
+            const width = parseInt(exportWidth.value) || 800;
+            const height = parseInt(exportHeight.value) || 600;
+            const useWhiteBackground = bgWhite.checked;
+            
+            // 创建临时canvas以指定大小导出
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // 如果需要白色背景
+            if (useWhiteBackground) {
+                tempCtx.fillStyle = 'white';
+                tempCtx.fillRect(0, 0, width, height);
+            }
+            
+            // 复制原图表到临时canvas
+            tempCtx.drawImage(chart.canvas, 0, 0, width, height);
+            
+            // 导出逻辑
+            try {
+                if (format === 'png') {
+                    download(tempCanvas.toDataURL('image/png'), `${filename}.png`, 'image/png');
+                } else if (format === 'jpg') {
+                    download(tempCanvas.toDataURL('image/jpeg', 0.95), `${filename}.jpg`, 'image/jpeg');
+                } else if (format === 'svg') {
+                    // 注意：Chart.js不直接支持导出SVG，但可以使用第三方库
+                    showNotification('提示', 'SVG导出功能需要额外的库支持', 'info');
+                } else if (format === 'pdf') {
+                    // 注意：导出PDF需要额外的库如jsPDF
+                    showNotification('提示', 'PDF导出功能需要额外的库支持', 'info');
+                }
+                
+                showNotification('成功', `图表已导出为 ${filename}.${format}`, 'success');
+            } catch (error) {
+                console.error('导出图表时出错:', error);
+                showNotification('错误', '导出图表时出错', 'error');
+            }
+        });
+        
+        // 下载文件
+        function download(dataUrl, filename, mimeType) {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // 显示通知
+        function showNotification(title, message, type) {
+            notificationMessage.textContent = `${title}: ${message}`;
+            
+            // 设置图标和样式
+            if (type === 'success') {
+                notification.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-0 opacity-100 z-50 flex items-center bg-green-50 text-green-800 border-l-4 border-green-400';
+                notificationIcon.className = 'fa-solid fa-check-circle text-green-500 mr-2';
+            } else if (type === 'error') {
+                notification.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-0 opacity-100 z-50 flex items-center bg-red-50 text-red-800 border-l-4 border-red-400';
+                notificationIcon.className = 'fa-solid fa-exclamation-circle text-red-500 mr-2';
+            } else if (type === 'info') {
+                notification.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-0 opacity-100 z-50 flex items-center bg-blue-50 text-blue-800 border-l-4 border-blue-400';
+                notificationIcon.className = 'fa-solid fa-info-circle text-blue-500 mr-2';
+            }
+            
+            // 显示通知
+            notification.style.transform = 'translateX(0)';
+            notification.style.opacity = '1';
+            
+            // 3秒后隐藏通知
+            setTimeout(() => {
+                notification.style.transform = 'translateX(calc(100% + 1rem))';
+                notification.style.opacity = '0';
+            }, 3000);
+        }
+        
+        // 默认选中第一个导出选项
+        document.querySelector('.export-option').classList.add('bg-primary/10', 'text-primary');
+        
+        // 为所有导出选项添加点击事件
+        document.querySelectorAll('.export-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // 移除所有选中状态
+                document.querySelectorAll('.export-option').forEach(opt => {
+                    opt.classList.remove('bg-primary/10', 'text-primary');
+                });
+                
+                // 添加选中状态
+                option.classList.add('bg-primary/10', 'text-primary');
+            });
+        });
+        
+        // 默认选中第一个图表类型
+        document.querySelector('.chart-type-option').classList.add('bg-primary/10', 'text-primary');
+        
+        // 默认选中第一个颜色主题
+        document.querySelector('.theme-btn').classList.add('ring-2', 'ring-offset-2', 'ring-primary');
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+    

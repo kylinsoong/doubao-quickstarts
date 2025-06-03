@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>催收坐席分析看板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        accent: '#FFAB00',
+                        danger: '#F56C6C',
+                        warning: '#E6A23C',
+                        info: '#909399',
+                        success: '#67C23A',
+                        chart1: '#7B61FF',
+                        chart2: '#36CBCB',
+                        chart3: '#00D4FF',
+                        chart4: '#FF7D00',
+                        chart5: '#FF5C93',
+                        chart6: '#91CB74',
+                        chart7: '#E0A020',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .chart-container {
+                height: 350px;
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .dashboard-header {
+                background: linear-gradient(135deg, #7B61FF 0%, #36CBCB 100%);
+            }
+            .stat-card {
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                padding: 20px;
+                position: relative;
+                overflow: hidden;
+            }
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 4px;
+                height: 100%;
+                background: var(--card-color, #165DFF);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-inter">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fa fa-bar-chart text-primary text-2xl mr-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">催收坐席分析看板</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors duration-300">
+                    <i class="fa fa-bell-o text-gray-600"></i>
+                </button>
+                <button class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors duration-300">
+                    <i class="fa fa-cog text-gray-600"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <img src="https://picsum.photos/id/1005/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                    <span class="text-gray-700 hidden md:inline">管理员</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container mx-auto px-4 pt-24 pb-12">
+        <!-- 概览卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card" style="--card-color: #7B61FF">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm">平均坐席得分</p>
+                        <h3 class="text-2xl font-bold text-gray-800 mt-1">19.5<span class="text-gray-400 text-sm ml-1">/24</span></h3>
+                        <p class="text-primary text-sm mt-2 flex items-center">
+                            <i class="fa fa-arrow-up mr-1"></i> 较上周提升 3.2%
+                        </p>
+                    </div>
+                    <div class="bg-primary/10 p-3 rounded-lg">
+                        <i class="fa fa-users text-primary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card" style="--card-color: #36CBCB">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm">客户还款率</p>
+                        <h3 class="text-2xl font-bold text-gray-800 mt-1">21.3<span class="text-gray-400 text-sm ml-1">%</span></h3>
+                        <p class="text-primary text-sm mt-2 flex items-center">
+                            <i class="fa fa-arrow-up mr-1"></i> 较上周提升 5.7%
+                        </p>
+                    </div>
+                    <div class="bg-secondary/10 p-3 rounded-lg">
+                        <i class="fa fa-credit-card text-secondary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card" style="--card-color: #FF7D00">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm">高风险客户</p>
+                        <h3 class="text-2xl font-bold text-gray-800 mt-1">18<span class="text-gray-400 text-sm ml-1">人</span></h3>
+                        <p class="text-danger text-sm mt-2 flex items-center">
+                            <i class="fa fa-arrow-up mr-1"></i> 较上周增加 2 人
+                        </p>
+                    </div>
+                    <div class="bg-accent/10 p-3 rounded-lg">
+                        <i class="fa fa-exclamation-triangle text-accent text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card" style="--card-color: #FF5C93">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500 text-sm">需再次跟进</p>
+                        <h3 class="text-2xl font-bold text-gray-800 mt-1">101<span class="text-gray-400 text-sm ml-1">人</span></h3>
+                        <p class="text-warning text-sm mt-2 flex items-center">
+                            <i class="fa fa-clock-o mr-1"></i> 占比 48.6%
+                        </p>
+                    </div>
+                    <div class="bg-danger/10 p-3 rounded-lg">
+                        <i class="fa fa-refresh text-danger text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第一行图表 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100 card-hover">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-semibold text-gray-700 flex items-center">
+                        <i class="fa fa-trophy text-chart1 mr-2"></i> 坐席排名TOP10
+                    </h3>
+                    <div class="text-xs text-gray-500">得分范围: 24-27</div>
+                </div>
+                <div class="chart-container" id="topAgentsChart"></div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100 card-hover">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-semibold text-gray-700 flex items-center">
+                        <i class="fa fa-exclamation-circle text-danger mr-2"></i> 坐席排名BOTTOM10
+                    </h3>
+                    <div class="text-xs text-gray-500">得分范围: 12-14</div>
+                </div>
+                <div class="chart-container" id="bottomAgentsChart"></div>
+            </div>
+        </div>
+        
+        <!-- 第二行图表 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100 card-hover">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-semibold text-gray-700 flex items-center">
+                        <i class="fa fa-pie-chart text-chart4 mr-2"></i> 客户还款意愿分布
+                    </h3>
+                    <div class="text-xs text-gray-500">总计: 208人</div>
+                </div>
+                <div class="chart-container" id="repaymentIntentionChart"></div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100 card-hover">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-semibold text-gray-700 flex items-center">
+                        <i class="fa fa-bar-chart text-chart5 mr-2"></i> 最佳坐席意图分析
+                    </h3>
+                    <div class="text-xs text-gray-500">TOP3意图</div>
+                </div>
+                <div class="chart-container" id="intentionAnalysisChart"></div>
+            </div>
+        </div>
+        
+        <!-- 第三行图表 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100 card-hover">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-semibold text-gray-700 flex items-center">
+                        <i class="fa fa-line-chart text-chart2 mr-2"></i> 最佳坐席能力维度
+                    </h3>
+                    <div class="text-xs text-gray-500">综合得分: 24</div>
+                </div>
+                <div class="chart-container" id="bestAgentSkillsChart"></div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100 card-hover">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-semibold text-gray-700 flex items-center">
+                        <i class="fa fa-line-chart text-danger mr-2"></i> 最差坐席能力维度
+                    </h3>
+                    <div class="text-xs text-gray-500">综合得分: 13</div>
+                </div>
+                <div class="chart-container" id="worstAgentSkillsChart"></div>
+            </div>
+        </div>
+        
+        <!-- 离线质检用户画像 -->
+        <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-gray-700 flex items-center text-lg">
+                    <i class="fa fa-user-circle-o text-primary mr-2"></i> 离线质检用户画像分析
+                </h3>
+                <button class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-sm flex items-center">
+                    <i class="fa fa-download mr-1"></i> 导出报告
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-800 mb-3 flex items-center">
+                        <i class="fa fa-star text-accent mr-2"></i> 优秀坐席特征
+                    </h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-success mt-1 mr-2"></i>
+                            <span class="text-gray-600">专业能力和意图掌控能力突出，平均得分5分</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-success mt-1 mr-2"></i>
+                            <span class="text-gray-600">情绪控制能力强，能够有效应对客户压力</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-success mt-1 mr-2"></i>
+                            <span class="text-gray-600">善于解释委托方身份及合同约束，增强还款意识</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-success mt-1 mr-2"></i>
+                            <span class="text-gray-600">能够针对客户资金压力提供合理解决方案</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-800 mb-3 flex items-center">
+                        <i class="fa fa-exclamation-triangle text-warning mr-2"></i> 待提升坐席特征
+                    </h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
+                            <span class="text-gray-600">专业能力薄弱，平均得分仅1分</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
+                            <span class="text-gray-600">情绪控制能力不足，易与客户产生冲突</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
+                            <span class="text-gray-600">催收效率低下，无法有效推动还款进程</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
+                            <span class="text-gray-600">沟通技巧欠缺，难以建立信任关系</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-800 mb-3 flex items-center">
+                        <i class="fa fa-lightbulb-o text-primary mr-2"></i> 改进建议
+                    </h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fa fa-pencil text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-600">加强专业知识培训，特别是合同条款和还款政策</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-pencil text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-600">开展情绪管理和沟通技巧专项训练</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-pencil text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-600">建立坐席帮扶机制，由优秀坐席指导待提升坐席</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-pencil text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-600">优化催收流程，针对高风险客户制定专项策略</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold">催收坐席分析系统</h2>
+                    <p class="text-gray-400 mt-1">提升催收效率，优化客户体验</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fa fa-question-circle"></i> 帮助中心
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fa fa-file-text-o"></i> 使用文档
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fa fa-envelope-o"></i> 联系我们
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400 text-sm">
+                © 2025 催收坐席分析系统. 保留所有权利.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 数据
+        const topAgents = [
+            { id: '0156', score: 27 },
+            { id: '0192', score: 27 },
+            { id: '0018', score: 25 },
+            { id: '0198', score: 25 },
+            { id: '0003', score: 24 },
+            { id: '0010', score: 24 },
+            { id: '0013', score: 24 },
+            { id: '0026', score: 24 },
+            { id: '0033', score: 24 },
+            { id: '0047', score: 24 }
+        ];
+        
+        const bottomAgents = [
+            { id: '0078', score: 14 },
+            { id: '0101', score: 14 },
+            { id: '0109', score: 14 },
+            { id: '0121', score: 14 },
+            { id: '0124', score: 14 },
+            { id: '0174', score: 14 },
+            { id: '0179', score: 14 },
+            { id: '0196', score: 14 },
+            { id: '0149', score: 13 },
+            { id: '0048', score: 12 }
+        ];
+        
+        const bestAgentSkills = {
+            '专业能力': 5,
+            '催收效率': 4,
+            '沟通技巧': 2,
+            '意图掌控': 5,
+            '情绪控制': 5,
+            '应变能力': 3,
+            '综合得分': 24
+        };
+        
+        const worstAgentSkills = {
+            '专业能力': 1,
+            '催收效率': 2,
+            '沟通技巧': 3,
+            '意图掌控': 3,
+            '情绪控制': 1,
+            '应变能力': 3,
+            '综合得分': 13
+        };
+        
+        const repaymentIntention = [
+            { name: '其他', value: 30 },
+            { name: '再次跟进', value: 101 },
+            { name: '已还款', value: 6 },
+            { name: '号码易主', value: 1 },
+            { name: '高风险', value: 18 },
+            { name: '约定时间再谈', value: 33 },
+            { name: '无还款意愿', value: 9 }
+        ];
+        
+        const intentionAnalysis = [
+            { name: '催促客户尽快处理哈罗APP第二期逾期账单还款', value: 40 },
+            { name: '解释委托方身份及案件分配情况，强调合同约束需按时还款', value: 30 },
+            { name: '说明当前资金压力大无法还款，请求延期7-8个月', value: 30 }
+        ];
+
+        // 初始化坐席排名TOP10图表
+        const initTopAgentsChart = () => {
+            const chartDom = document.getElementById('topAgentsChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                backgroundColor: '#ffffff',
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333',
+                        fontFamily: 'Inter'
+                    },
+                    formatter: function(params) {
+                        const param = params[0];
+                        return `<div class="font-bold">坐席ID: ${param.name}</div>
+                                <div>得分: ${param.value}</div>`;
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    top: '5%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    min: 23,
+                    max: 28,
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#f2f2f2'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: topAgents.map(agent => agent.id),
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e6e6e6'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    }
+                },
+                series: [{
+                    name: '得分',
+                    type: 'bar',
+                    data: topAgents.map(agent => agent.score),
+                    barWidth: '60%',
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 1, 0,
+                                [
+                                    {offset: 0, color: '#7B61FF'},
+                                    {offset: 1, color: '#36CBCB'}
+                                ]
+                            ),
+                            borderRadius: [0, 6, 6, 0]
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        color: '#333',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            return myChart;
+        };
+
+        // 初始化坐席排名BOTTOM10图表
+        const initBottomAgentsChart = () => {
+            const chartDom = document.getElementById('bottomAgentsChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                backgroundColor: '#ffffff',
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333',
+                        fontFamily: 'Inter'
+                    },
+                    formatter: function(params) {
+                        const param = params[0];
+                        return `<div class="font-bold">坐席ID: ${param.name}</div>
+                                <div>得分: ${param.value}</div>`;
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    top: '5%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    min: 10,
+                    max: 15,
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#f2f2f2'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: bottomAgents.map(agent => agent.id),
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e6e6e6'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    }
+                },
+                series: [{
+                    name: '得分',
+                    type: 'bar',
+                    data: bottomAgents.map(agent => agent.score),
+                    barWidth: '60%',
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 1, 0,
+                                [
+                                    {offset: 0, color: '#FF5C93'},
+                                    {offset: 1, color: '#FF7D00'}
+                                ]
+                            ),
+                            borderRadius: [0, 6, 6, 0]
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        color: '#333',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            return myChart;
+        };
+
+        // 初始化客户还款意愿分布图表
+        const initRepaymentIntentionChart = () => {
+            const chartDom = document.getElementById('repaymentIntentionChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                backgroundColor: '#ffffff',
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333',
+                        fontFamily: 'Inter'
+                    },
+                    formatter: '{b}: {c}人 ({d}%)'
+                },
+                legend: {
+                    type: 'scroll',
+                    orient: 'vertical',
+                    right: 10,
+                    top: 20,
+                    bottom: 20,
+                    textStyle: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    }
+                },
+                series: [{
+                    name: '客户数量',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    center: ['35%', '50%'],
+                    data: repaymentIntention,
+                    itemStyle: {
+                        borderRadius: 4,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: true,
+                        formatter: '{b}: {d}%',
+                        font: 'Inter'
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.2)'
+                        }
+                    },
+                    color: [
+                        '#7B61FF', '#36CBCB', '#00D4FF', 
+                        '#FF7D00', '#FF5C93', '#91CB74', '#E0A020'
+                    ]
+                }]
+            };
+            
+            myChart.setOption(option);
+            return myChart;
+        };
+
+        // 初始化最佳坐席意图分析图表
+        const initIntentionAnalysisChart = () => {
+            const chartDom = document.getElementById('intentionAnalysisChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                backgroundColor: '#ffffff',
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333',
+                        fontFamily: 'Inter'
+                    },
+                    formatter: function(params) {
+                        return `<div class="font-bold">${params.name}</div>
+                                <div>占比: ${params.value}%</div>`;
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    top: '5%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: intentionAnalysis.map(item => item.name),
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e6e6e6'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 10,
+                        interval: 0,
+                        rotate: 15
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '占比 (%)',
+                    nameTextStyle: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        padding: [0, 0, 0, 10]
+                    },
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#f2f2f2'
+                        }
+                    }
+                },
+                series: [{
+                    name: '占比',
+                    type: 'bar',
+                    data: intentionAnalysis.map(item => item.value),
+                    barWidth: '40%',
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: '#FF5C93'},
+                                    {offset: 1, color: '#FF7D00'}
+                                ]
+                            ),
+                            borderRadius: [6, 6, 0, 0]
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        color: '#333',
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    }
+                }]
+            };
+            
+            myChart.setOption(option);
+            return myChart;
+        };
+
+        // 初始化最佳坐席能力维度图表
+        const initBestAgentSkillsChart = () => {
+            const chartDom = document.getElementById('bestAgentSkillsChart');
+            const myChart = echarts.init(chartDom);
+            
+            // 提取技能名称和值（不包括综合得分）
+            const skillNames = Object.keys(bestAgentSkills).filter(key => key !== '综合得分');
+            const skillValues = skillNames.map(key => bestAgentSkills[key]);
+            
+            const option = {
+                backgroundColor: '#ffffff',
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333',
+                        fontFamily: 'Inter'
+                    },
+                    formatter: function(params) {
+                        const param = params[0];
+                        return `<div class="font-bold">${param.name}</div>
+                                <div>得分: ${param.value}/5</div>`;
+                    }
+                },
+                radar: {
+                    shape: 'circle',
+                    indicator: skillNames.map(name => ({
+                        name: name,
+                        max: 5,
+                        color: '#666'
+                    })),
+                    center: ['50%', '50%'],
+                    radius: '70%',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e6e6e6'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#e6e6e6'
+                        }
+                    },
+                    splitArea: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 10
+                    }
+                },
+                series: [{
+                    name: '能力维度',
+                    type: 'radar',
+                    data: [{
+                        value: skillValues,
+                        name: '最佳坐席',
+                        itemStyle: {
+                            color: '#36CBCB'
+                        },
+                        lineStyle: {
+                            width: 2
+                        },
+                        areaStyle: {
+                            opacity: 0.3,
+                            color: '#36CBCB'
+                        },
+                        symbol: 'circle',
+                        symbolSize: 6
+                    }]
+                }]
+            };
+            
+            myChart.setOption(option);
+            return myChart;
+        };
+
+        // 初始化最差坐席能力维度图表
+        const initWorstAgentSkillsChart = () => {
+            const chartDom = document.getElementById('worstAgentSkillsChart');
+            const myChart = echarts.init(chartDom);
+            
+            // 提取技能名称和值（不包括综合得分）
+            const skillNames = Object.keys(worstAgentSkills).filter(key => key !== '综合得分');
+            const skillValues = skillNames.map(key => worstAgentSkills[key]);
+            
+            const option = {
+                backgroundColor: '#ffffff',
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    textStyle: {
+                        color: '#333',
+                        fontFamily: 'Inter'
+                    },
+                    formatter: function(params) {
+                        const param = params[0];
+                        return `<div class="font-bold">${param.name}</div>
+                                <div>得分: ${param.value}/5</div>`;
+                    }
+                },
+                radar: {
+                    shape: 'circle',
+                    indicator: skillNames.map(name => ({
+                        name: name,
+                        max: 5,
+                        color: '#666'
+                    })),
+                    center: ['50%', '50%'],
+                    radius: '70%',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e6e6e6'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#e6e6e6'
+                        }
+                    },
+                    splitArea: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#666',
+                        fontFamily: 'Inter',
+                        fontSize: 10
+                    }
+                },
+                series: [{
+                    name: '能力维度',
+                    type: 'radar',
+                    data: [{
+                        value: skillValues,
+                        name: '最差坐席',
+                        itemStyle: {
+                            color: '#FF5C93'
+                        },
+                        lineStyle: {
+                            width: 2
+                        },
+                        areaStyle: {
+                            opacity: 0.3,
+                            color: '#FF5C93'
+                        },
+                        symbol: 'circle',
+                        symbolSize: 6
+                    }]
+                }]
+            };
+            
+            myChart.setOption(option);
+            return myChart;
+        };
+
+        // 页面加载完成后初始化所有图表
+        window.addEventListener('DOMContentLoaded', () => {
+            const charts = [
+                initTopAgentsChart(),
+                initBottomAgentsChart(),
+                initRepaymentIntentionChart(),
+                initIntentionAnalysisChart(),
+                initBestAgentSkillsChart(),
+                initWorstAgentSkillsChart()
+            ];
+            
+            // 图表响应式
+            window.addEventListener('resize', () => {
+                charts.forEach(chart => chart.resize());
+            });
+        });
+    </script>
+</body>
+</html>
+    
