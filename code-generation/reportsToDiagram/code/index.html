@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生产力替代</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4361EE',
+                        secondary: '#3A0CA3',
+                        accent: '#F72585',
+                        success: '#4CC9F0',
+                        warning: '#F77F00',
+                        info: '#4895EF',
+                        dark: '#1D3557',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .gradient-bg {
+                background: linear-gradient(135deg, #4361EE 0%, #3A0CA3 100%);
+            }
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .panel-gradient {
+                background: linear-gradient(145deg, #ffffff, #f0f0f0);
+                box-shadow: 5px 5px 15px #d9d9d9, -5px -5px 15px #ffffff;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-gray-800">
+    <div class="min-h-screen flex flex-col">
+        <!-- 顶部导航栏 -->
+        <header class="gradient-bg text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fa fa-bar-chart text-2xl"></i>
+                    <h1 class="text-xl md:text-2xl font-bold">报表转图表</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <!-- 大模型生产力替代元素 -->
+            <section class="space-y-8 mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-dark mb-2">大模型生产力替代</h2>
+                <p class="text-gray-600">大模型在多个领域展现出强大的生产力替代能力，通过自动化和智能化处理，提高工作效率和质量。</p>
+                <a href="https://www.volcengine.com/" class="text-primary hover:underline">了解更多</a>
+            </section>
+
+            <!-- 业务分析 -->
+            <section class="space-y-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-dark mb-2">业务分析</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="bf_reports.html" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                        <div class="flex items-center">
+                            <i class="fa fa-bank text-primary mr-2"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">股份制银行财务报表分析</h3>
+                        </div>
+                        <p class="text-gray-600">深入分析股份制银行的财务数据</p>
+                    </a>
+                    <a href="cff_reports.html" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                        <div class="flex items-center">
+                            <i class="fa fa-credit-card text-primary mr-2"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">消费金融行业分析平台</h3>
+                        </div>
+                        <p class="text-gray-600">基于2024年消费金融公司业绩数据，提供专业分析</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 技术指标 -->
+            <section class="space-y-8 mt-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-dark mb-2">技术指标</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="db_reports.html" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                        <div class="flex items-center">
+                            <i class="fa fa-line-chart text-primary mr-2"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">模型能力分析仪表盘</h3>
+                        </div>
+                        <p class="text-gray-600">分析AI模型的相关技术指标</p>
+                    </a>
+                    <a href="cf_reports.html" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                        <div class="flex items-center">
+                            <i class="fa fa-cogs text-primary mr-2"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">催收坐席分析看板</h3>
+                        </div>
+                        <p class="text-gray-600">分析相关技术指标数据</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 小工具 -->
+            <section class="space-y-8 mt-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-dark mb-2">小工具</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="t_reports.html" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                        <div class="flex items-center">
+                            <i class="fa fa-star text-primary mr-2"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">默契度测试</h3>
+                        </div>
+                        <p class="text-gray-600">提供相关工具功能</p>
+                    </a>
+                    <a href="gen_reports.html" class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                        <div class="flex items-center">
+                            <i class="fa fa-bar-chart text-primary mr-2"></i>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">数据可视化工具</h3>
+                        </div>
+                        <p class="text-gray-600">提供相关工具功能</p>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

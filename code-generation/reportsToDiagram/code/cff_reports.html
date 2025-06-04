@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>消费金融行业分析平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  
+  <!-- Tailwind 配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#722ED1',
+            accent: '#FF7D00',
+            success: '#00B42A',
+            warning: '#FF7D00',
+            danger: '#F53F3F',
+            info: '#86909C',
+            dark: '#1D2129',
+            light: '#F2F3F5'
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .card-shadow {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #165DFF 0%, #722ED1 100%);
+      }
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.7);
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    }
+  </style>
+</head>
+<body class="font-inter bg-gray-50 text-dark">
+  <!-- 顶部导航栏 -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-gray-200 transition-all duration-300">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <i class="fa fa-line-chart text-primary text-2xl mr-2"></i>
+            <span class="font-bold text-xl text-primary">消费金融行业分析平台</span>
+          </div>
+          <nav class="hidden md:ml-10 md:flex space-x-8">
+            <a href="#overview" class="text-primary border-b-2 border-primary px-1 pt-1 font-medium">概览</a>
+            <a href="#ranking" class="text-gray-500 hover:text-primary px-1 pt-1 font-medium transition-colors">排名对比</a>
+            <a href="#analysis" class="text-gray-500 hover:text-primary px-1 pt-1 font-medium transition-colors">趋势分析</a>
+            <a href="#data" class="text-gray-500 hover:text-primary px-1 pt-1 font-medium transition-colors">原始数据</a>
+          </nav>
+        </div>
+        <div class="flex items-center">
+          <button class="hidden md:block text-gray-500 hover:text-primary mr-4">
+            <i class="fa fa-search text-lg"></i>
+          </button>
+          <button class="hidden md:flex items-center text-sm font-medium text-primary hover:text-primary-dark">
+            <i class="fa fa-download mr-1"></i> 导出报告
+          </button>
+          <button class="md:hidden text-gray-500 hover:text-primary">
+            <i class="fa fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主要内容 -->
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+    <!-- 概览部分 -->
+    <section id="overview" class="mb-16">
+      <div class="text-center mb-10">
+        <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark mb-4 text-shadow">2024消费金融行业业绩分析</h1>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">基于2024年31家消费金融公司的核心财务数据，我们从多个维度进行了深入分析，为您呈现行业发展现状与趋势。</p>
+      </div>
+
+      <!-- 关键指标卡片 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div class="bg-white rounded-xl p-6 card-shadow transform hover:scale-[1.02] transition-all duration-300 border-l-4 border-primary">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-sm">行业总资产</p>
+              <h3 class="text-3xl font-bold mt-1">1.5万亿</h3>
+              <p class="text-success text-sm mt-2 flex items-center">
+                <i class="fa fa-arrow-up mr-1"></i> 同比增长12.3%
+              </p>
+            </div>
+            <div class="bg-primary/10 p-3 rounded-lg">
+              <i class="fa fa-building text-primary text-xl"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 card-shadow transform hover:scale-[1.02] transition-all duration-300 border-l-4 border-secondary">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-sm">行业总营收</p>
+              <h3 class="text-3xl font-bold mt-1">1200亿</h3>
+              <p class="text-success text-sm mt-2 flex items-center">
+                <i class="fa fa-arrow-up mr-1"></i> 同比增长8.7%
+              </p>
+            </div>
+            <div class="bg-secondary/10 p-3 rounded-lg">
+              <i class="fa fa-line-chart text-secondary text-xl"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 card-shadow transform hover:scale-[1.02] transition-all duration-300 border-l-4 border-accent">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-sm">行业净利润</p>
+              <h3 class="text-3xl font-bold mt-1">180亿</h3>
+              <p class="text-danger text-sm mt-2 flex items-center">
+                <i class="fa fa-arrow-down mr-1"></i> 同比下降5.2%
+              </p>
+            </div>
+            <div class="bg-accent/10 p-3 rounded-lg">
+              <i class="fa fa-money text-accent text-xl"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 card-shadow transform hover:scale-[1.02] transition-all duration-300 border-l-4 border-success">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-sm">平均注册资本</p>
+              <h3 class="text-3xl font-bold mt-1">32亿</h3>
+              <p class="text-success text-sm mt-2 flex items-center">
+                <i class="fa fa-arrow-up mr-1"></i> 同比增长15.8%
+              </p>
+            </div>
+            <div class="bg-success/10 p-3 rounded-lg">
+              <i class="fa fa-bank text-success text-xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 行业概览图表 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-white rounded-xl p-6 card-shadow h-[400px]">
+          <h3 class="text-lg font-semibold mb-4">行业营收分布</h3>
+          <div id="revenueChart" class="w-full h-[320px]"></div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 card-shadow h-[400px]">
+          <h3 class="text-lg font-semibold mb-4">行业利润分布</h3>
+          <div id="profitChart" class="w-full h-[320px]"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 排名对比部分 -->
+    <section id="ranking" class="mb-16">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-dark mb-4">公司排名对比</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto">从不同维度对消费金融公司进行排名，直观展示各公司在行业中的位置。</p>
+      </div>
+
+      <!-- 排名选择器 --><!-- 排名选择器 -->
+      <div class="flex flex-wrap justify-center gap-4 mb-8">
+        <button class="rank-btn bg-primary text-white px-6 py-2 rounded-full font-medium transition-all duration-300 shadow-lg" data-type="loan">贷款余额</button>
+        <button class="rank-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium transition-all duration-300 hover:bg-gray-300" data-type="revenue">营业收入</button>
+        <button class="rank-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium transition-all duration-300 hover:bg-gray-300" data-type="profit">净利润</button>
+        <button class="rank-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium transition-all duration-300 hover:bg-gray-300" data-type="assets">总资产</button>
+        <button class="rank-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium transition-all duration-300 hover:bg-gray-300" data-type="capital">注册资本</button>
+      </div>
+
+      <!-- 排名图表 -->
+      <div class="bg-white rounded-xl p-6 card-shadow h-[500px]">
+        <div id="rankingChart" class="w-full h-[420px]"></div>
+      </div>
+    </section>
+
+    <!-- 趋势分析部分 -->
+    <section id="analysis" class="mb-16">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-dark mb-4">行业趋势分析</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto">通过多维数据分析，洞察消费金融行业发展趋势与市场变化。</p>
+      </div>
+
+      <!-- 趋势图表 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-xl p-6 card-shadow h-[400px]">
+          <h3 class="text-lg font-semibold mb-4">同比增长率对比</h3>
+          <div id="growthRateChart" class="w-full h-[320px]"></div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 card-shadow h-[400px]">
+          <h3 class="text-lg font-semibold mb-4">注册资本与总资产关系</h3>
+          <div id="scatterChart" class="w-full h-[320px]"></div>
+        </div>
+      </div>
+
+      <!-- 行业总结 -->
+      <div class="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-8 card-shadow">
+        <h3 class="text-xl font-bold mb-4 text-primary">行业发展总结与趋势</h3>
+        <div class="space-y-4">
+          <p class="text-gray-700"><i class="fa fa-circle text-primary mr-2 text-sm"></i> 行业整体呈现稳健发展态势，总资产和营收保持增长，但净利润有所下滑，行业竞争加剧。</p>
+          <p class="text-gray-700"><i class="fa fa-circle text-primary mr-2 text-sm"></i> 头部公司优势明显，蚂蚁消费金融和招联消费金融在贷款余额、营收和净利润等多项指标上领先。</p>
+          <p class="text-gray-700"><i class="fa fa-circle text-primary mr-2 text-sm"></i> 部分中小消费金融公司发展迅速，如宁银消费金融、南银法巴消费金融等，贷款余额和营收同比增幅显著。</p>
+          <p class="text-gray-700"><i class="fa fa-circle text-primary mr-2 text-sm"></i> 行业分化加剧，部分公司净利润同比大幅下滑，需关注其风险管理和业务模式调整。</p>
+          <p class="text-gray-700"><i class="fa fa-circle text-primary mr-2 text-sm"></i> 注册资本与总资产、贷款规模呈现较强的正相关关系，资本实力是公司发展的重要基础。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 原始数据部分 -->
+    <section id="data">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-dark mb-4">原始数据</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto">包含31家消费金融公司的完整业绩数据，供深入分析使用。</p>
+      </div>
+
+      <!-- 数据表格 -->
+      <div class="bg-white rounded-xl overflow-hidden card-shadow">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">序号</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">公司</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">注册资本(亿)</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">贷款余额(亿)</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">贷款余额同比</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">营收(亿)</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">营收同比</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">净利润(亿)</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">利润同比</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总资产(亿)</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">资产同比</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="dataTableBody">
+              <!-- JavaScript 动态填充数据 -->
+            </tbody>
+          </table>
+        </div>
+        <div class="px-6 py-4 bg-gray-50 flex items-center justify-between border-t border-gray-200">
+          <div class="flex-1 flex justify-between sm:hidden">
+            <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              上一页
+            </button>
+            <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              下一页
+            </button>
+          </div>
+          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <p class="text-sm text-gray-700">
+                显示 <span class="font-medium">1</span> 到 <span class="font-medium">31</span> 共 <span class="font-medium">31</span> 条记录
+              </p>
+            </div>
+            <div>
+              <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                  <span class="sr-only">上一页</span>
+                  <i class="fa fa-chevron-left"></i>
+                </button>
+                <button aria-current="page" class="z-10 bg-primary text-white relative inline-flex items-center px-4 py-2 border border-primary text-sm font-medium">
+                  1
+                </button>
+                <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                  下一页
+                  <span class="sr-only">下一页</span>
+                  <i class="fa fa-chevron-right ml-1"></i>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white py-12">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">消费金融行业分析平台</h3>
+          <p class="text-gray-400 mb-4">基于2024年消费金融公司业绩数据，提供专业的行业分析与洞察。</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-weibo text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-wechat text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-linkedin text-xl"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">快速链接</h3>
+          <ul class="space-y-2">
+            <li><a href="#overview" class="text-gray-400 hover:text-white transition-colors">行业概览</a></li>
+            <li><a href="#ranking" class="text-gray-400 hover:text-white transition-colors">公司排名</a></li>
+            <li><a href="#analysis" class="text-gray-400 hover:text-white transition-colors">趋势分析</a></li>
+            <li><a href="#data" class="text-gray-400 hover:text-white transition-colors">原始数据</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">联系我们</h3>
+          <ul class="space-y-2">
+            <li class="flex items-center text-gray-400">
+              <i class="fa fa-envelope-o mr-2"></i>
+              <span>contact@financialanalysis.com</span>
+            </li>
+            <li class="flex items-center text-gray-400">
+              <i class="fa fa-phone mr-2"></i>
+              <span>400-123-4567</span>
+            </li>
+            <li class="flex items-center text-gray-400">
+              <i class="fa fa-map-marker mr-2"></i>
+              <span>北京市朝阳区金融街100号</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
+        <p>© 2024 消费金融行业分析平台. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // 消费金融公司数据
+    const financialData = [
+      { id: 1, name: '蚂蚁消费金融', capital: 230, loan: 3108, loanGrowth: 37, revenue: 152.13, revenueGrowth: 76, profit: 30.51, profitGrowth: 1907, assets: 3137.5, assetsGrowth: 31 },
+      { id: 2, name: '招联消费金融', capital: 100, loan: 1688, loanGrowth: -7, revenue: 173.18, revenueGrowth: -11.65, profit: 30.16, profitGrowth: -16.22, assets: 1637.51, assetsGrowth: -7.81 },
+      { id: 3, name: '兴业消费金融', capital: 53.2, loan: 819, loanGrowth: -5, revenue: 100.67, revenueGrowth: -10.36, profit: 4.3, profitGrowth: -79.25, assets: 821.22, assetsGrowth: -5.53 },
+      { id: 4, name: '中银消费金融', capital: 15.14, loan: 784, loanGrowth: 9, revenue: 71.62, revenueGrowth: 8.85, profit: 0.45, profitGrowth: -91.62, assets: 781.51, assetsGrowth: 6.53 },
+      { id: 5, name: '中邮消费金融', capital: 30, loan: 670, loanGrowth: 13, revenue: 75.41, revenueGrowth: 8.49, profit: 8.04, profitGrowth: 54.02, assets: 627.29, assetsGrowth: 15.47 },
+      { id: 6, name: '马上消费金融', capital: 40, loan: 615, loanGrowth: -8, revenue: 151.49, revenueGrowth: -4.09, profit: 22.81, profitGrowth: 15.01, assets: 655.6, assetsGrowth: -8 },
+      { id: 7, name: '宁银消费金融', capital: 36, loan: 590, loanGrowth: 40, revenue: 29.9, revenueGrowth: 65.96, profit: 3.03, profitGrowth: 50.17, assets: 600, assetsGrowth: 31.3 },
+      { id: 8, name: '杭银消费金融', capital: 25.6, loan: 512, loanGrowth: 4, revenue: 52.66, revenueGrowth: 8.6, profit: 9.2, profitGrowth: 14.7, assets: 515.36, assetsGrowth: -7.32 },
+      { id: 9, name: '南银法巴消费金融', capital: 52.1, loan: 508, loanGrowth: 61, revenue: 46, revenueGrowth: 75, profit: 3, profitGrowth: 173, assets: 508, assetsGrowth: 61 },
+      { id: 10, name: '平安消费金融', capital: 50, loan: 501, loanGrowth: 35, revenue: 45.19, revenueGrowth: 24.6, profit: 10.2, profitGrowth: 118.8, assets: 543.93, assetsGrowth: 31.3 },
+      { id: 11, name: '苏银凯基消费金融', capital: 42, loan: 496, loanGrowth: 38, revenue: 20.93, revenueGrowth: 18.47, profit: 5.28, profitGrowth: 35.73, assets: 512.59, assetsGrowth: 32.87 },
+      { id: 12, name: '中原消费金融', capital: 20, loan: 393, loanGrowth: 21, revenue: 35.23, revenueGrowth: 20.03, profit: 5.03, profitGrowth: 24.5, assets: 424.79, assetsGrowth: 17.5 },
+      { id: 13, name: '海尔消费金融', capital: 10.5, loan: 296, loanGrowth: 28, revenue: 18.15, revenueGrowth: 29.64, profit: 3.51, profitGrowth: 38.19, assets: 293.71, assetsGrowth: 22.77 },
+      { id: 14, name: '长银消费金融', capital: 20.9, loan: 280, loanGrowth: 10, revenue: 31.68, revenueGrowth: 27.32, profit: 4.45, profitGrowth: 21.92, assets: 299.48, assetsGrowth: 11.73 },
+      { id: 15, name: '长银五八消费金融', capital: 11.23, loan: 264, loanGrowth: 4, revenue: 29.86, revenueGrowth: -7.64, profit: 0.34, profitGrowth: -95.02, assets: 296, assetsGrowth: 8.37 },
+      { id: 16, name: '哈银消费金融', capital: 15, loan: 263, loanGrowth: 16, revenue: 13.99, revenueGrowth: 13.46, profit: 2.56, profitGrowth: 11.03, assets: 243.69, assetsGrowth: 14.01 },
+      { id: 17, name: '尚诚消费金融', capital: 16.23, loan: 233, loanGrowth: 16, revenue: null, revenueGrowth: null, profit: 1.41, profitGrowth: 5.24, assets: 236.39, assetsGrowth: 10.5 },
+      { id: 18, name: '小米消费金融', capital: 15, loan: 194, loanGrowth: 37, revenue: 6.5, revenueGrowth: null, profit: 1.15, profitGrowth: 51.32, assets: 216.8, assetsGrowth: 32.7 },
+      { id: 19, name: '湖北消费金融', capital: 10.05, loan: 165, loanGrowth: 36, revenue: null, revenueGrowth: null, profit: 1.57, profitGrowth: 24.6, assets: 188.66, assetsGrowth: 34.85 },
+      { id: 20, name: '锦程消费金融', capital: 4.2, loan: 145, loanGrowth: 28, revenue: 5.03, revenueGrowth: -3.7, profit: 0.82, profitGrowth: -49.62, assets: 124.41, assetsGrowth: 18.64 },
+      { id: 21, name: '北银消费金融', capital: 8.5, loan: 135, loanGrowth: 6, revenue: 11.47, revenueGrowth: 18.38, profit: 1.53, profitGrowth: 29.66, assets: 141.7, assetsGrowth: 8.25 },
+      { id: 22, name: '幸福消费金融', capital: 6.37, loan: 122, loanGrowth: 120, revenue: 18.53, revenueGrowth: 21.16, profit: 1.87, profitGrowth: 7.45, assets: 121.25, assetsGrowth: 15.8 },
+      { id: 23, name: '建信消费金融', capital: 72, loan: 117, loanGrowth: 52, revenue: null, revenueGrowth: null, profit: 0.1, profitGrowth: 115, assets: 125.73, assetsGrowth: 72.04 },
+      { id: 24, name: '晋商消费金融', capital: 5, loan: 108, loanGrowth: 27, revenue: null, revenueGrowth: null, profit: 0.65, profitGrowth: 116, assets: 108.31, assetsGrowth: 21 },
+      { id: 25, name: '中佑消费金融', capital: 10, loan: 107, loanGrowth: 0, revenue: null, revenueGrowth: null, profit: null, profitGrowth: null, assets: 114.14, assetsGrowth: 3.4 },
+      { id: 26, name: '阳光消费金融', capital: 10, loan: 83, loanGrowth: -15, revenue: null, revenueGrowth: null, profit: 0.58, profitGrowth: -66.08, assets: 77.83, assetsGrowth: -16.22 },
+      { id: 27, name: '盛银消费金融', capital: 3, loan: 73, loanGrowth: 26, revenue: 2.93, revenueGrowth: 20.23, profit: 0.86, profitGrowth: 4.9, assets: 79, assetsGrowth: 19.9 },
+      { id: 28, name: '蒙商消费金融', capital: 5, loan: 69.5, loanGrowth: 13, revenue: 6.08, revenueGrowth: 11.54, profit: 0.02, profitGrowth: -92.88, assets: 76.47, assetsGrowth: 22.6 },
+      { id: 29, name: '唯品富邦消费金融', capital: 10, loan: 62, loanGrowth: 32, revenue: 3.36, revenueGrowth: 75, profit: 0.68, profitGrowth: 9.68, assets: 70.39, assetsGrowth: 38.59 },
+      { id: 30, name: '金美信消费金融', capital: 5, loan: 53, loanGrowth: -5, revenue: 4.13, revenueGrowth: -0.39, profit: 0.72, profitGrowth: -9.00, assets: 63.13, assetsGrowth: 3.63 },
+      { id: 31, name: '捷信消费金融', capital: 50, loan: null, loanGrowth: null, revenue: null, revenueGrowth: null, profit: null, profitGrowth: null, assets: 48.42, assetsGrowth: null }
+    ];
+
+    // 初始化图表
+    document.addEventListener('DOMContentLoaded', function() {
+      // 行业营收分布饼图
+      const revenueChart = echarts.init(document.getElementById('revenueChart'));
+      const revenueTop5 = financialData
+        .filter(item => item.revenue !== null)
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 5);
+      const revenueOther = financialData
+        .filter(item => item.revenue !== null && !revenueTop5.includes(item))
+        .reduce((sum, item) => sum + item.revenue, 0);
+      
+      revenueChart.setOption({
+        backgroundColor: '#fff',
+        title: {
+          text: '行业营收分布',
+          left: 'center',
+          textStyle: {
+            color: '#333',
+            fontWeight: '600'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c}亿 ({d}%)'
+        },
+        series: [
+          {
+            name: '营收',
+            type: 'pie',
+            radius: ['40%', '75%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 4,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: true,
+              formatter: '{b}: {d}%'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '16',
+                fontWeight: 'bold'
+              }
+            },
+            data: [
+              ...revenueTop5.map(item => ({
+                value: item.revenue,
+                name: item.name,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                    [
+                      {offset: 0, color: `rgba(${getColor(item.id)[0]}, ${getColor(item.id)[1]}, ${getColor(item.id)[2]}, 0.8)`},
+                      {offset: 1, color: `rgba(${getColor(item.id)[0]}, ${getColor(item.id)[1]}, ${getColor(item.id)[2]}, 0.5)`}
+                    ]
+                  )
+                }
+              })),
+              {
+                value: revenueOther,
+                name: '其他',
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                    [
+                      {offset: 0, color: 'rgba(140, 140, 140, 0.8)'},
+                      {offset: 1, color: 'rgba(140, 140, 140, 0.5)'}
+                    ]
+                  )
+                }
+              }
+            ]
+          }
+        ]
+      });
+
+      // 行业利润分布饼图
+      const profitChart = echarts.init(document.getElementById('profitChart'));
+      const profitTop5 = financialData
+        .filter(item => item.profit !== null)
+        .sort((a, b) => b.profit - a.profit)
+        .slice(0, 5);
+      const profitOther = financialData
+        .filter(item => item.profit !== null && !profitTop5.includes(item))
+        .reduce((sum, item) => sum + item.profit, 0);
+      
+      profitChart.setOption({
+        backgroundColor: '#fff',
+        title: {
+          text: '行业利润分布',
+          left: 'center',
+          textStyle: {
+            color: '#333',
+            fontWeight: '600'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c}亿 ({d}%)'
+        },
+        series: [
+          {
+            name: '净利润',
+            type: 'pie',
+            radius: ['40%', '75%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 4,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: true,
+              formatter: '{b}: {d}%'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '16',
+                fontWeight: 'bold'
+              }
+            },
+            data: [
+              ...profitTop5.map(item => ({
+                value: item.profit,
+                name: item.name,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                    [
+                      {offset: 0, color: `rgba(${getColor(item.id)[0]}, ${getColor(item.id)[1]}, ${getColor(item.id)[2]}, 0.8)`},
+                      {offset: 1, color: `rgba(${getColor(item.id)[0]}, ${getColor(item.id)[1]}, ${getColor(item.id)[2]}, 0.5)`}
+                    ]
+                  )
+                }
+              })),
+              {
+                value: profitOther,
+                name: '其他',
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                    [
+                      {offset: 0, color: 'rgba(140, 140, 140, 0.8)'},
+                      {offset: 1, color: 'rgba(140, 140, 140, 0.5)'}
+                    ]
+                  )
+                }
+              }
+            ]
+          }
+        ]
+      });
+
+      // 排名图表
+      const rankingChart = echarts.init(document.getElementById('rankingChart'));
+      updateRankingChart('loan');
+      
+      // 同比增长率对比图
+      const growthRateChart = echarts.init(document.getElementById('growthRateChart'));
+      
+      const growthData = financialData
+        .filter(item => item.loanGrowth !== null && item.revenueGrowth !== null && item.profitGrowth !== null)
+        .sort((a, b) => b.loanGrowth - a.loanGrowth)
+        .slice(0, 10);
+      
+      growthRateChart.setOption({
+        backgroundColor: '#fff',
+        title: {
+          text: '同比增长率对比（前10名）',
+          left: 'center',
+          textStyle: {
+            color: '#333',
+            fontWeight: '600'
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        legend: {
+          data: ['贷款余额增长率', '营收增长率', '净利润增长率'],
+          top: '5%',
+          left: 'center'
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: growthData.map(item => item.name),
+          axisLabel: {
+            rotate: 45,
+            interval: 0
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '增长率(%)',
+          min: -100,
+          axisLabel: {
+            formatter: '{value}%'
+          }
+        },
+        series: [
+          {
+            name: '贷款余额增长率',
+            type: 'bar',
+            data: growthData.map(item => item.loanGrowth),
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  {offset: 0, color: 'rgba(22, 93, 255, 0.8)'},
+                  {offset: 1, color: 'rgba(22, 93, 255, 0.5)'}
+                ]
+              )
+            }
+          },
+          {
+            name: '营收增长率',
+            type: 'bar',
+            data: growthData.map(item => item.revenueGrowth),
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  {offset: 0, color: 'rgba(114, 46, 209, 0.8)'},
+                  {offset: 1, color: 'rgba(114, 46, 209, 0.5)'}
+                ]
+              )
+            }
+          },
+          {
+            name: '净利润增长率',
+            type: 'bar',
+            data: growthData.map(item => item.profitGrowth),
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  {offset: 0, color: 'rgba(255, 125, 0, 0.8)'},
+                  {offset: 1, color: 'rgba(255, 125, 0, 0.5)'}
+                ]
+              )
+            }
+          }
+        ]
+      });
+
+      // 注册资本与总资产关系散点图
+      const scatterChart = echarts.init(document.getElementById('scatterChart'));
+      
+      scatterChart.setOption({
+        backgroundColor: '#fff',
+        title: {
+          text: '注册资本与总资产关系',
+          left: 'center',
+          textStyle: {
+            color: '#333',
+            fontWeight: '600'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function(params) {
+            const data = params.data;
+            return `${data[2]}<br/>注册资本: ${data[0]}亿<br/>总资产: ${data[1]}亿`;
+          }
+        },
+        xAxis: {
+          type: 'value',
+          name: '注册资本(亿)',
+          min: 0,
+          axisLabel: {
+            formatter: '{value}亿'
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '总资产(亿)',
+          min: 0,
+          axisLabel: {
+            formatter: '{value}亿'
+          }
+        },
+        series: [
+          {
+            name: '公司',
+            type: 'scatter',
+            data: financialData
+              .filter(item => item.capital !== null && item.assets !== null)
+              .map(item => [item.capital, item.assets, item.name]),
+            symbolSize: function(data) {
+              return Math.sqrt(data[0] * 5);
+            },
+            itemStyle: {
+              color: function(params) {
+                const id = financialData.findIndex(item => item.name === params.data[2]) + 1;
+                return new echarts.graphic.LinearGradient(
+                  0, 0, 0, 1,
+                  [
+                    {offset: 0, color: `rgba(${getColor(id)[0]}, ${getColor(id)[1]}, ${getColor(id)[2]}, 0.8)`},
+                    {offset: 1, color: `rgba(${getColor(id)[0]}, ${getColor(id)[1]}, ${getColor(id)[2]}, 0.5)`}
+                  ]
+                );
+              }
+            }
+          }
+        ]
+      });
+
+      // 填充数据表格
+      const tableBody = document.getElementById('dataTableBody');
+      financialData.forEach(item => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50 transition-colors';
+        
+        row.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.id}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.name}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.capital || '-'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.loan || '-'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm ${item.loanGrowth >= 0 ? 'text-green-600' : 'text-red-600'}">
+            ${item.loanGrowth !== null ? (item.loanGrowth >= 0 ? '+' : '') + item.loanGrowth + '%' : '-'}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.revenue !== null ? item.revenue.toFixed(2) : '-'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm ${item.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'}">
+            ${item.revenueGrowth !== null ? (item.revenueGrowth >= 0 ? '+' : '') + item.revenueGrowth.toFixed(2) + '%' : '-'}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.profit !== null ? item.profit.toFixed(2) : '-'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm ${item.profitGrowth >= 0 ? 'text-green-600' : 'text-red-600'}">
+            ${item.profitGrowth !== null ? (item.profitGrowth >= 0 ? '+' : '') + item.profitGrowth.toFixed(2) + '%' : '-'}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.assets !== null ? item.assets.toFixed(2) : '-'}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm ${item.assetsGrowth >= 0 ? 'text-green-600' : 'text-red-600'}">
+            ${item.assetsGrowth !== null ? (item.assetsGrowth >= 0 ? '+' : '') + item.assetsGrowth.toFixed(2) + '%' : '-'}
+          </td>
+        `;
+        
+        tableBody.appendChild(row);
+      });
+
+      // 排名按钮事件
+      document.querySelectorAll('.rank-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          // 移除所有按钮的活动状态
+          document.querySelectorAll('.rank-btn').forEach(b => {
+            b.classList.remove('bg-primary', 'text-white', 'shadow-lg');
+            b.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+          });
+          
+          // 添加当前按钮的活动状态
+          this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+          this.classList.add('bg-primary', 'text-white', 'shadow-lg');
+          
+          // 更新图表
+          updateRankingChart(this.dataset.type);
+        });
+      });
+
+      // 窗口大小变化时重绘图表
+      window.addEventListener('resize', function() {
+        revenueChart.resize();
+        profitChart.resize();
+        rankingChart.resize();
+        growthRateChart.resize();
+        scatterChart.resize();
+      });
+    });
+
+    // 更新排名图表
+    function updateRankingChart(type) {
+      const rankingChart = echarts.init(document.getElementById('rankingChart'));
+      let title, dataKey, unit, sortOrder;
+      
+      switch(type) {
+        case 'loan':
+          title = '贷款余额排名';
+          dataKey = 'loan';
+          unit = '亿';
+          sortOrder = 'desc';
+          break;
+        case 'revenue':
+          title = '营业收入排名';
+          dataKey = 'revenue';
+          unit = '亿';
+          sortOrder = 'desc';
+          break;
+        case 'profit':
+          title = '净利润排名';
+          dataKey = 'profit';
+          unit = '亿';
+          sortOrder = 'desc';
+          break;
+        case 'assets':
+          title = '总资产排名';
+          dataKey = 'assets';
+          unit = '亿';
+          sortOrder = 'desc';
+          break;
+        case 'capital':
+          title = '注册资本排名';
+          dataKey = 'capital';
+          unit = '亿';
+          sortOrder = 'desc';
+          break;
+        default:
+          title = '贷款余额排名';
+          dataKey = 'loan';
+          unit = '亿';
+          sortOrder = 'desc';
+      }
+      
+      // 过滤数据并排序
+      let filteredData = financialData
+        .filter(item => item[dataKey] !== null)
+        .sort((a, b) => sortOrder === 'desc' ? b[dataKey] - a[dataKey] : a[dataKey] - b[dataKey])
+        .slice(0, 15);
+      
+      // 创建图表配置
+      rankingChart.setOption({
+        backgroundColor: '#fff',
+        title: {
+          text: title,
+          left: 'center',
+          textStyle: {
+            color: '#333',
+            fontWeight: '600'
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          },
+          formatter: function(params) {
+            const param = params[0];
+            return `${param.name}<br/>${title}: ${param.value}${unit}`;
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value',
+          boundaryGap: [0, 0.01],
+          axisLabel: {
+            formatter: function(value) {
+              return value + unit;
+            }
+          }
+        },
+        yAxis: {
+          type: 'category',
+          data: filteredData.map(item => item.name),
+          axisLabel: {
+            interval: 0,
+            rotate: 0
+          }
+        },
+        series: [
+          {
+            name: title,
+            type: 'bar',
+            data: filteredData.map(item => item[dataKey]),
+            itemStyle: {
+              color: function(params) {
+                return new echarts.graphic.LinearGradient(
+                  1, 0, 0, 0,
+                  [
+                    {offset: 0, color: `rgba(${getColor(filteredData[params.dataIndex].id)[0]}, ${getColor(filteredData[params.dataIndex].id)[1]}, ${getColor(filteredData[params.dataIndex].id)[2]}, 0.5)`},
+                    {offset: 1, color: `rgba(${getColor(filteredData[params.dataIndex].id)[0]}, ${getColor(filteredData[params.dataIndex].id)[1]}, ${getColor(filteredData[params.dataIndex].id)[2]}, 0.8)`}
+                  ]
+                );
+              }
+            },
+            label: {
+              show: true,
+              position: 'right',
+              formatter: function(params) {
+                return params.value + unit;
+              }
+            }
+          }
+        ]
+      });
+    }
+
+    // 生成颜色
+    function getColor(index) {
+      const colors = [
+        [22, 93, 255],    // primary
+        [114, 46, 209],   // secondary
+        [255, 125, 0],    // accent
+        [0, 180, 42],     // success
+        [245, 63, 63],    // danger
+        [134, 144, 156],  // info
+        [29, 33, 41],     // dark
+        [102, 16, 242],   // purple
+        [255, 77, 79],    // red
+        [0, 204, 153],    // teal
+        [255, 153, 0],    // orange
+        [51, 102, 255],   // blue
+        [230, 0, 115],    // pink
+        [102, 178, 255],  // light blue
+        [255, 204, 102],  // light orange
+        [153, 204, 255],  // very light blue
+        [255, 178, 102],  // peach
+        [179, 204, 255],  // pale blue
+        [255, 153, 153],  // salmon
+        [153, 255, 204],  // mint
+        [255, 204, 204],  // light pink
+        [204, 229, 255],  // very pale blue
+        [255, 229, 204],  // very light peach
+        [204, 255, 204],  // very light green
+        [229, 204, 255],  // lavender
+        [255, 204, 229],  // very light pink
+        [204, 255, 255],  // very light teal
+        [255, 255, 204],  // very light yellow
+        [230, 230, 250],  // lavender blush
+        [240, 248, 255],  // alice blue
+        [245, 245, 220],  // beige
+        [240, 255, 240],  // honeydew
+        [255, 240, 245],  // linen
+        [255, 250, 240],  // ivory
+        [250, 240, 230],  // antique white
+        [250, 235, 215],  // wheat
+        [255, 250, 250],  // snow
+        [245, 245, 245],  // whitesmoke
+        [220, 220, 220]   // gainsboro
+      ];
+      
+      return colors[index % colors.length];
+    }
+  </script>
+</body>
+</html>
+    

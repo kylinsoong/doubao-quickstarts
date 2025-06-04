@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>默契度测试工具</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  
+  <!-- Tailwind 配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4F46E5', // 主色调：紫色，代表默契和情感连接
+            secondary: '#EC4899', // 辅助色：粉色，增加温暖感
+            accent: '#10B981', // 强调色：绿色，用于成功和积极反馈
+            neutral: {
+              100: '#F3F4F6',
+              200: '#E5E7EB',
+              700: '#374151',
+              800: '#1F2937',
+              900: '#111827'
+            }
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-up': 'slideUp 0.5s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .progress-bar {
+        transition: width 1.5s ease-in-out;
+      }
+    }
+  </style>
+</head>
+<body class="font-inter bg-gradient-to-br from-neutral-100 to-neutral-200 min-h-screen">
+  <!-- 导航栏 -->
+  <nav class="bg-white/80 backdrop-blur-md shadow-sm fixed top-0 w-full z-50 transition-all duration-300" id="navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <span class="text-primary text-2xl font-bold flex items-center">
+            <i class="fa fa-heartbeat mr-2 text-secondary"></i>
+            <span>默契度测试</span>
+          </span>
+        </div>
+        <div class="flex items-center">
+          <button id="helpBtn" class="text-neutral-700 hover:text-primary transition-colors duration-200">
+            <i class="fa fa-question-circle text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主要内容 -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+    <!-- 介绍卡片 -->
+    <section id="intro" class="animate-fade-in">
+      <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-10 card-hover">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <div class="w-full md:w-1/2">
+            <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-neutral-800 leading-tight text-shadow">
+              测试你们的<br><span class="text-primary">心灵契合度</span>
+            </h1>
+            <p class="mt-4 text-lg text-neutral-700 max-w-xl">
+              通过回答一系列问题，看看你和TA的想法有多接近。这是一个有趣的方式来发现你们之间的默契程度！
+            </p>
+            <div class="mt-8 flex flex-wrap gap-4">
+              <button id="startBtn" class="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center">
+                <i class="fa fa-play-circle mr-2"></i>
+                开始测试
+              </button>
+              <button id="sampleBtn" class="px-8 py-3 bg-white hover:bg-neutral-100 text-primary border border-primary rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+                <i class="fa fa-eye mr-2"></i>
+                查看示例
+              </button>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 flex justify-center">
+            <div class="relative">
+              <div class="w-64 h-64 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 animate-pulse-slow"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fa fa-handshake text-[clamp(5rem,15vw,8rem)] text-primary/80"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 测试设置 -->
+    <section id="settings" class="hidden animate-fade-in">
+      <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-10">
+        <h2 class="text-2xl font-bold text-neutral-800 mb-6">设置测试</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="player1" class="block text-sm font-medium text-neutral-700 mb-1">参与者 1 名称</label>
+            <input type="text" id="player1" name="player1" value="你" class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200" placeholder="输入你的名字">
+          </div>
+          
+          <div>
+            <label for="player2" class="block text-sm font-medium text-neutral-700 mb-1">参与者 2 名称</label>
+            <input type="text" id="player2" name="player2" value="TA" class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200" placeholder="输入TA的名字">
+          </div>
+          
+          <div>
+            <label for="category" class="block text-sm font-medium text-neutral-700 mb-1">问题类别</label>
+            <select id="category" name="category" class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200">
+              <option value="all">所有类别</option>
+              <option value="food">美食偏好</option>
+              <option value="hobby">兴趣爱好</option>
+              <option value="movie">影视音乐</option>
+              <option value="life">生活习惯</option>
+              <option value="future">未来规划</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="numQuestions" class="block text-sm font-medium text-neutral-700 mb-1">问题数量</label>
+            <select id="numQuestions" name="numQuestions" class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200">
+              <option value="5">5 个问题</option>
+              <option value="10" selected>10 个问题</option>
+              <option value="15">15 个问题</option>
+              <option value="20">20 个问题</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="mt-8 flex justify-end">
+          <button id="backFromSettingsBtn" class="px-6 py-2 bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-300 rounded-full shadow-sm hover:shadow-md transition-all duration-200 mr-3">
+            返回
+          </button>
+          <button id="startTestBtn" class="px-8 py-2 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+            开始答题
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 测试区域 -->
+    <section id="testArea" class="hidden">
+      <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-10">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-neutral-800" id="questionNumber">问题 1/10</h2>
+          <div class="text-sm text-neutral-600" id="timer">
+            <i class="fa fa-clock-o mr-1"></i> <span id="timeRemaining">00:00</span>
+          </div>
+        </div>
+        
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-neutral-800 mb-4" id="questionText">你最喜欢的颜色是什么？</h3>
+          
+          <div id="answersContainer" class="space-y-3">
+            <div class="flex items-center">
+              <input type="radio" id="answer1" name="question" value="answer1" class="w-5 h-5 text-primary focus:ring-primary border-neutral-300">
+              <label for="answer1" class="ml-3 text-neutral-700">红色</label>
+            </div>
+            <div class="flex items-center">
+              <input type="radio" id="answer2" name="question" value="answer2" class="w-5 h-5 text-primary focus:ring-primary border-neutral-300">
+              <label for="answer2" class="ml-3 text-neutral-700">蓝色</label>
+            </div>
+            <div class="flex items-center">
+              <input type="radio" id="answer3" name="question" value="answer3" class="w-5 h-5 text-primary focus:ring-primary border-neutral-300">
+              <label for="answer3" class="ml-3 text-neutral-700">绿色</label>
+            </div>
+            <div class="flex items-center">
+              <input type="radio" id="answer4" name="question" value="answer4" class="w-5 h-5 text-primary focus:ring-primary border-neutral-300">
+              <label for="answer4" class="ml-3 text-neutral-700">黄色</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex justify-between">
+          <button id="prevQuestionBtn" class="px-6 py-2 bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-300 rounded-full shadow-sm hover:shadow-md transition-all duration-200 flex items-center opacity-50 cursor-not-allowed" disabled>
+            <i class="fa fa-arrow-left mr-2"></i> 上一题
+          </button>
+          <button id="nextQuestionBtn" class="px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center">
+            下一题 <i class="fa fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 结果展示 -->
+    <section id="results" class="hidden animate-fade-in">
+      <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-10">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-neutral-800 mb-2">测试结果</h2>
+          <p class="text-neutral-600" id="testSummary">你和TA完成了10个问题的测试</p>
+        </div>
+        
+        <div class="flex flex-col md:flex-row gap-8 mb-10">
+          <div class="w-full md:w-1/2 flex flex-col items-center justify-center">
+            <div class="relative w-64 h-64">
+              <div class="w-full h-full rounded-full bg-neutral-100 flex items-center justify-center">
+                <div class="text-center">
+                  <span id="matchPercentage" class="text-5xl font-bold text-primary">85%</span>
+                  <p class="text-neutral-600">默契度</p>
+                </div>
+              </div>
+              <div class="absolute inset-0">
+                <svg class="w-full h-full" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#E5E7EB" stroke-width="8" />
+                  <circle id="progressCircle" cx="50" cy="50" r="45" fill="none" stroke="#4F46E5" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="42.45" transform="rotate(-90 50 50)" />
+                </svg>
+              </div>
+            </div>
+            
+            <div class="mt-6 text-center">
+              <h3 id="resultDescription" class="text-xl font-semibold text-neutral-800">心灵相通</h3>
+              <p class="text-neutral-600 mt-2">你们的想法非常接近，彼此之间有着深厚的理解。</p>
+            </div>
+          </div>
+          
+          <div class="w-full md:w-1/2">
+            <div class="bg-neutral-50 rounded-xl p-6">
+              <h3 class="text-lg font-semibold text-neutral-800 mb-4">答题统计</h3>
+              
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-neutral-700">完全匹配</span>
+                    <span class="text-sm font-medium text-accent">7/10</span>
+                  </div>
+                  <div class="w-full bg-neutral-200 rounded-full h-2">
+                    <div class="bg-accent h-2 rounded-full progress-bar" style="width: 70%"><div class="bg-accent h-2 rounded-full progress-bar" style="width: 70%"></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-neutral-700">部分匹配</span>
+                    <span class="text-sm font-medium text-secondary">2/10</span>
+                  </div>
+                  <div class="w-full bg-neutral-200 rounded-full h-2">
+                    <div class="bg-secondary h-2 rounded-full progress-bar" style="width: 20%"></div>
+                  </div>
+                </div>
+                
+                
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-neutral-700">不匹配</span>
+                    <span class="text-sm font-medium text-red-500">1/10</span>
+                  </div>
+                  <div class="w-full bg-neutral-200 rounded-full h-2">
+                    <div class="bg-red-500 h-2 rounded-full progress-bar" style="width: 10%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-neutral-800 mb-4">详细对比</h3>
+          
+          <div id="comparisonTable" class="space-y-4">
+            <!-- 对比项将通过JavaScript动态生成 -->
+          </div>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-4">
+          <button id="restartBtn" class="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center">
+            <i class="fa fa-refresh mr-2"></i>
+            重新测试
+          </button>
+          <button id="shareBtn" class="px-8 py-3 bg-white hover:bg-neutral-100 text-primary border border-primary rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+            <i class="fa fa-share-alt mr-2"></i>
+            分享结果
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 示例结果 -->
+    <section id="sampleResult" class="hidden animate-fade-in">
+      <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-10">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-neutral-800 mb-2">示例结果</h2>
+          <p class="text-neutral-600">这是一个默契度测试的示例结果</p>
+        </div>
+        
+        <div class="flex flex-col md:flex-row gap-8 mb-10">
+          <div class="w-full md:w-1/2 flex flex-col items-center justify-center">
+            <div class="relative w-64 h-64">
+              <div class="w-full h-full rounded-full bg-neutral-100 flex items-center justify-center">
+                <div class="text-center">
+                  <span class="text-5xl font-bold text-primary">90%</span>
+                  <p class="text-neutral-600">默契度</p>
+                </div>
+              </div>
+              <div class="absolute inset-0">
+                <svg class="w-full h-full" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#E5E7EB" stroke-width="8" />
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#4F46E5" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="28.3" transform="rotate(-90 50 50)" />
+                </svg>
+              </div>
+            </div>
+            
+            <div class="mt-6 text-center">
+              <h3 class="text-xl font-semibold text-neutral-800">天作之合</h3>
+              <p class="text-neutral-600 mt-2">你们的想法几乎完全一致，就像一个人一样！</p>
+            </div>
+          </div>
+          
+          <div class="w-full md:w-1/2">
+            <div class="bg-neutral-50 rounded-xl p-6">
+              <h3 class="text-lg font-semibold text-neutral-800 mb-4">答题统计</h3>
+              
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-neutral-700">完全匹配</span>
+                    <span class="text-sm font-medium text-accent">8/10</span>
+                  </div>
+                  <div class="w-full bg-neutral-200 rounded-full h-2">
+                    <div class="bg-accent h-2 rounded-full" style="width: 80%"></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-neutral-700">部分匹配</span>
+                    <span class="text-sm font-medium text-secondary">1/10</span>
+                  </div>
+                  <div class="w-full bg-neutral-200 rounded-full h-2">
+                    <div class="bg-secondary h-2 rounded-full" style="width: 10%"></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm text-neutral-700">不匹配</span>
+                    <span class="text-sm font-medium text-red-500">1/10</span>
+                  </div>
+                  <div class="w-full bg-neutral-200 rounded-full h-2">
+                    <div class="bg-red-500 h-2 rounded-full" style="width: 10%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-neutral-800 mb-4">示例问题对比</h3>
+          
+          <div class="space-y-4">
+            <div class="bg-neutral-50 rounded-lg p-4">
+              <div class="flex justify-between mb-2">
+                <h4 class="font-medium text-neutral-800">你们最喜欢的季节是什么？</h4>
+                <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">完全匹配</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-3 rounded-lg border-l-4 border-primary">
+                  <p class="text-sm text-neutral-500 mb-1">参与者 1</p>
+                  <p class="font-medium">秋天</p>
+                </div>
+                <div class="bg-white p-3 rounded-lg border-l-4 border-primary">
+                  <p class="text-sm text-neutral-500 mb-1">参与者 2</p>
+                  <p class="font-medium">秋天</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-neutral-50 rounded-lg p-4">
+              <div class="flex justify-between mb-2">
+                <h4 class="font-medium text-neutral-800">你们理想的周末活动是什么？</h4>
+                <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">部分匹配</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-3 rounded-lg border-l-4 border-secondary">
+                  <p class="text-sm text-neutral-500 mb-1">参与者 1</p>
+                  <p class="font-medium">看电影和朋友聚餐</p>
+                </div>
+                <div class="bg-white p-3 rounded-lg border-l-4 border-secondary">
+                  <p class="text-sm text-neutral-500 mb-1">参与者 2</p>
+                  <p class="font-medium">在家读书和看电影</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-neutral-50 rounded-lg p-4">
+              <div class="flex justify-between mb-2">
+                <h4 class="font-medium text-neutral-800">你们最喜欢的食物是什么？</h4>
+                <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">不匹配</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-3 rounded-lg border-l-4 border-red-500">
+                  <p class="text-sm text-neutral-500 mb-1">参与者 1</p>
+                  <p class="font-medium">意大利面</p>
+                </div>
+                <div class="bg-white p-3 rounded-lg border-l-4 border-red-500">
+                  <p class="text-sm text-neutral-500 mb-1">参与者 2</p>
+                  <p class="font-medium">寿司</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex justify-center">
+          <button id="backFromSampleBtn" class="px-8 py-3 bg-white hover:bg-neutral-100 text-primary border border-primary rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+            <i class="fa fa-arrow-left mr-2"></i>
+            返回
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-neutral-800 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <span class="text-2xl font-bold flex items-center">
+            <i class="fa fa-heartbeat mr-2 text-secondary"></i>
+            <span>默契度测试</span>
+          </span>
+          <p class="mt-2 text-neutral-400">发现你和TA之间的心灵契合度</p>
+        </div>
+        
+        <div class="flex space-x-6">
+          <a href="#" class="text-neutral-400 hover:text-white transition-colors duration-200">
+            <i class="fa fa-facebook"></i>
+          </a>
+          <a href="#" class="text-neutral-400 hover:text-white transition-colors duration-200">
+            <i class="fa fa-twitter"></i>
+          </a>
+          <a href="#" class="text-neutral-400 hover:text-white transition-colors duration-200">
+            <i class="fa fa-instagram"></i>
+          </a>
+          <a href="#" class="text-neutral-400 hover:text-white transition-colors duration-200">
+            <i class="fa fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="mt-8 pt-8 border-t border-neutral-700 text-center text-neutral-400 text-sm">
+        <p>© 2025 默契度测试工具. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 帮助模态框 -->
+  <div id="helpModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
+      <div class="p-6 border-b border-neutral-200">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xl font-bold text-neutral-800">如何使用默契度测试工具</h3>
+          <button id="closeHelpBtn" class="text-neutral-500 hover:text-neutral-800">
+            <i class="fa fa-times text-xl"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="p-6">
+        <div class="space-y-4">
+          <div>
+            <h4 class="font-semibold text-neutral-800 mb-2">1. 设置测试</h4>
+            <p class="text-neutral-600">输入你和TA的名字，选择问题类别和数量，然后点击"开始答题"。</p>
+          </div>
+          
+          <div>
+            <h4 class="font-semibold text-neutral-800 mb-2">2. 单独答题</h4>
+            <p class="text-neutral-600">你们需要分别在不同的设备上回答相同的问题，不要互相交流答案。</p>
+          </div>
+          
+          <div>
+            <h4 class="font-semibold text-neutral-800 mb-2">3. 提交答案</h4>
+            <p class="text-neutral-600">完成所有问题后，系统会自动比较你们的答案并计算默契度。</p>
+          </div>
+          
+          <div>
+            <h4 class="font-semibold text-neutral-800 mb-2">4. 查看结果</h4>
+            <p class="text-neutral-600">结果页面会显示你们的默契度得分、详细对比和匹配程度的评价。</p>
+          </div>
+          
+          <div class="mt-6">
+            <h4 class="font-semibold text-neutral-800 mb-2">常见问题</h4>
+            
+            <div class="space-y-3">
+              <div class="bg-neutral-50 p-4 rounded-lg">
+                <h5 class="font-medium text-neutral-800 mb-1">我们可以一起在同一设备上答题吗？</h5>
+                <p class="text-neutral-600 text-sm">为了获得最准确的结果，建议你们分别在不同的设备上独立答题，避免互相影响。</p>
+              </div>
+              
+              <div class="bg-neutral-50 p-4 rounded-lg">
+                <h5 class="font-medium text-neutral-800 mb-1">测试结果准确吗？</h5>
+                <p class="text-neutral-600 text-sm">这个测试主要用于娱乐，结果仅供参考，不能完全代表你们之间的真实默契程度。</p>
+              </div>
+              
+              <div class="bg-neutral-50 p-4 rounded-lg">
+                <h5 class="font-medium text-neutral-800 mb-1">我可以保存或分享测试结果吗？</h5>
+                <p class="text-neutral-600 text-sm">是的，测试结束后，你可以点击"分享结果"按钮将结果分享给朋友或保存到本地。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="p-6 border-t border-neutral-200 flex justify-end">
+        <button id="closeHelpBtn2" class="px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-200">
+          明白了
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 问题库
+    const questions = [
+      {
+        id: 1,
+        category: "food",
+        text: "你最喜欢的食物是什么？",
+        options: [
+          "意大利面",
+          "寿司",
+          "披萨",
+          "火锅"
+        ]
+      },
+      {
+        id: 2,
+        category: "hobby",
+        text: "你最喜欢的业余活动是什么？",
+        options: [
+          "阅读",
+          "运动",
+          "看电影",
+          "旅行"
+        ]
+      },
+      {
+        id: 3,
+        category: "movie",
+        text: "你最喜欢的电影类型是什么？",
+        options: [
+          "动作片",
+          "科幻片",
+          "喜剧片",
+          "爱情片"
+        ]
+      },
+      {
+        id: 4,
+        category: "life",
+        text: "你更喜欢哪种度假方式？",
+        options: [
+          "海滩度假",
+          "城市观光",
+          "乡村体验",
+          "冒险旅行"
+        ]
+      },
+      {
+        id: 5,
+        category: "future",
+        text: "你理想中的退休生活是什么样的？",
+        options: [
+          "住在海边的小屋里",
+          "环游世界",
+          "和家人在一起",
+          "继续工作或学习"
+        ]
+      },
+      {
+        id: 6,
+        category: "food",
+        text: "你最喜欢的甜点是什么？",
+        options: [
+          "巧克力蛋糕",
+          "冰淇淋",
+          "芝士蛋糕",
+          "水果沙拉"
+        ]
+      },
+      {
+        id: 7,
+        category: "hobby",
+        text: "你最喜欢的季节是什么？",
+        options: [
+          "春天",
+          "夏天",
+          "秋天",
+          "冬天"
+        ]
+      },
+      {
+        id: 8,
+        category: "movie",
+        text: "你最喜欢的音乐类型是什么？",
+        options: [
+          "流行音乐",
+          "摇滚音乐",
+          "古典音乐",
+          "电子音乐"
+        ]
+      },
+      {
+        id: 9,
+        category: "life",
+        text: "你更喜欢早起还是晚睡？",
+        options: [
+          "早起的鸟儿",
+          "夜猫子",
+          "视情况而定",
+          "我睡眠时间很少"
+        ]
+      },
+      {
+        id: 10,
+        category: "future",
+        text: "你理想的周末活动是什么？",
+        options: [
+          "在家放松",
+          "和朋友聚会",
+          "参加户外活动",
+          "尝试新的餐厅"
+        ]
+      },
+      {
+        id: 11,
+        category: "food",
+        text: "你最喜欢的早餐是什么？",
+        options: [
+          "煎蛋和培根",
+          "麦片和水果",
+          "面包和咖啡",
+          "中式早餐"
+        ]
+      },
+      {
+        id: 12,
+        category: "hobby",
+        text: "你最喜欢的运动是什么？",
+        options: [
+          "足球",
+          "篮球",
+          "网球",
+          "游泳"
+        ]
+      },
+      {
+        id: 13,
+        category: "movie",
+        text: "你最喜欢的演员是谁？",
+        options: [
+          "莱昂纳多·迪卡普里奥",
+          "斯嘉丽·约翰逊",
+          "成龙",
+          "梅丽尔·斯特里普"
+        ]
+      },
+      {
+        id: 14,
+        category: "life",
+        text: "你更喜欢城市生活还是乡村生活？",
+        options: [
+          "城市",
+          "乡村",
+          "小镇",
+          "经常搬家"
+        ]
+      },
+      {
+        id: 15,
+        category: "future",
+        text: "你最想学习的新技能是什么？",
+        options: [
+          "一门新语言",
+          "乐器",
+          "编程",
+          "烹饪"
+        ]
+      },
+      {
+        id: 16,
+        category: "food",
+        text: "你最喜欢的饮料是什么？",
+        options: [
+          "咖啡",
+          "茶",
+          "果汁",
+          "水"
+        ]
+      },
+      {
+        id: 17,
+        category: "hobby",
+        text: "你最喜欢的书籍类型是什么？",
+        options: [
+          "小说",
+          "非虚构",
+          "科幻",
+          "悬疑"
+        ]
+      },
+      {
+        id: 18,
+        category: "movie",
+        text: "你最喜欢的电视剧是什么？",
+        options: [
+          "《老友记》",
+          "《权力的游戏》",
+          "《绝命毒师》",
+          "《黑镜》"
+        ]
+      },
+      {
+        id: 19,
+        category: "life",
+        text: "你最喜欢的交通工具是什么？",
+        options: [
+          "汽车",
+          "自行车",
+          "公共交通",
+          "步行"
+        ]
+      },
+      {
+        id: 20,
+        category: "future",
+        text: "你最想去的旅游目的地是哪里？",
+        options: [
+          "日本",
+          "意大利",
+          "新西兰",
+          "冰岛"
+        ]
+      }
+    ];
+
+    // 测试数据
+    let testData = {
+      player1: "你",
+      player2: "TA",
+      category: "all",
+      numQuestions: 10,
+      selectedQuestions: [],
+      player1Answers: [],
+      player2Answers: [],
+      currentQuestion: 0,
+      currentPlayer: 1
+    };
+
+    // DOM 元素
+    const sections = {
+      intro: document.getElementById('intro'),
+      settings: document.getElementById('settings'),
+      testArea: document.getElementById('testArea'),
+      results: document.getElementById('results'),
+      sampleResult: document.getElementById('sampleResult')
+    };
+
+    const buttons = {
+      startBtn: document.getElementById('startBtn'),
+      sampleBtn: document.getElementById('sampleBtn'),
+      backFromSettingsBtn: document.getElementById('backFromSettingsBtn'),
+      startTestBtn: document.getElementById('startTestBtn'),
+      prevQuestionBtn: document.getElementById('prevQuestionBtn'),
+      nextQuestionBtn: document.getElementById('nextQuestionBtn'),
+      restartBtn: document.getElementById('restartBtn'),
+      shareBtn: document.getElementById('shareBtn'),
+      backFromSampleBtn: document.getElementById('backFromSampleBtn'),
+      helpBtn: document.getElementById('helpBtn'),
+      closeHelpBtn: document.getElementById('closeHelpBtn'),
+      closeHelpBtn2: document.getElementById('closeHelpBtn2')
+    };
+
+    const elements = {
+      player1Input: document.getElementById('player1'),
+      player2Input: document.getElementById('player2'),
+      categorySelect: document.getElementById('category'),
+      numQuestionsSelect: document.getElementById('numQuestions'),
+      questionNumber: document.getElementById('questionNumber'),
+      questionText: document.getElementById('questionText'),
+      answersContainer: document.getElementById('answersContainer'),
+      timer: document.getElementById('timer'),
+      timeRemaining: document.getElementById('timeRemaining'),
+      testSummary: document.getElementById('testSummary'),
+      matchPercentage: document.getElementById('matchPercentage'),
+      resultDescription: document.getElementById('resultDescription'),
+      progressCircle: document.getElementById('progressCircle'),
+      comparisonTable: document.getElementById('comparisonTable'),
+      helpModal: document.getElementById('helpModal'),
+      navbar: document.getElementById('navbar')
+    };
+
+    // 导航栏滚动效果
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        elements.navbar.classList.add('shadow-md');
+        elements.navbar.classList.remove('shadow-sm');
+      } else {
+        elements.navbar.classList.remove('shadow-md');
+        elements.navbar.classList.add('shadow-sm');
+      }
+    });
+
+    // 显示特定部分，隐藏其他部分
+    function showSection(sectionName) {
+      Object.keys(sections).forEach(key => {
+        sections[key].classList.add('hidden');
+      });
+      sections[sectionName].classList.remove('hidden');
+    }
+
+    // 随机选择问题
+    function selectQuestions() {
+      let filteredQuestions = questions;
+      
+      // 如果选择了特定类别，过滤问题
+      if (testData.category !== "all") {
+        filteredQuestions = questions.filter(q => q.category === testData.category);
+      }
+      
+      // 随机选择指定数量的问题
+      testData.selectedQuestions = [];
+      const num = parseInt(testData.numQuestions);
+      
+      if (filteredQuestions.length <= num) {
+        testData.selectedQuestions = [...filteredQuestions];
+      } else {
+        const shuffled = [...filteredQuestions].sort(() => 0.5 - Math.random());
+        testData.selectedQuestions = shuffled.slice(0, num);
+      }
+      
+      // 初始化答案数组
+      testData.player1Answers = new Array(num).fill(null);
+      testData.player2Answers = new Array(num).fill(null);
+    }
+
+    // 加载当前问题
+    function loadCurrentQuestion() {
+      if (testData.selectedQuestions.length === 0) return;
+      
+      const question = testData.selectedQuestions[testData.currentQuestion];
+      elements.questionNumber.textContent = `问题 ${testData.currentQuestion + 1}/${testData.selectedQuestions.length}`;
+      elements.questionText.textContent = question.text;
+      
+      // 清空答案容器
+      elements.answersContainer.innerHTML = '';
+      
+      // 添加答案选项
+      question.options.forEach((option, index) => {
+        const answerId = `answer${index + 1}`;
+        const answerDiv = document.createElement('div');
+        answerDiv.className = 'flex items-center';
+        
+        // 检查是否已有答案
+        let checked = false;
+        const answers = testData.currentPlayer === 1 ? testData.player1Answers : testData.player2Answers;
+        if (answers[testData.currentQuestion] === index) {
+          checked = true;
+        }
+        
+        answerDiv.innerHTML = `
+          <input type="radio" id="${answerId}" name="question" value="${index}" class="w-5 h-5 text-primary focus:ring-primary border-neutral-300" ${checked ? 'checked' : ''}>
+          <label for="${answerId}" class="ml-3 text-neutral-700">${option}</label>
+        `;
+        
+        elements.answersContainer.appendChild(answerDiv);
+      });
+      
+      // 更新按钮状态
+      buttons.prevQuestionBtn.disabled = testData.currentQuestion === 0;
+      buttons.prevQuestionBtn.classList.toggle('opacity-50', testData.currentQuestion === 0);
+      buttons.prevQuestionBtn.classList.toggle('cursor-not-allowed', testData.currentQuestion === 0);
+      
+      // 如果是最后一个问题，按钮显示"完成"
+      if (testData.currentQuestion === testData.selectedQuestions.length - 1) {
+        buttons.nextQuestionBtn.innerHTML = testData.currentPlayer === 1 ? 
+          '完成并切换到' + testData.player2 + '<i class="fa fa-arrow-right ml-2"></i>' : 
+          '完成测试 <i class="fa fa-check ml-2"></i>';
+      } else {
+        buttons.nextQuestionBtn.innerHTML = '下一题 <i class="fa fa-arrow-right ml-2"></i>';
+      }
+    }
+
+    // 保存当前答案
+    function saveCurrentAnswer() {
+      const selectedAnswer = document.querySelector('input[name="question"]:checked');
+      const answers = testData.currentPlayer === 1 ? testData.player1Answers : testData.player2Answers;
+      
+      if (selectedAnswer) {
+        answers[testData.currentQuestion] = parseInt(selectedAnswer.value);
+      }
+    }
+
+    // 计算匹配度
+    function calculateMatchPercentage() {
+      let matches = 0;
+      
+      testData.selectedQuestions.forEach((_, index) => {
+        if (testData.player1Answers[index] !== null && testData.player2Answers[index] !== null) {
+          if (testData.player1Answers[index] === testData.player2Answers[index]) {
+            matches++;
+          }
+        }
+      });
+      
+      const percentage = Math.round((matches / testData.selectedQuestions.length) * 100);
+      return { percentage, matches };
+    }
+
+    // 显示结果
+    function showResults() {
+      const { percentage, matches } = calculateMatchPercentage();
+      
+      elements.testSummary.textContent = `${testData.player1}和${testData.player2}完成了${testData.selectedQuestions.length}个问题的测试`;
+      elements.matchPercentage.textContent = `${percentage}%`;
+      
+      // 更新圆形进度条
+      const circumference = 2 * Math.PI * 45;
+      const offset = circumference - (percentage / 100) * circumference;
+      elements.progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+      elements.progressCircle.style.strokeDashoffset = offset;
+      
+      // 设置结果描述
+      let description = "";
+      if (percentage >= 90) {
+        description = "天作之合";
+        elements.resultDescription.textContent = description;
+        elements.resultDescription.className = "text-xl font-semibold text-accent";
+      } else if (percentage >= 70) {
+        description = "心灵相通";
+        elements.resultDescription.textContent = description;
+        elements.resultDescription.className = "text-xl font-semibold text-primary";
+      } else if (percentage >= 50) {
+        description = "颇有默契";
+        elements.resultDescription.textContent = description;
+        elements.resultDescription.className = "text-xl font-semibold text-secondary";
+      } else {
+        description = "有待提高";
+        elements.resultDescription.textContent = description;
+        elements.resultDescription.className = "text-xl font-semibold text-red-500";
+      }
+      
+      // 生成对比表格
+      elements.comparisonTable.innerHTML = '';
+      
+      testData.selectedQuestions.forEach((question, index) => {
+        const player1Answer = question.options[testData.player1Answers[index]] || "未回答";
+        const player2Answer = question.options[testData.player2Answers[index]] || "未回答";
+        
+        let matchClass = "";
+        let matchLabel = "";
+        
+        if (testData.player1Answers[index] === testData.player2Answers[index]) {
+          matchClass = "bg-green-100 text-green-800";
+          matchLabel = "完全匹配";
+        } else if (testData.player1Answers[index] === null || testData.player2Answers[index] === null) {
+          matchClass = "bg-neutral-100 text-neutral-600";
+          matchLabel = "未完成";
+        } else {
+          matchClass = "bg-red-100 text-red-800";
+          matchLabel = "不匹配";
+        }
+        
+        const comparisonItem = document.createElement('div');
+        comparisonItem.className = "bg-neutral-50 rounded-lg p-4 animate-fade-in";
+        comparisonItem.style.animationDelay = `${index * 0.1}s`;
+        
+        comparisonItem.innerHTML = `
+          <div class="flex justify-between mb-2">
+            <h4 class="font-medium text-neutral-800">${question.text}</h4>
+            <span class="px-2 py-1 text-xs font-medium ${matchClass} rounded-full">${matchLabel}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-3 rounded-lg border-l-4 border-primary">
+              <p class="text-sm text-neutral-500 mb-1">${testData.player1}</p>
+              <p class="font-medium">${player1Answer}</p>
+            </div>
+            <div class="bg-white p-3 rounded-lg border-l-4 border-secondary">
+              <p class="text-sm text-neutral-500 mb-1">${testData.player2}</p>
+              <p class="font-medium">${player2Answer}</p>
+            </div>
+          </div>
+        `;
+        
+        elements.comparisonTable.appendChild(comparisonItem);
+      });
+      
+      showSection('results');
+    }
+
+    // 事件监听器
+    buttons.startBtn.addEventListener('click', () => {
+      showSection('settings');
+    });
+
+    buttons.sampleBtn.addEventListener('click', () => {
+      showSection('sampleResult');
+    });
+
+    buttons.backFromSettingsBtn.addEventListener('click', () => {
+      showSection('intro');
+    });
+
+    buttons.backFromSampleBtn.addEventListener('click', () => {
+      showSection('intro');
+    });
+
+    buttons.startTestBtn.addEventListener('click', () => {
+      // 保存设置
+      testData.player1 = elements.player1Input.value || "你";
+      testData.player2 = elements.player2Input.value || "TA";
+      testData.category = elements.categorySelect.value;
+      testData.numQuestions = elements.numQuestionsSelect.value;
+      
+      // 选择问题
+      selectQuestions();
+      
+      // 重置当前问题
+      testData.currentQuestion = 0;
+      testData.currentPlayer = 1;
+      
+      // 加载第一个问题
+      loadCurrentQuestion();
+      
+      // 显示测试区域
+      showSection('testArea');
+    });
+
+    buttons.prevQuestionBtn.addEventListener('click', () => {
+      if (testData.currentQuestion > 0) {
+        saveCurrentAnswer();
+        testData.currentQuestion--;
+        loadCurrentQuestion();
+      }
+    });
+
+    buttons.nextQuestionBtn.addEventListener('click', () => {
+      saveCurrentAnswer();
+      
+      if (testData.currentQuestion < testData.selectedQuestions.length - 1) {
+        // 前往下一个问题
+        testData.currentQuestion++;
+        loadCurrentQuestion();
+      } else {
+        // 最后一个问题
+        if (testData.currentPlayer === 1) {
+          // 切换到第二个玩家
+          testData.currentPlayer = 2;
+          testData.currentQuestion = 0;
+          
+          // 重置导航栏标题
+          document.title = `${testData.player2}的测试`;
+          
+          loadCurrentQuestion();
+        } else {
+          // 两个玩家都完成了测试，显示结果
+          showResults();
+        }
+      }
+    });
+
+    buttons.restartBtn.addEventListener('click', () => {
+      showSection('settings');
+    });
+
+    buttons.shareBtn.addEventListener('click', () => {
+      alert('分享功能即将推出！');
+    });
+
+    buttons.helpBtn.addEventListener('click', () => {
+      elements.helpModal.classList.remove('hidden');
+    });
+
+    buttons.closeHelpBtn.addEventListener('click', () => {
+      elements.helpModal.classList.add('hidden');
+    });
+
+    buttons.closeHelpBtn2.addEventListener('click', () => {
+      elements.helpModal.classList.add('hidden');
+    });
+
+    // 点击模态框背景关闭
+    elements.helpModal.addEventListener('click', (e) => {
+      if (e.target === elements.helpModal) {
+        elements.helpModal.classList.add('hidden');
+      }
+    });
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      // 为了演示，我们可以预先填充一些示例答案
+      document.title = `${testData.player1}的测试`;
+    });
+  </script>
+</body>
+</html>
+    

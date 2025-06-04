@@ -5,6 +5,7 @@ docker buildx build --platform linux/amd64,linux/arm64 -t kylin-cn-shanghai.cr.v
 
 docker run -it --rm --name coze-plugin-fin-stat -p 8080:80 kylin-cn-shanghai.cr.volces.com/poc/code-generation-sample:0.1.1
 
-http://alb-3vtxmniggcirk6096psm9wchy.cn-shanghai.volcalb.com/code/cf_reports.html
+http://alb-3vtxmniggcirk6096psm9wchy.cn-shanghai.volcalb.com/code/index.html
 ----
+
 
