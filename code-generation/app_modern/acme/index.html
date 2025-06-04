@@ -1086,62 +1086,6 @@
             });
         }
         
-        // 初始化对话框工具
-        window.addEventListener('load', function() {
-            // 全站搜索
-            new CozeWebSDK.WebChatClient({
-                config: {
-                    bot_id: '7511928794215972864',
-                },
-                componentProps: {
-                    title: '全站搜索',
-                },
-                auth: {
-                    type: 'token',
-                    token: 'pat_123',
-                    onRefreshToken: function () {
-                        return 'pat_123';
-                    }
-                },
-                container: document.getElementById('searchContainer')
-            });
-            
-            // 理财顾问
-            new CozeWebSDK.WebChatClient({
-                config: {
-                    bot_id: '7511923863467704357',
-                },
-                componentProps: {
-                    title: '理财顾问',
-                },
-                auth: {
-                    type: 'token',
-                    token: 'pat_123',
-                    onRefreshToken: function () {
-                        return 'pat_123';
-                    }
-                },
-                container: document.getElementById('adviserContainer')
-            });
-            
-            // 客户服务
-            new CozeWebSDK.WebChatClient({
-                config: {
-                    bot_id: '7511924906821812235',
-                },
-                componentProps: {
-                    title: '客户服务',
-                },
-                auth: {
-                    type: 'token',
-                    token: 'pat_123',
-                    onRefreshToken: function () {
-                        return 'pat_123';
-                    }
-                },
-                container: document.getElementById('serviceContainer')
-            });
-        });
     </script>
 </body>
 </html>
