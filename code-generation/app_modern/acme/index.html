@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACME金融服务 - 专业金融数据分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- 引入对话框工具的SDK -->
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.10/libs/cn/index.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#4080FF',
+                        accent: '#FF7D00',
+                        neutral: '#F5F7FA',
+                        dark: '#1D2129',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .nav-link {
+                @apply relative px-3 py-2 text-gray-700 hover:text-primary transition-colors duration-200;
+            }
+            .nav-link::after {
+                @apply content-[''] absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-200;
+            }
+            .nav-link:hover::after {
+                @apply w-full;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-dark">
+    <!-- 导航栏 -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-line-chart text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-primary">ACME金融服务</span>
+            </div>
+            
+            <!-- 桌面导航 -->
+            <nav class="hidden md:flex items-center space-x-1">
+                <a href="#home" class="nav-link">首页</a>
+                <a href="#bank-reports" class="nav-link">股份制银行财报</a>
+                <a href="#consumer-finance" class="nav-link">消费金融业务</a>
+                <a href="#contact" class="nav-link">联系我们</a>
+            </nav>
+            
+            <!-- 移动端菜单按钮 -->
+            <button id="menuBtn" class="md:hidden text-gray-700 hover:text-primary">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+            
+            <!-- 桌面端联系按钮 -->
+            <button class="hidden md:flex items-center space-x-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                <i class="fa fa-phone"></i>
+                <span>立即咨询</span>
+            </button>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white shadow-md absolute w-full">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-2">
+                <a href="#home" class="py-2 border-b border-gray-100 hover:text-primary">首页</a>
+                <a href="#bank-reports" class="py-2 border-b border-gray-100 hover:text-primary">股份制银行财报</a>
+                <a href="#consumer-finance" class="py-2 border-b border-gray-100 hover:text-primary">消费金融业务</a>
+                <a href="#contact" class="py-2 hover:text-primary">联系我们</a>
+                <button class="flex items-center justify-center space-x-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors duration-200 my-2">
+                    <i class="fa fa-phone"></i>
+                    <span>立即咨询</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 英雄区域 -->
+        <section id="home" class="relative bg-gradient-to-br from-primary/90 to-primary py-16 md:py-24 overflow-hidden">
+            <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1048/1920/1080')] bg-cover bg-center opacity-10"></div>
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-3xl">
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white leading-tight text-shadow mb-4">
+                        专业金融数据分析<br>助力投资决策
+                    </h1>
+                    <p class="text-white/90 text-lg md:text-xl mb-8 max-w-2xl">
+                        ACME金融服务提供全面的金融数据分析服务，包括股份制银行财报和消费金融业务的深度洞察，帮助您做出明智的投资决策。
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="bg-white text-primary hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-lg">
+                            <i class="fa fa-chart-line mr-2"></i>查看数据分析
+                        </button>
+                        <button class="bg-transparent border-2 border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                            <i class="fa fa-user-circle mr-2"></i>预约顾问咨询
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 波浪装饰 -->
+            <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] rotate-180">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-[60px] md:h-[80px]">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.11,130.83,141.14,214.8,130.19Z" fill="#f9fafb"></path>
+                </svg>
+            </div>
+        </section>
+
+        <!-- 服务介绍 -->
+        <section class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">我们的服务</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">ACME金融服务专注于提供专业的金融数据分析服务，帮助客户深入了解金融市场动态</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                        <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-bar-chart text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">股份制银行财报分析</h3>
+                        <p class="text-gray-600 mb-4">深入分析各大股份制银行的财务数据，提供营收、利润等关键指标的对比和趋势分析。</p>
+                        <a href="#bank-reports" class="text-primary hover:text-primary/80 font-medium flex items-center">
+                            <span>查看详情</span>
+                            <i class="fa fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                        <div class="w-14 h-14 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-credit-card text-secondary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">消费金融业务洞察</h3>
+                        <p class="text-gray-600 mb-4">全面解读消费金融行业发展态势，分析各公司业务数据，把握市场机遇。</p>
+                        <a href="#consumer-finance" class="text-secondary hover:text-secondary/80 font-medium flex items-center">
+                            <span>查看详情</span>
+                            <i class="fa fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                        <div class="w-14 h-14 bg-accent/10 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-comments text-accent text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">专业理财顾问服务</h3>
+                        <p class="text-gray-600 mb-4">提供一对一的专业理财咨询服务，根据您的需求和风险偏好，定制专属投资方案。</p>
+                        <button id="openAdviserBtn" class="text-accent hover:text-accent/80 font-medium flex items-center">
+                            <span>立即咨询</span>
+                            <i class="fa fa-arrow-right ml-2 text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 股份制银行财报分析 -->
+        <section id="bank-reports" class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">股份制银行财报分析</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">对主要股份制银行近年的营收和利润数据进行可视化分析，助您把握行业发展趋势</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold mb-4 md:mb-0">银行年营收对比 (2011-2024)</h3>
+                        <div class="flex space-x-2">
+                            <button class="year-filter-btn px-3 py-1 bg-primary text-white rounded-md" data-type="revenue">营收</button>
+                            <button class="year-filter-btn px-3 py-1 bg-gray-200 text-gray-700 rounded-md" data-type="profit">利润</button>
+                        </div>
+                    </div>
+                    <div class="h-[400px]">
+                        <canvas id="bankRevenueChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4">营收增长趋势</h3>
+                        <div class="h-[300px]">
+                            <canvas id="revenueGrowthChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4">利润增长趋势</h3>
+                        <div class="h-[300px]">
+                            <canvas id="profitGrowthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <h3 class="text-xl font-bold mb-4">数据分析解读</h3>
+                    <div class="space-y-4">
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-primary">营收分析：</span>从股份制银行年营收对比图可以看出，中信银行（CITIC）在近年保持了较为稳定的增长态势，2024年营收达到2136亿元，位居行业前列。而民生银行（CMBC）近年营收有所波动，2024年营收为1363亿元，较峰值有所下降。
+                        </p>
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-primary">利润分析：</span>利润方面，中信银行同样表现出色，2024年利润达到809亿元，展现了较强的盈利能力。相比之下，华夏银行（HXB）虽然营收稳步增长，但利润增长相对缓慢，2024年利润为359亿元。
+                        </p>
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-primary">行业趋势：</span>整体来看，股份制银行行业竞争激烈，头部银行通过多元化业务和优质客户服务保持领先地位。未来，随着金融科技的发展和监管政策的变化，行业格局可能会进一步调整。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 消费金融业务分析 -->
+        <section id="consumer-finance" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">消费金融业务分析</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">深入分析消费金融行业主要公司的业务数据，包括注册资本、贷款余额、营收和利润等关键指标</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold mb-4 md:mb-0">消费金融公司贷款余额TOP10</h3>
+                        <div class="flex space-x-2">
+                            <button class="cf-filter-btn px-3 py-1 bg-primary text-white rounded-md" data-type="loan">贷款余额</button>
+                            <button class="cf-filter-btn px-3 py-1 bg-gray-200 text-gray-700 rounded-md" data-type="revenue">营收</button>
+                            <button class="cf-filter-btn px-3 py-1 bg-gray-200 text-gray-700 rounded-md" data-type="profit">利润</button>
+                        </div>
+                    </div>
+                    <div class="h-[400px]">
+                        <canvas id="consumerFinanceChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4">同比增长率分析</h3>
+                        <div class="h-[300px]">
+                            <canvas id="growthRateChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4">资产与收益对比</h3>
+                        <div class="h-[300px]">
+                            <canvas id="assetsProfitChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <h3 class="text-xl font-bold mb-4">行业洞察</h3>
+                    <div class="space-y-4">
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-primary">市场格局：</span>消费金融市场呈现明显的头部效应，蚂蚁消费金融以3108亿元的贷款余额位居行业第一，远超其他竞争对手。招联消费金融和兴业消费金融分别以1688亿元和819亿元的贷款余额位列第二和第三。
+                        </p>
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-primary">增长亮点：</span>南银法巴消费金融表现突出，贷款余额同比增长61%，营收同比增长75%，展现了强劲的发展势头。此外，宁银消费金融和平安消费金融也实现了较高的同比增长率。
+                        </p>
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-primary">挑战与机遇：</span>部分消费金融公司面临增长压力，如兴业消费金融和马上消费金融贷款余额同比出现负增长。随着监管政策的收紧和市场竞争的加剧，消费金融公司需要不断创新业务模式，提升风险管理能力，以应对挑战并抓住市场机遇。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系我们 -->
+        <section id="contact" class="py-16 bg-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 transform origin-top-right"></div>
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">联系我们</h2>
+                        <p class="text-gray-600 mb-8">如果您需要更详细的金融数据分析或专业的理财建议，欢迎随时联系我们的专业团队</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fa fa-map-marker text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-lg mb-1">公司地址</h4>
+                                    <p class="text-gray-600">北京市朝阳区金融街88号金融中心A座25层</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fa fa-phone text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-lg mb-1">联系电话</h4>
+                                    <p class="text-gray-600">400-888-9999</p>
+                                    <p class="text-gray-600">周一至周五 9:00-18:00</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fa fa-envelope text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-lg mb-1">电子邮箱</h4>
+                                    <p class="text-gray-600">service@acme-finance.com</p>
+                                    <p class="text-gray-600">我们会在24小时内回复您</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fa fa-weixin text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-lg mb-1">微信公众号</h4>
+                                    <p class="text-gray-600">ACME金融研究</p>
+                                    <p class="text-gray-600">扫描二维码关注我们</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 flex space-x-4">
+                            <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary/20 text-primary rounded-full flex items-center justify-center transition-colors duration-200">
+                                <i class="fa fa-weibo"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary/20 text-primary rounded-full flex items-center justify-center transition-colors duration-200">
+                                <i class="fa fa-weixin"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary/20 text-primary rounded-full flex items-center justify-center transition-colors duration-200">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary/20 text-primary rounded-full flex items-center justify-center transition-colors duration-200">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-xl font-bold mb-6">预约理财顾问</h3>
+                        <form>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                                    <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all duration-200" placeholder="请输入您的姓名">
+                                </div>
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">电话</label>
+                                    <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all duration-200" placeholder="请输入您的电话号码">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">电子邮箱</label>
+                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all duration-200" placeholder="请输入您的电子邮箱">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="service" class="block text-sm font-medium text-gray-700 mb-1">咨询服务类型</label>
+                                <select id="service" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all duration-200">
+                                    <option value="">请选择咨询服务类型</option>
+                                    <option value="bank">股份制银行分析</option>
+                                    <option value="consumer">消费金融业务</option>
+                                    <option value="investment">个人投资理财</option>
+                                    <option value="other">其他服务</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">咨询内容</label>
+                                <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all duration-200" placeholder="请简要描述您的咨询内容"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                <i class="fa fa-paper-plane mr-2"></i>
+                                提交预约
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fa fa-line-chart text-primary text-2xl"></i>
+                        <span class="text-xl font-bold">ACME金融服务</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">专业的金融数据分析服务提供商，为您提供全面的金融市场洞察和投资决策支持。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition-colors duration-200">首页</a></li>
+                        <li><a href="#bank-reports" class="text-gray-400 hover:text-white transition-colors duration-200">股份制银行财报</a></li>
+                        <li><a href="#consumer-finance" class="text-gray-400 hover:text-white transition-colors duration-200">消费金融业务</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors duration-200">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">服务与支持</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">投资理财咨询</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">金融数据分析</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">市场研究报告</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">联系方式</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fa fa-map-marker text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">北京市朝阳区金融街88号金融中心A座25层</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-phone text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">400-888-9999</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-envelope text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">service@acme-finance.com</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-clock-o text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">周一至周五 9:00-18:00</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 text-center text-gray-500">
+                <p>&copy; 2025 ACME金融服务. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 全站搜索对话框 -->
+    <div id="searchDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 transform scale-95 transition-transform duration-300">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-bold">全站搜索</h3>
+                <button id="closeSearchBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div id="searchContainer" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 理财顾问对话框 -->
+    <div id="adviserDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 transform scale-95 transition-transform duration-300">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-bold">理财顾问</h3>
+                <button id="closeAdviserBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div id="adviserContainer" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 客户服务对话框 -->
+    <div id="serviceDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 transform scale-95 transition-transform duration-300">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-bold">客户服务</h3>
+                <button id="closeServiceBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div id="serviceContainer" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右下角浮动按钮 -->
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col space-y-3">
+        <button id="searchBtn" class="w-12 h-12 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
+            <i class="fa fa-search text-xl"></i>
+        </button>
+        <button id="adviserFloatBtn" class="w-12 h-12 bg-accent hover:bg-accent/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
+            <i class="fa fa-user-circle text-xl"></i>
+        </button>
+        <button id="serviceBtn" class="w-12 h-12 bg-secondary hover:bg-secondary/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
+            <i class="fa fa-comments text-xl"></i>
+        </button>
+        <button id="backToTopBtn" class="w-12 h-12 bg-gray-700 hover:bg-gray-800 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 opacity-0 pointer-events-none">
+            <i class="fa fa-arrow-up text-xl"></i>
+        </button>
+    </div>
+
+    <script>
+        // 导航菜单切换
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 如果是移动端，点击后关闭菜单
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+        
+        // 返回顶部按钮
+        const backToTopBtn = document.getElementById('backToTopBtn');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // 对话框相关
+        const searchDialog = document.getElementById('searchDialog');
+        const adviserDialog = document.getElementById('adviserDialog');
+        const serviceDialog = document.getElementById('serviceDialog');
+        
+        const searchBtn = document.getElementById('searchBtn');
+        const openAdviserBtn = document.getElementById('openAdviserBtn');
+        const adviserFloatBtn = document.getElementById('adviserFloatBtn');
+        const serviceBtn = document.getElementById('serviceBtn');
+        
+        const closeSearchBtn = document.getElementById('closeSearchBtn');
+        const closeAdviserBtn = document.getElementById('closeAdviserBtn');
+        const closeServiceBtn = document.getElementById('closeServiceBtn');
+        
+        function openDialog(dialog) {
+            dialog.classList.remove('opacity-0', 'pointer-events-none');
+            dialog.querySelector('div').classList.remove('scale-95');
+            dialog.querySelector('div').classList.add('scale-100');
+        }
+        
+        function closeDialog(dialog) {
+            dialog.classList.add('opacity-0', 'pointer-events-none');
+            dialog.querySelector('div').classList.remove('scale-100');
+            dialog.querySelector('div').classList.add('scale-95');
+        }
+        
+        searchBtn.addEventListener('click', () => openDialog(searchDialog));
+        openAdviserBtn.addEventListener('click', () => openDialog(adviserDialog));
+        adviserFloatBtn.addEventListener('click', () => openDialog(adviserDialog));
+        serviceBtn.addEventListener('click', () => openDialog(serviceDialog));
+        
+        closeSearchBtn.addEventListener('click', () => closeDialog(searchDialog));
+        closeAdviserBtn.addEventListener('click', () => closeDialog(adviserDialog));
+        closeServiceBtn.addEventListener('click', () => closeDialog(serviceDialog));
+        
+        // 点击对话框外部关闭
+        searchDialog.addEventListener('click', (e) => {
+            if (e.target === searchDialog) {
+                closeDialog(searchDialog);
+            }
+        });
+        
+        adviserDialog.addEventListener('click', (e) => {
+            if (e.target === adviserDialog) {
+                closeDialog(adviserDialog);
+            }
+        });
+        
+        serviceDialog.addEventListener('click', (e) => {
+            if (e.target === serviceDialog) {
+                closeDialog(serviceDialog);
+            }
+        });
+        
+        // 股份制银行财报数据
+        const bankData = {
+            years: [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+            banks: [
+                { name: 'CMBC', revenue: [824, 1031, 1159, 1355, 1544, 1552, 1442, 1567, 1804, 1849, 1688, 1424, 1408, 1363], profit: [372, 507, 571, 598, 608, 602, 608, 692, 649, 371, 361, 374, 373, 341] },
+                { name: 'HXB', revenue: [335, 397, 452, 549, 589, 640, 664, 722, 847, 953, 959, 938, 932, 971], profit: [125, 172, 207, 240, 252, 262, 263, 268, 276, 272, 315, 336, 354, 359] },
+                { name: 'CEB', revenue: [461, 599, 653, 785, 932, 940, 919, 1102, 1328, 1425, 1527, 1516, 1457, 1354], profit: [242, 316, 344, 386, 394, 402, 406, 409, 452, 455, 529, 560, 498, 515] },
+                { name: 'CITIC', revenue: [769, 894, 1046, 1247, 1451, 1538, 1567, 1649, 1876, 1947, 2046, 2114, 2059, 2136], profit: [416, 416, 525, 546, 546, 546, 523, 545, 565, 578, 656, 733, 749, 809] }
+            ],
+            bankNames: {
+                'CMBC': '民生银行',
+                'HXB': '华夏银行',
+                'CEB': '光大银行',
+                'CITIC': '中信银行'
+            },
+            bankColors: {
+                'CMBC': '#165DFF',
+                'HXB': '#4080FF',
+                'CEB': '#7CB305',
+                'CITIC': '#FF7D00'
+            }
+        };
+        
+        // 消费金融业务数据
+        const consumerFinanceData = {
+            top10ByLoan: [
+                { name: '蚂蚁消费金融', loan: 3108, revenue: 152.13, profit: 30.51, color: '#165DFF' },
+                { name: '招联消费金融', loan: 1688, revenue: 173.18, profit: 30.16, color: '#4080FF' },
+                { name: '兴业消费金融', loan: 819, revenue: 100.67, profit: 4.3, color: '#7CB305' },
+                { name: '中银消费金融', loan: 784, revenue: 71.62, profit: 0.45, color: '#FF7D00' },
+                { name: '中邮消费金融', loan: 670, revenue: 75.41, profit: 8.04, color: '#F5222D' },
+                { name: '马上消费金融', loan: 615, revenue: 151.49, profit: 22.81, color: '#EB7350' },
+                { name: '宁银消费金融', loan: 590, revenue: 29.9, profit: 3.03, color: '#13C2C2' },
+                { name: '杭银消费金融', loan: 512, revenue: 52.66, profit: 9.2, color: '#722ED1' },
+                { name: '南银法巴消费金融', loan: 508, revenue: 46, profit: 3, color: '#F7BA1E' },
+                { name: '平安消费金融', loan: 501, revenue: 45.19, profit: 10.2, color: '#5B8FF9' }
+            ],
+            growthRate: [
+                { name: '南银法巴消费金融', loan: 61, revenue: 75, profit: 173, color: '#165DFF' },
+                { name: '宁银消费金融', loan: 40, revenue: 65.96, profit: 50.17, color: '#4080FF' },
+                { name: '平安消费金融', loan: 35, revenue: 24.6, profit: 118.8, color: '#7CB305' },
+                { name: '蚂蚁消费金融', loan: 37, revenue: 76, profit: 1907, color: '#FF7D00' },
+                { name: '小米消费金融', loan: 37, revenue: null, profit: 51.32, color: '#F5222D' },
+                { name: '湖北消费金融', loan: 36, revenue: null, profit: 24.6, color: '#EB7350' },
+                { name: '苏银凯基消费金融', loan: 38, revenue: 18.47, profit: 35.73, color: '#13C2C2' },
+                { name: '中原消费金融', loan: 21, revenue: 20.03, profit: 24.5, color: '#722ED1' },
+                { name: '海尔消费金融', loan: 28, revenue: 29.64, profit: 38.19, color: '#F7BA1E' },
+                { name: '锦程消费金融', loan: 28, revenue: -3.7, profit: -49.62, color: '#5B8FF9' }
+            ],
+            assetsProfit: [
+                { name: '蚂蚁消费金融', assets: 3137.5, profit: 30.51, color: '#165DFF' },
+                { name: '招联消费金融', assets: 1637.51, profit: 30.16, color: '#4080FF' },
+                { name: '兴业消费金融', assets: 821.22, profit: 4.3, color: '#7CB305' },
+                { name: '马上消费金融', assets: 655.6, profit: 22.81, color: '#FF7D00' },
+                { name: '中银消费金融', assets: 781.51, profit: 0.45, color: '#F5222D' },
+                { name: '中邮消费金融', assets: 627.29, profit: 8.04, color: '#EB7350' },
+                { name: '杭银消费金融', assets: 515.36, profit: 9.2, color: '#13C2C2' },
+                { name: '平安消费金融', assets: 543.93, profit: 10.2, color: '#722ED1' },
+                { name: '宁银消费金融', assets: 600, profit: 3.03, color: '#F7BA1E' },
+                { name: '南银法巴消费金融', assets: 508, profit: 3, color: '#5B8FF9' }
+            ]
+        };
+        
+        // 银行营收图表
+        let bankRevenueChart;
+        let consumerFinanceChart;
+        
+        // 初始化图表
+        window.addEventListener('load', () => {
+            initBankCharts();
+            initConsumerFinanceCharts();
+        });
+        
+        // 初始化银行相关图表
+        function initBankCharts() {
+            // 银行年营收/利润对比图
+            const bankRevenueCtx = document.getElementById('bankRevenueChart').getContext('2d');
+            
+            const revenueData = {
+                labels: bankData.years,
+                datasets: bankData.banks.map(bank => ({
+                    label: bankData.bankNames[bank.name],
+                    data: bank.revenue,
+                    borderColor: bankData.bankColors[bank.name],
+                    backgroundColor: `${bankData.bankColors[bank.name]}20`,
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }))
+            };
+            
+            const profitData = {
+                labels: bankData.years,
+                datasets: bankData.banks.map(bank => ({
+                    label: bankData.bankNames[bank.name],
+                    data: bank.profit,
+                    borderColor: bankData.bankColors[bank.name],
+                    backgroundColor: `${bankData.bankColors[bank.name]}20`,
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }))
+            };
+            
+            bankRevenueChart = new Chart(bankRevenueCtx, {
+                type: 'line',
+                data: revenueData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '金额 (亿元)'
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+            
+            // 营收增长趋势图
+            const revenueGrowthCtx = document.getElementById('revenueGrowthChart').getContext('2d');
+            new Chart(revenueGrowthCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2015-2019', '2020-2024'],
+                    datasets: [
+                        {
+                            label: '民生银行',
+                            data: [((bankData.banks[0].revenue[8] - bankData.banks[0].revenue[4]) / bankData.banks[0].revenue[4] * 100).toFixed(1), 
+                                   ((bankData.banks[0].revenue[13] - bankData.banks[0].revenue[9]) / bankData.banks[0].revenue[9] * 100).toFixed(1)],
+                            backgroundColor: bankData.bankColors['CMBC']
+                        },
+                        {
+                            label: '华夏银行',
+                            data: [((bankData.banks[1].revenue[8] - bankData.banks[1].revenue[4]) / bankData.banks[1].revenue[4] * 100).toFixed(1), 
+                                   ((bankData.banks[1].revenue[13] - bankData.banks[1].revenue[9]) / bankData.banks[1].revenue[9] * 100).toFixed(1)],
+                            backgroundColor: bankData.bankColors['HXB']
+                        },
+                        {
+                            label: '光大银行',
+                            data: [((bankData.banks[2].revenue[8] - bankData.banks[2].revenue[4]) / bankData.banks[2].revenue[4] * 100).toFixed(1), 
+                                   ((bankData.banks[2].revenue[13] - bankData.banks[2].revenue[9]) / bankData.banks[2].revenue[9] * 100).toFixed(1)],
+                            backgroundColor: bankData.bankColors['CEB']
+                        },
+                        {
+                            label: '中信银行',
+                            data: [((bankData.banks[3].revenue[8] - bankData.banks[3].revenue[4]) / bankData.banks[3].revenue[4] * 100).toFixed(1), 
+                                   ((bankData.banks[3].revenue[13] - bankData.banks[3].revenue[9]) / bankData.banks[3].revenue[9] * 100).toFixed(1)],
+                            backgroundColor: bankData.bankColors['CITIC']
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: '增长率 (%)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 利润增长趋势图
+            const profitGrowthCtx = document.getElementById('profitGrowthChart').getContext('2d');
+            new Chart(profitGrowthCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2015-2019', '2020-2024'],
+                    datasets: [
+                        {
+                            label: '民生银行',
+                            data: [((bankData.banks[0].profit[8] - bankData.banks[0].profit[4]) / bankData.banks[0].profit[4] * 100).toFixed(1), 
+                                   ((bankData.banks[0].profit[13] - bankData.banks[0].profit[9]) / bankData.banks[0].profit[9] * 100).toFixed(1)],
+                            backgroundColor: bankData.bankColors['CMBC']
+                        },
+                        {
+                            label: '华夏银行',
+                            data: [((bankData.banks[1].profit[8] - bankData.banks[1].profit[4]) / bankData.banks[1].profit[4] * 100).toFixed(1), 
+                                   ((bankData.banks[1].profit[13] - bankData.banks[1].profit[9]) / bankData.banks[1].profit[9] * 100).toFixed(1)],
+                            backgroundColor: bankData.bankColors['HXB']
+                        },
+                        {
+                            label: '光大银行',
+                            data: [((bankData.banks[2].profit[8] - bankData.banks[2].profit[4]) / bankData.banks[2].profit[4] * 100).toFixed(1), 
+                                   ((bankData.banks[2].profit[13] - bankData.banks[2].profit[9]) / bankData.banks[2].profit[9] * 100).toFixed(1)],
+                            backgroundColor: bankData.bankColors['CEB']
+                        },
+                        {
+                            label: '中信银行',
+                            data: [((bankData.banks[3].profit[8] - bankData.banks[3].profit[4]) / bankData.banks[3].profit[4] * 100).toFixed(1), 
+                                   ((bankData.banks[3].profit[13] - bankData.banks[3].profit[9]) / bankData.banks[3].profit[9] * 100).toFixed(1)],
+                            backgroundColor: bankData.bankColors['CITIC']
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: '增长率 (%)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 年营收/利润切换按钮
+            document.querySelectorAll('.year-filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 更新按钮样式
+                    document.querySelectorAll('.year-filter-btn').forEach(b => {
+                        b.classList.remove('bg-primary', 'text-white');
+                        b.classList.add('bg-gray-200', 'text-gray-700');
+                    });
+                    this.classList.remove('bg-gray-200', 'text-gray-700');
+                    this.classList.add('bg-primary', 'text-white');
+                    
+                    // 更新图表数据
+                    const type = this.getAttribute('data-type');
+                    if (type === 'revenue') {
+                        bankRevenueChart.data = revenueData;
+                    } else {
+                        bankRevenueChart.data = profitData;
+                    }
+                    bankRevenueChart.update();
+                });
+            });
+        }
+        
+        // 初始化消费金融相关图表
+        function initConsumerFinanceCharts() {
+            // 消费金融公司贷款余额/营收/利润TOP10
+            const consumerFinanceCtx = document.getElementById('consumerFinanceChart').getContext('2d');
+            
+            const loanData = {
+                labels: consumerFinanceData.top10ByLoan.map(item => item.name),
+                datasets: [{
+                    label: '贷款余额 (亿元)',
+                    data: consumerFinanceData.top10ByLoan.map(item => item.loan),
+                    backgroundColor: consumerFinanceData.top10ByLoan.map(item => item.color),
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            };
+            
+            const revenueData = {
+                labels: consumerFinanceData.top10ByLoan.map(item => item.name),
+                datasets: [{
+                    label: '营收 (亿元)',
+                    data: consumerFinanceData.top10ByLoan.map(item => item.revenue),
+                    backgroundColor: consumerFinanceData.top10ByLoan.map(item => item.color),
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            };
+            
+            const profitData = {
+                labels: consumerFinanceData.top10ByLoan.map(item => item.name),
+                datasets: [{
+                    label: '利润 (亿元)',
+                    data: consumerFinanceData.top10ByLoan.map(item => item.profit),
+                    backgroundColor: consumerFinanceData.top10ByLoan.map(item => item.color),
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            };
+            
+            consumerFinanceChart = new Chart(consumerFinanceCtx, {
+                type: 'bar',
+                data: loanData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // 同比增长率分析图
+            const growthRateCtx = document.getElementById('growthRateChart').getContext('2d');
+            new Chart(growthRateCtx, {
+                type: 'bar',
+                data: {
+                    labels: consumerFinanceData.growthRate.slice(0, 10).map(item => item.name),
+                    datasets: [
+                        {
+                            label: '贷款余额同比增长 (%)',
+                            data: consumerFinanceData.growthRate.slice(0, 10).map(item => item.loan),
+                            backgroundColor: consumerFinanceData.growthRate.slice(0, 10).map(item => item.color),
+                            borderWidth: 0,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // 资产与收益对比图
+            const assetsProfitCtx = document.getElementById('assetsProfitChart').getContext('2d');
+            new Chart(assetsProfitCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '消费金融公司',
+                        data: consumerFinanceData.assetsProfit.map(item => ({
+                            x: item.assets,
+                            y: item.profit,
+                            r: item.profit * 3
+                        })),
+                        backgroundColor: consumerFinanceData.assetsProfit.map(item => item.color),
+                        borderWidth: 0,
+                        hoverBackgroundColor: consumerFinanceData.assetsProfit.map(item => `${item.color}80`),
+                        hoverBorderWidth: 2,
+                        hoverBorderColor: consumerFinanceData.assetsProfit.map(item => item.color)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const dataIndex = context.dataIndex;
+                                    return [
+                                        `${consumerFinanceData.assetsProfit[dataIndex].name}`,
+                                        `总资产: ${consumerFinanceData.assetsProfit[dataIndex].assets} 亿元`,
+                                        `净利润: ${consumerFinanceData.assetsProfit[dataIndex].profit} 亿元`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '总资产 (亿元)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '净利润 (亿元)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 贷款余额/营收/利润切换按钮
+            document.querySelectorAll('.cf-filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 更新按钮样式
+                    document.querySelectorAll('.cf-filter-btn').forEach(b => {
+                        b.classList.remove('bg-primary', 'text-white');
+                        b.classList.add('bg-gray-200', 'text-gray-700');
+                    });
+                    this.classList.remove('bg-gray-200', 'text-gray-700');
+                    this.classList.add('bg-primary', 'text-white');
+                    
+                    // 更新图表数据
+                    const type = this.getAttribute('data-type');
+                    if (type === 'loan') {
+                        consumerFinanceChart.data = loanData;
+                    } else if (type === 'revenue') {
+                        consumerFinanceChart.data = revenueData;
+                    } else {
+                        consumerFinanceChart.data = profitData;
+                    }
+                    consumerFinanceChart.update();
+                });
+            });
+        }
+        
+        // 初始化对话框工具
+        window.addEventListener('load', function() {
+            // 全站搜索
+            new CozeWebSDK.WebChatClient({
+                config: {
+                    bot_id: '7511928794215972864',
+                },
+                componentProps: {
+                    title: '全站搜索',
+                },
+                auth: {
+                    type: 'token',
+                    token: 'pat_123',
+                    onRefreshToken: function () {
+                        return 'pat_123';
+                    }
+                },
+                container: document.getElementById('searchContainer')
+            });
+            
+            // 理财顾问
+            new CozeWebSDK.WebChatClient({
+                config: {
+                    bot_id: '7511923863467704357',
+                },
+                componentProps: {
+                    title: '理财顾问',
+                },
+                auth: {
+                    type: 'token',
+                    token: 'pat_123',
+                    onRefreshToken: function () {
+                        return 'pat_123';
+                    }
+                },
+                container: document.getElementById('adviserContainer')
+            });
+            
+            // 客户服务
+            new CozeWebSDK.WebChatClient({
+                config: {
+                    bot_id: '7511924906821812235',
+                },
+                componentProps: {
+                    title: '客户服务',
+                },
+                auth: {
+                    type: 'token',
+                    token: 'pat_123',
+                    onRefreshToken: function () {
+                        return 'pat_123';
+                    }
+                },
+                container: document.getElementById('serviceContainer')
+            });
+        });
+    </script>
+</body>
+</html>
+    
