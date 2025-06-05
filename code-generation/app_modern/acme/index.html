@@ -166,7 +166,7 @@
                         </div>
                         <h3 class="text-xl font-bold mb-3">专业理财顾问服务</h3>
                         <p class="text-gray-600 mb-4">提供一对一的专业理财咨询服务，根据您的需求和风险偏好，定制专属投资方案。</p>
-                        <button id="openAdviserBtn" class="text-accent hover:text-accent/80 font-medium flex items-center">
+                        <button id="#contact" class="text-accent hover:text-accent/80 font-medium flex items-center">
                             <span>立即咨询</span>
                             <i class="fa fa-arrow-right ml-2 text-sm"></i>
                         </button>
@@ -474,65 +474,15 @@
         </div>
     </footer>
 
-    <!-- 全站搜索对话框 -->
-    <div id="searchDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 transform scale-95 transition-transform duration-300">
-            <div class="flex items-center justify-between p-4 border-b">
-                <h3 class="text-lg font-bold">全站搜索</h3>
-                <button id="closeSearchBtn" class="text-gray-500 hover:text-gray-700">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            <div class="p-6">
-                <div id="searchContainer" style="height: 400px;"></div>
-            </div>
-        </div>
-    </div>
+    
 
-    <!-- 理财顾问对话框 -->
-    <div id="adviserDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 transform scale-95 transition-transform duration-300">
-            <div class="flex items-center justify-between p-4 border-b">
-                <h3 class="text-lg font-bold">理财顾问</h3>
-                <button id="closeAdviserBtn" class="text-gray-500 hover:text-gray-700">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            <div class="p-6">
-                <div id="adviserContainer" style="height: 400px;"></div>
-            </div>
-        </div>
-    </div>
+    
 
-    <!-- 客户服务对话框 -->
-    <div id="serviceDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 transform scale-95 transition-transform duration-300">
-            <div class="flex items-center justify-between p-4 border-b">
-                <h3 class="text-lg font-bold">客户服务</h3>
-                <button id="closeServiceBtn" class="text-gray-500 hover:text-gray-700">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            <div class="p-6">
-                <div id="serviceContainer" style="height: 400px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 右下角浮动按钮 -->
-    <div class="fixed bottom-6 right-6 z-40 flex flex-col space-y-3">
-        <button id="searchBtn" class="w-12 h-12 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
-            <i class="fa fa-search text-xl"></i>
-        </button>
-        <button id="adviserFloatBtn" class="w-12 h-12 bg-accent hover:bg-accent/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
-            <i class="fa fa-user-circle text-xl"></i>
-        </button>
-        <button id="serviceBtn" class="w-12 h-12 bg-secondary hover:bg-secondary/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110">
-            <i class="fa fa-comments text-xl"></i>
-        </button>
+    <!-- 右下角浮动按钮（修改后） -->
+    <div class="fixed bottom-6 left-6 z-40">
         <button id="backToTopBtn" class="w-12 h-12 bg-gray-700 hover:bg-gray-800 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 opacity-0 pointer-events-none">
             <i class="fa fa-arrow-up text-xl"></i>
-        </button>
+        </button> 
     </div>
 
     <script>
@@ -585,58 +535,8 @@
         });
         
         // 对话框相关
-        const searchDialog = document.getElementById('searchDialog');
-        const adviserDialog = document.getElementById('adviserDialog');
-        const serviceDialog = document.getElementById('serviceDialog');
         
-        const searchBtn = document.getElementById('searchBtn');
-        const openAdviserBtn = document.getElementById('openAdviserBtn');
-        const adviserFloatBtn = document.getElementById('adviserFloatBtn');
-        const serviceBtn = document.getElementById('serviceBtn');
-        
-        const closeSearchBtn = document.getElementById('closeSearchBtn');
-        const closeAdviserBtn = document.getElementById('closeAdviserBtn');
-        const closeServiceBtn = document.getElementById('closeServiceBtn');
-        
-        function openDialog(dialog) {
-            dialog.classList.remove('opacity-0', 'pointer-events-none');
-            dialog.querySelector('div').classList.remove('scale-95');
-            dialog.querySelector('div').classList.add('scale-100');
-        }
-        
-        function closeDialog(dialog) {
-            dialog.classList.add('opacity-0', 'pointer-events-none');
-            dialog.querySelector('div').classList.remove('scale-100');
-            dialog.querySelector('div').classList.add('scale-95');
-        }
-        
-        searchBtn.addEventListener('click', () => openDialog(searchDialog));
-        openAdviserBtn.addEventListener('click', () => openDialog(adviserDialog));
-        adviserFloatBtn.addEventListener('click', () => openDialog(adviserDialog));
-        serviceBtn.addEventListener('click', () => openDialog(serviceDialog));
-        
-        closeSearchBtn.addEventListener('click', () => closeDialog(searchDialog));
-        closeAdviserBtn.addEventListener('click', () => closeDialog(adviserDialog));
-        closeServiceBtn.addEventListener('click', () => closeDialog(serviceDialog));
-        
-        // 点击对话框外部关闭
-        searchDialog.addEventListener('click', (e) => {
-            if (e.target === searchDialog) {
-                closeDialog(searchDialog);
-            }
-        });
-        
-        adviserDialog.addEventListener('click', (e) => {
-            if (e.target === adviserDialog) {
-                closeDialog(adviserDialog);
-            }
-        });
-        
-        serviceDialog.addEventListener('click', (e) => {
-            if (e.target === serviceDialog) {
-                closeDialog(serviceDialog);
-            }
-        });
+
         
         // 股份制银行财报数据
         const bankData = {
@@ -1087,6 +987,34 @@
         }
         
     </script>
+
+<script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.10/libs/cn/index.js"></script>
+<script>
+
+  new CozeWebSDK.WebChatClient({
+    config: { 
+      bot_id: '7511923863467704357',
+    },
+    componentProps: { 
+      title: '财富顾问',
+    },
+    auth: { 
+      type: 'token',
+      token: 'pat_TODO',
+      onRefreshToken: function () {
+        return 'pat_TODO'
+      }
+    },
+    ui: {
+      base: { 
+        lang: 'zh-CN',
+        layout: 'pc',
+        zIndex: 1000,
+      }
+    }
+  });
+</script>
+
 </body>
 </html>
     
