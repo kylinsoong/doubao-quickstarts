@@ -1,0 +1,2 @@
+
+docker buildx build --platform linux/amd64,linux/arm64 -t kylin-cn-shanghai.cr.volces.com/poc/code-gen-acme:0.1.1 --push .
