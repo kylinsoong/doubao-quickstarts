@@ -6,7 +6,7 @@ from volcenginesdkarkruntime import Ark
 app = Flask(__name__)
 
 
-@app.route('/citic/vlm', methods=['POST'])
+@app.route('/avlm', methods=['POST'])
 def analyze_video():
     data = request.get_json()
     API_KEY = data.get("api_key")

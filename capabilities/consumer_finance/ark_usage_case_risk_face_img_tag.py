@@ -31,7 +31,8 @@ def ark_vision_images(item, prompt, temperature):
             thinking = {
                 "type":"disabled"
             },
-            temperature=temperature
+            temperature=temperature,
+            max_tokens=16000
         )
         return completion.choices[0].message.content, completion.usage
     except Exception as e:
@@ -168,12 +169,15 @@ prompt = """
 
 
 images = [
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/01.jpg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/02.jpg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/03.jpeg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/04.jpg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/05.jpg",
-"https://pub-kylin.tos-cn-beijing.volces.com/9863/06.jpg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1001.jpeg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1002.jpeg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1003.jpeg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1004.jpeg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1005.jpeg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1006.jpeg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1007.jpeg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1008.jpeg",
+"https://pub-kylin.tos-cn-beijing.volces.com/8769/1009.jpeg",
 ]
 
 results = ark_vision_images(images, prompt, 0.01)
