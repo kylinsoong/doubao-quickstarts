@@ -1,0 +1,6 @@
+curl -X POST -H "Content-Type: application/json" -d '{
+    "api_key": "YOUR_API_KEY",
+    "endpoint": "YOUR_ENDPOINT_ID",
+    "prompt": "YOUR_PROMPT",
+    "video_url": "YOUR_VIDEO_URL"
+}' http://127.0.0.1:5000/citic/vlm

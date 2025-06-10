@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型AI生产力替代 - 火山引擎FORCE大会2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#7B61FF',
+                        accent: '#00CFFD',
+                        dark: '#1D2129',
+                        light: '#F2F3F5'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(22, 93, 255, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(22, 93, 255, 0.8), 0 0 30px rgba(0, 207, 253, 0.6)' },
+                        }
+                    }
+                },
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .bg-grid {
+                background-image: linear-gradient(rgba(22, 93, 255, 0.1) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(22, 93, 255, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .glass-effect {
+                backdrop-filter: blur(10px);
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            .animate-glow {
+                animation: glow 2s ease-in-out infinite alternate;
+            }
+            .btn-primary {
+                @apply px-8 py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-primary/40 hover:scale-105;
+            }
+            .btn-secondary {
+                @apply px-8 py-3 rounded-lg border border-accent text-accent font-semibold transition-all duration-300 hover:bg-accent/10 hover:scale-105;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-dark text-light min-h-screen overflow-x-hidden">
+    <!-- 导航栏 -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4">
+        <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center mr-3 animate-pulse-slow">
+                    <i class="fa fa-bolt text-white text-xl"></i>
+                </div>
+                <h1 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-accent text-gradient">AI<span class="text-white ml-1">FORCE</span></h1>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#report" class="hover:text-accent transition-colors duration-300">报告撰写</a>
+                <a href="#qa" class="hover:text-accent transition-colors duration-300">智能问答</a>
+                <a href="#code" class="hover:text-accent transition-colors duration-300">代码生成</a>
+                <a href="#finance" class="hover:text-accent transition-colors duration-300">金融业务升级</a>
+                <a href="#agent" class="hover:text-accent transition-colors duration-300">超级智能体</a>
+                <a href="#demo" class="hover:text-accent transition-colors duration-300">演示视频</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="menu-toggle" class="text-white focus:outline-none">
+                    <i class="fa fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-dark/90 glass-effect mt-4 py-4 px-4">
+            <div class="flex flex-col space-y-4">
+                <a href="#report" class="hover:text-accent transition-colors duration-300">报告撰写</a>
+                <a href="#qa" class="hover:text-accent transition-colors duration-300">智能问答</a>
+                <a href="#code" class="hover:text-accent transition-colors duration-300">代码生成</a>
+                <a href="#finance" class="hover:text-accent transition-colors duration-300">金融业务升级</a>
+                <a href="#agent" class="hover:text-accent transition-colors duration-300">超级智能体</a>
+                <a href="#demo" class="hover:text-accent transition-colors duration-300">演示视频</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="relative min-h-screen flex items-center justify-center bg-grid pt-20 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-primary/10 via-dark/90 to-dark z-0"></div>
+        
+        <!-- 粒子效果背景 -->
+        <div id="particles-js" class="absolute inset-0 z-0"></div>
+        
+        <!-- 浮动元素装饰 -->
+        <div class="absolute top-1/4 left-1/4 w-32 h-32 bg-primary/20 rounded-full blur-3xl animate-float" style="animation-delay: 0s;"></div>
+        <div class="absolute bottom-1/3 right-1/3 w-40 h-40 bg-secondary/20 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-1/4 left-1/2 w-24 h-24 bg-accent/20 rounded-full blur-3xl animate-float" style="animation-delay: 4s;"></div>
+        
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="inline-block px-6 py-3 rounded-full bg-primary/20 mb-8 border border-primary/30 animate-glow">
+                    <span class="text-accent font-medium text-lg tracking-wide">火山引擎2025年春季FORCE大会</span>
+                </div>
+                <h1 class="text-[clamp(2rem,5vw,4.5rem)] font-bold leading-tight mb-8">
+                    <span class="block bg-gradient-to-r from-white via-light to-accent text-gradient text-shadow">大模型AI生产力替代</span>
+                    <span class="text-white">重新定义金融行业效率边界</span>
+                </h1>
+                <p class="text-[clamp(1.1rem,2vw,1.5rem)] text-light/90 mb-12 max-w-3xl mx-auto leading-relaxed">
+                    探索如何利用先进大模型技术，全面提升金融行业各环节效率，实现从分析到决策的全流程智能化升级
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-6">
+                    <a href="#demo" class="btn-primary">
+                        观看演示视频 <i class="fa fa-play-circle ml-2"></i>
+                    </a>
+                    <a href="#qa" class="btn-secondary">
+                        了解解决方案
+                    </a>
+                </div>
+                
+                <!-- 向下滚动指示器 -->
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                    <a href="#report" class="text-light/50 hover:text-accent transition-colors duration-300">
+                        <i class="fa fa-angle-down text-4xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 报告撰写部分 -->
+    <section id="report" class="py-24 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-dark to-transparent"></div>
+        <div class="absolute inset-0 bg-grid opacity-30"></div>
+        
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,3rem)] font-bold mb-6">报告撰写</h2>
+                <p class="text-light/70 max-w-2xl mx-auto text-lg">基于大模型的专业报告生成助手，为金融分析师提供高效、准确的报告撰写支持</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- 投资报告助手 -->
+                <div class="bg-dark/70 border border-primary/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors duration-300 animate-float" style="animation-delay: 0s;">
+                        <i class="fa fa-line-chart text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">投资报告助手</h3>
+                    <p class="text-light/70 mb-5">自动分析市场数据，生成专业投资分析报告，提升投研效率</p>
+                    <a href="https://www.coze.cn/space/7509747544159944758/bot/7510427475017924644" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 康养行业助手 -->
+                <div class="bg-dark/70 border border-primary/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors duration-300 animate-float" style="animation-delay: 0.5s;">
+                        <i class="fa fa-medkit text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">金融康养助手</h3>
+                    <p class="text-light/70 mb-5">专注于康养行业研究，提供行业洞察、市场分析和投资建议</p>
+                    <a href="https://www.coze.cn/space/7509747544159944758/bot/7510965313476313098" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 医疗科普专家 -->
+                <div class="bg-dark/70 border border-primary/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors duration-300 animate-float" style="animation-delay: 1s;">
+                        <i class="fa fa-stethoscope text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">领域科普专家</h3>
+                    <p class="text-light/70 mb-5">生成专业领域报告，助理金融咨询评估</p>
+                    <a href="https://www.coze.cn/space/7509747544159944758/bot/7511179817455255579" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 文档分析助手 -->
+                <div class="bg-dark/70 border border-primary/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors duration-300 animate-float" style="animation-delay: 1.5s;">
+                        <i class="fa fa-file-text-o text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">文档分析助手</h3>
+                    <p class="text-light/70 mb-5">智能分析长篇文档，提取关键信息，生成摘要和见解</p>
+                    <a href="https://www.coze.cn/space/7509747544159944758/bot/7513480754345902118" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 智能问答部分 -->
+    <section id="qa" class="py-24 relative bg-gradient-to-b from-dark to-dark/95 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-primary/10 to-transparent"></div>
+        
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,3rem)] font-bold mb-6">智能问答</h2>
+                <p class="text-light/70 max-w-2xl mx-auto text-lg">基于大模型的智能问答系统，为金融行业提供精准、高效的专业咨询服务</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <!-- 在线财富顾问 -->
+                <div class="bg-dark/60 border border-secondary/30 rounded-xl p-8 card-hover group backdrop-blur-md">
+                    <div class="w-18 h-18 rounded-lg bg-secondary/20 flex items-center justify-center mb-6 group-hover:bg-secondary/30 transition-colors duration-300 animate-float" style="animation-delay: 0s;">
+                        <i class="fa fa-money text-secondary text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">在线财富顾问</h3>
+                    <p class="text-light/70 mb-6 text-lg">提供个性化财富管理建议，解答投资疑问，助力资产增值</p>
+                    <a href="http://alb-3vtxmniggcirk6096psm9wchy.cn-shanghai.volcalb.com/acme/" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-3"></i>
+                    </a>
+                </div>
+                
+                <!-- 在线客服助手 -->
+                <div class="bg-dark/60 border border-secondary/30 rounded-xl p-8 card-hover group backdrop-blur-md">
+                    <div class="w-18 h-18 rounded-lg bg-secondary/20 flex items-center justify-center mb-6 group-hover:bg-secondary/30 transition-colors duration-300 animate-float" style="animation-delay: 0.5s;">
+                        <i class="fa fa-headphones text-secondary text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">在线客服助手</h3>
+                    <p class="text-light/70 mb-6 text-lg">7×24小时智能客服，快速响应客户咨询，提升服务体验</p>
+                    <a href="https://yjf.498.net/#/login" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-3"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 代码生成部分 -->
+    <section id="code" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-grid opacity-20"></div>
+        <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-dark/95 to-transparent"></div>
+        
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,3rem)] font-bold mb-6">代码生成</h2>
+                <p class="text-light/70 max-w-2xl mx-auto text-lg">基于大模型的代码生成工具，为金融行业提供专业、高效的数据分析和可视化解决方案</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 股份制银行财务分析 -->
+                <div class="bg-dark/70 border border-accent/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-accent/20 flex items-center justify-center mb-6 group-hover:bg-accent/30 transition-colors duration-300 animate-float" style="animation-delay: 0s;">
+                        <i class="fa fa-bank text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">股份制银行财务分析</h3>
+                    <p class="text-light/70 mb-5">自动生成银行财务数据分析代码，支持多维度财务指标分析</p>
+                    <a href="http://alb-3vtxmniggcirk6096psm9wchy.cn-shanghai.volcalb.com/code/bf_reports.html" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 消费金融行业分析 -->
+                <div class="bg-dark/70 border border-accent/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-accent/20 flex items-center justify-center mb-6 group-hover:bg-accent/30 transition-colors duration-300 animate-float" style="animation-delay: 0.3s;">
+                        <i class="fa fa-credit-card text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">消费金融行业分析</h3>
+                    <p class="text-light/70 mb-5">生成消费金融行业数据分析代码，支持市场趋势和风险评估</p>
+                    <a href="http://alb-3vtxmniggcirk6096psm9wchy.cn-shanghai.volcalb.com/code/cff_reports.html" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 模型能力分析仪表盘 -->
+                <div class="bg-dark/70 border border-accent/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-accent/20 flex items-center justify-center mb-6 group-hover:bg-accent/30 transition-colors duration-300 animate-float" style="animation-delay: 0.6s;">
+                        <i class="fa fa-bar-chart text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">模型能力分析仪表盘</h3>
+                    <p class="text-light/70 mb-5">自动生成模型性能分析代码，可视化展示模型能力和效果</p>
+                    <a href="http://alb-3vtxmniggcirk6096psm9wchy.cn-shanghai.volcalb.com/code/db_reports.html" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 催收坐席分析看板 -->
+                <div class="bg-dark/70 border border-accent/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-accent/20 flex items-center justify-center mb-6 group-hover:bg-accent/30 transition-colors duration-300 animate-float" style="animation-delay: 0.9s;">
+                        <i class="fa fa-phone text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">催收坐席分析看板</h3>
+                    <p class="text-light/70 mb-5">生成催收坐席数据分析代码，优化催收策略和提升效率</p>
+                    <a href="http://alb-3vtxmniggcirk6096psm9wchy.cn-shanghai.volcalb.com/code/cf_reports.html" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- 风控授信人物画像 -->
+                <div class="bg-dark/70 border border-accent/30 rounded-xl p-6 card-hover group backdrop-blur-md">
+                    <div class="w-16 h-16 rounded-lg bg-accent/20 flex items-center justify-center mb-6 group-hover:bg-accent/30 transition-colors duration-300 animate-float" style="animation-delay: 1.2s;">
+                        <i class="fa fa-user-circle-o text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">风控授信人物画像</h3>
+                    <p class="text-light/70 mb-5">自动生成客户风险评估代码，构建多维度人物画像</p>
+                    <a href="https://www.doubao.com/share/code/31e26151defd8353" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 新增的代码生成体验入口 -->
+            <div class="mt-16 text-center">
+                <a href="https://www.doubao.com/chat/coding" target="_blank" class="btn-primary inline-flex items-center justify-center">
+                    <i class="fa fa-code mr-3"></i> 体验智能代码生成平台
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 金融业务智能化升级部分 -->
+    <section id="finance" class="py-24 relative bg-gradient-to-b from-dark/95 to-dark overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-accent/10 to-transparent"></div>
+        
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,3rem)] font-bold mb-6">金融业务智能化升级</h2>
+                <p class="text-light/70 max-w-2xl mx-auto text-lg">基于大模型的金融业务解决方案，推动金融行业智能化转型</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- 视觉风控 -->
+                <div class="bg-dark/60 border border-primary/30 rounded-xl p-8 card-hover group backdrop-blur-md">
+                    <div class="w-18 h-18 rounded-lg bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors duration-300 animate-float" style="animation-delay: 0s;">
+                        <i class="fa fa-shield text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">视觉风控</h3>
+                    <p class="text-light/70 mb-6 text-lg">基于计算机视觉技术，提供智能化风险识别和防控解决方案</p>
+                    <a href="https://www.coze.cn/space/7509747544159944758/bot/7512311881458090011" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-3"></i>
+                    </a>
+                </div>
+                
+                <!-- 视频质检 -->
+                <div class="bg-dark/60 border border-primary/30 rounded-xl p-8 card-hover group backdrop-blur-md">
+                    <div class="w-18 h-18 rounded-lg bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors duration-300 animate-float" style="animation-delay: 0.5s;">
+                        <i class="fa fa-video-camera text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">视频质检</h3>
+                    <p class="text-light/70 mb-6 text-lg">智能分析业务视频，自动化检测合规性，提升业务质量</p>
+                    <a href="https://www.coze.cn/space/7509747544159944758/bot/7511521561816989730" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-3"></i>
+                    </a>
+                </div>
+                
+                <!-- 金融数字人 -->
+                <div class="bg-dark/60 border border-primary/30 rounded-xl p-8 card-hover group backdrop-blur-md">
+                    <div class="w-18 h-18 rounded-lg bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors duration-300 animate-float" style="animation-delay: 1s;">
+                        <i class="fa fa-robot text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">金融数字人</h3>
+                    <p class="text-light/70 mb-6 text-lg">基于AI技术的数字金融服务专家，提供全天候专业服务</p>
+                    <a href="https://bytedance.larkoffice.com/docx/UxOad5wCko5Anhx9Z7Hcd05vnpe" target="_blank" class="inline-flex items-center text-accent hover:text-white transition-colors duration-300 font-medium">
+                        立即体验 <i class="fa fa-arrow-right ml-3"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 超级智能体部分 -->
+    <section id="agent" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-grid opacity-20"></div>
+        <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-dark to-transparent"></div>
+        
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,3rem)] font-bold mb-6">超级智能体</h2>
+                <p class="text-light/70 max-w-2xl mx-auto text-lg">集成多模态能力的超级智能体，为金融行业提供全场景智能解决方案</p>
+            </div>
+            
+            <div class="bg-dark/60 border-2 border-gradient-to-r from-primary via-secondary to-accent rounded-2xl overflow-hidden backdrop-blur-md">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <div class="p-8 md:p-12 flex flex-col justify-center">
+                        <h3 class="text-3xl md:text-4xl font-bold mb-6">火山超级智能体</h3>
+                        <p class="text-light/80 mb-6 text-lg">
+                            集成自然语言处理、计算机视觉、数据分析等多种能力的超级智能体，能够理解复杂金融业务场景，提供端到端的智能解决方案。
+                        </p>
+                        <ul class="space-y-5 mb-8">
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                                    <i class="fa fa-check text-accent text-lg"></i>
+                                </div>
+                                <span class="text-lg">多模态理解与生成能力</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                                    <i class="fa fa-check text-accent text-lg"></i>
+                                </div>
+                                <span class="text-lg">跨领域知识融合与推理</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                                    <i class="fa fa-check text-accent text-lg"></i>
+                                </div>
+                                <span class="text-lg">自主学习与持续进化</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                                    <i class="fa fa-check text-accent text-lg"></i>
+                                </div>
+                                <span class="text-lg">企业级安全与隐私保护</span>
+                            </li>
+                        </ul>
+                        <a href="https://space.coze.cn/share/7511679184386015283?share_id=7511684790023176242&secret=k5qJByQU" target="_blank" class="btn-primary w-full sm:w-auto">
+                            体验超级智能体 <i class="fa fa-arrow-right ml-3"></i>
+                        </a>
+                    </div>
+                    <div class="relative h-80 lg:h-auto">
+                        <img src="https://picsum.photos/seed/aiagent/1000/800" alt="火山超级智能体界面展示" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-r from-dark to-transparent lg:hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 演示视频部分 -->
+    <section id="demo" class="py-24 relative bg-gradient-to-b from-dark to-dark/95 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-primary/20 to-transparent"></div>
+        
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,3rem)] font-bold mb-6">演示视频</h2>
+                <p class="text-light/70 max-w-2xl mx-auto text-lg">探索大模型AI在金融行业的实际应用案例和效果展示</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- AI编程生产力 -->
+                <div class="bg-dark/60 border border-primary/30 rounded-xl overflow-hidden backdrop-blur-md card-hover">
+                    <div class="relative">
+                        <!-- 视频播放器 -->
+                        <video id="video1" class="w-full h-52 object-cover" poster="https://picsum.photos/seed/aicoding/800/450">
+                            <source src="https://pub-kylin.tos-cn-beijing.volces.com/0001/1.mp4" type="video/mp4">
+                            您的浏览器不支持视频播放
+                        </video>
+                        <div id="video1-overlay" class="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer">
+                            <button class="w-16 h-16 rounded-full bg-primary/80 flex items-center justify-center transition-transform duration-300 hover:scale-110 group">
+                                <i class="fa fa-play text-white text-2xl group-hover:translate-x-1 transition-transform duration-300"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">AI编程生产力</h3>
+                        <p class="text-light/70 mb-4">展示如何使用大模型AI快速生成金融分析代码，提升开发效率</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-light/50 text-sm">10:22</span>
+                            <button class="text-accent hover:text-white transition-colors duration-300 font-medium" onclick="toggleFullScreen('video1')">
+                                全屏播放 <i class="fa fa-expand ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 在线财富顾问 -->
+                <div class="bg-dark/60 border border-primary/30 rounded-xl overflow-hidden backdrop-blur-md card-hover">
+                    <div class="relative">
+                        <!-- 视频播放器 -->
+                        <video id="video2" class="w-full h-52 object-cover" poster="https://picsum.photos/seed/wealthadvisor/800/450">
+                            <source src="https://pub-kylin.tos-cn-beijing.volces.com/0001/10.mp4" type="video/mp4">
+                            您的浏览器不支持视频播放
+                        </source>
+                        </video>
+                        <div id="video2-overlay" class="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer">
+                            <button class="w-16 h-16 rounded-full bg-primary/80 flex items-center justify-center transition-transform duration-300 hover:scale-110 group">
+                                <i class="fa fa-play text-white text-2xl group-hover:translate-x-1 transition-transform duration-300"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">在线财富顾问</h3>
+                        <p class="text-light/70 mb-4">展示大模型AI如何实现自然流畅的金融客服对话，提升客户体验</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-light/50 text-sm">08:45</span>
+                            <button class="text-accent hover:text-white transition-colors duration-300 font-medium" onclick="toggleFullScreen('video2')">
+                                全屏播放 <i class="fa fa-expand ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark/80 border-t border-primary/10 py-12">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center mr-4">
+                        <i class="fa fa-bolt text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold bg-gradient-to-r from-primary to-accent text-gradient">AI<span class="text-white ml-1">FORCE</span></h2>
+                </div>
+                <p class="text-light/60 mb-6 max-w-2xl mx-auto">
+                    火山引擎大模型AI生产力解决方案，为金融行业提供全方位智能化升级服务
+                </p>
+                <div class="flex justify-center space-x-4 mb-8">
+                    <a href="#" class="w-10 h-10 rounded-full bg-dark border border-primary/20 flex items-center justify-center text-light/60 hover:text-white hover:border-primary transition-colors duration-300">
+                        <i class="fa fa-weixin"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-dark border border-primary/20 flex items-center justify-center text-light/60 hover:text-white hover:border-primary transition-colors duration-300">
+                        <i class="fa fa-weibo"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-dark border border-primary/20 flex items-center justify-center text-light/60 hover:text-white hover:border-primary transition-colors duration-300">
+                        <i class="fa fa-linkedin"></i>
+                    </a>
+                </div>
+                <p class="text-light/40 text-sm">
+                    &copy; 2025 火山引擎. 保留所有权利.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-lg transform transition-all duration-300 opacity-0 translate-y-10 hover:shadow-xl hover:scale-110">
+        <i class="fa fa-arrow-up text-xl"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // 粒子效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 粒子配置
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 100,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#165DFF"
+                        },
+                        "shape": {
+                            "type": "circle",
+                            "stroke": {
+                                "width": 0,
+                                "color": "#000000"
+                            }
+                        },
+                        "opacity": {
+                            "value": 0.6,
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 1,
+                                "opacity_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 2,
+                                "size_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#165DFF",
+                            "opacity": 0.2,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 1,
+                            "direction": "none",
+                            "random": true,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": {
+                                "distance": 140,
+                                "line_linked": {
+                                    "opacity": 0.5
+                                }
+                            },
+                            "push": {
+                                "particles_nb": 4
+                            }
+                        }
+                    },
+                    "retina_detect": true
+                });
+            }
+            
+            // 导航栏滚动效果
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-dark/90', 'glass-effect', 'shadow-lg');
+                    navbar.classList.remove('py-4');
+                    navbar.classList.add('py-2');
+                } else {
+                    navbar.classList.remove('bg-dark/90', 'glass-effect', 'shadow-lg');
+                    navbar.classList.remove('py-2');
+                    navbar.classList.add('py-4');
+                }
+            });
+            
+            // 移动端菜单
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80, // 调整滚动偏移量，避免导航栏遮挡内容
+                            behavior: 'smooth'
+                        });
+                        
+                        // 关闭移动端菜单
+                        if (!mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+            
+            // 回到顶部按钮
+            const backToTopButton = document.getElementById('back-to-top');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTopButton.classList.remove('opacity-0', 'translate-y-10');
+                    backToTopButton.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    backToTopButton.classList.add('opacity-0', 'translate-y-10');
+                    backToTopButton.classList.remove('opacity-100', 'translate-y-0');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // 视频播放控制
+            const video1 = document.getElementById('video1');
+            const video1Overlay = document.getElementById('video1-overlay');
+            const video2 = document.getElementById('video2');
+            const video2Overlay = document.getElementById('video2-overlay');
+            
+            video1Overlay.addEventListener('click', function() {
+                togglePlay(video1, video1Overlay);
+            });
+            
+            video2Overlay.addEventListener('click', function() {
+                togglePlay(video2, video2Overlay);
+            });
+            
+            // 视频播放/暂停切换
+            function togglePlay(video, overlay) {
+                if (video.paused) {
+                    // 暂停其他视频
+                    if (!video2.paused && video.id !== 'video2') {
+                        video2.pause();
+                        video2Overlay.classList.remove('hidden');
+                    }
+                    if (!video1.paused && video.id !== 'video1') {
+                        video1.pause();
+                        video1Overlay.classList.remove('hidden');
+                    }
+                    
+                    video.play();
+                    overlay.classList.add('hidden');
+                } else {
+                    video.pause();
+                    overlay.classList.remove('hidden');
+                }
+            }
+            
+            // 视频状态变化时更新覆盖层显示
+            video1.addEventListener('pause', function() {
+                if (!video1Overlay.classList.contains('hidden')) return;
+                video1Overlay.classList.remove('hidden');
+            });
+            
+            video1.addEventListener('play', function() {
+                video1Overlay.classList.add('hidden');
+            });
+            
+            video2.addEventListener('pause', function() {
+                if (!video2Overlay.classList.contains('hidden')) return;
+                video2Overlay.classList.remove('hidden');
+            });
+            
+            video2.addEventListener('play', function() {
+                video2Overlay.classList.add('hidden');
+            });
+        });
+        
+        // 全屏播放功能
+        function toggleFullScreen(videoId) {
+            const video = document.getElementById(videoId);
+            
+            if (!document.fullscreenElement) {
+                if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                } else if (video.webkitRequestFullscreen) { /* Safari */
+                    video.webkitRequestFullscreen();
+                } else if (video.msRequestFullscreen) { /* IE11 */
+                    video.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
