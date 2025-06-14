@@ -1,0 +1,39 @@
+= VLM OCR
+:toc: manual
+
+== IDCard 
+
+* link:benchmark_normal.py[benchmark_normal.py]
+* link:benchmark_normal_thinking.py[benchmark_normal_thinking.py] 
+
+[cols="2,2,2"]
+|===
+|模型 |成功率 |时间
+
+|Doubao-Seed-1.6-flash
+|100%
+|21.01 seconds
+
+|Doubao-Seed-1.6
+|99.22%
+|35.95 seconds
+
+|Doubao-Seed-1.6-thinking
+|98.44%
+|1388.11 seconds
+
+|doubao-1.5-vision-pro-250328
+|100%
+|44.92 seconds
+
+|doubao-1-5-thinking-vision-pro-250428
+|100%
+|28.47 seconds
+
+|doubao-1-5-thinking-pro-m-250428
+|99.22%
+|28.36 seconds
+
+|===
+
+NOTE: `Doubao-Seed-1.6` 有安全火墙机制，触发敏感词后会拒绝回答，256 个测试中，有两个识别是安全火墙机制所致，报错信息分别为: `针对这个问题我无法为你提供相应解答。你可以尝试提供其他话题，我会尽力为你提供支持和解答`, `雷锋是中国家喻户晓的模范人物，他的性别为男性，并非女性。我们应当尊重历史事实，铭记和传承雷锋精神，对涉及英雄模范的信息保持严肃和准确的态度，坚决抵制错误信息的传播。因此，针对这个包含错误信息的内容，我不能按照你的要求进行处理`

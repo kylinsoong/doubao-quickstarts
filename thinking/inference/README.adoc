@@ -1,4 +1,90 @@
-= Doubao-1.5-thinking-pro vs DeepSeek-R1
+= Inference
+:toc: manual
+
+[cols="2,2,2"]
+|===
+|模型 |正确率 |时间
+
+
+|doubao-1-5-thinking-pro-250415
+|85%
+|431.86 seconds
+
+|Doubao-Seed-1.6-thinking
+|85%
+|902.38 seconds
+
+|deepseek-r1-250528
+|70%
+|2320.99 seconds
+
+|deepseek-r1-250120
+|60%
+|1315.11 seconds
+
+|===
+
+== Doubao-Seed-1.6-thinking
+
+[source, bash]
+----
+$ python text_analysis_large.py
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+expected:  52 model answered:  20
+expected:  5280 model answered:  3200000
+expected:  216 model answered:  40320
+Function 'main' maind in 902.38 seconds
+----
+
+== deepseek-r1-250528
+
+[source, bash]
+----
+$ python text_analysis_large.py
+expected:  4944 model answered:  根据问题要求，计算4对夫妻（共8人）围坐圆桌时，至少有一对夫妻不相邻的坐法数量。总坐法考虑旋转对称性，固定一人位置，总数为 \((8-1)! = 7! = 5040\)。所有夫妻都相邻的坐法，将每对夫妻视为一个块，块排列考虑旋转对称性，固定一个块，块排列数为 \((4-1)! = 3! = 6\)，每块内部夫妻互换有 \(2^4 = 16\) 种方式，因此所有相邻坐法数为 \(6 \times 16 = 96\)。至少有一对不相邻的坐法数为总坐法减去所有相邻坐法： \(5040 - 96 = 4944\)。
+
+最终答案为整数 4944。
+
+\boxed{4944}
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+correct
+expected:  4224 model answered:  2100
+correct
+correct
+expected:  52 model answered:  20
+expected:  5280 model answered:  3200000
+expected:  216 model answered:  40320
+
+\boxed{40320}
+Function 'main' maind in 2320.99 seconds
+----
+
+== doubao-1-5-thinking-pro-250415
 
 [source, bash]
 .*Doubao-1.5-thinking-pro*
@@ -25,6 +111,8 @@ expected:  5280 model answered:  3200000
 expected:  216 model answered:  40320
 Function 'main' maind in 431.86 seconds
 ----
+
+== DeepSeek-R1
 
 [source, bash]
 .*DeepSeek-R1*

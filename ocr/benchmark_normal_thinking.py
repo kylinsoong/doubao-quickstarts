@@ -48,9 +48,6 @@ def analyze_image(image_path, api_key, api_ep_id):
                 ],
             }
         ],
-        thinking = {
-            "type":"disabled"
-        },
         temperature=0.01
     )
     return completion.choices[0].message.content
@@ -69,7 +66,6 @@ def compare_results(image_path, original_info, result):
                 #print(f"{image_path}, {field} 识别结果一致，值为: {original_value}")
     except json.JSONDecodeError:
         print("识别结果不是有效的 JSON 格式")
-        print(result)
 
 def execute(info):
     image_path = info.get('image_path')

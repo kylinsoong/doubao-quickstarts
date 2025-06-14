@@ -1,10 +1,8 @@
 = What's this
 
-Primary purpose of this repository is *stand on customer* to provide a *PoV(proof of value) of Doubao Large Language Model*. 
+Primary purpose of this repository is *stand on customer* to provide a *Pinciple to use Doubao Large Language Model*. 
 
-== Useful Links
+== Items
 
-* 大模型语音合成 https://www.volcengine.com/docs/6561/162929
-
-== Proof of Value
-
+* link:ocr/README.adoc[Select Best Model for processing OCR]
+* link:thinking/inference/README.adoc[Thinking model benchmark] 
