@@ -36,13 +36,11 @@ def analyze_video():
                     },
                 ],
             }
-        ],
-        thinking={
-            "type": "disabled"
-        }
+        ]
     )
 
-    return completion.choices[0].message.content
+    content = completion.choices[0].message.content
+    return {"result": content}
 
 
 if __name__ == "__main__":

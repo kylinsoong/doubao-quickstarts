@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面试人员分析</title>
+  <!-- 引入 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入 Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- 引入 Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  
+  <!-- 配置 Tailwind 自定义颜色 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+            secondary: '#10B981',
+            accent: '#8B5CF6',
+            warning: '#F59E0B',
+            danger: '#EF4444',
+            info: '#06B6D4',
+            light: '#F3F4F6',
+            dark: '#1F2937'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <!-- 自定义工具类 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .card-shadow {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      .hover-scale {
+        transition: transform 0.3s ease;
+      }
+      .hover-scale:hover {
+        transform: scale(1.02);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+  
+  <!-- 导航栏 -->
+  <nav class="bg-primary text-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fa fa-bar-chart text-2xl"></i>
+        <h1 class="text-xl font-bold">面试人员分析</h1>
+      </div>
+      <div class="hidden md:flex space-x-6">
+        <a href="#" class="hover:text-light transition-colors duration-200"><i class="fa fa-home mr-1"></i> 首页</a>
+        <a href="#" class="hover:text-light transition-colors duration-200"><i class="fa fa-user-circle mr-1"></i> 候选人管理</a>
+        <a href="#" class="hover:text-light transition-colors duration-200"><i class="fa fa-line-chart mr-1"></i> 分析报告</a>
+        <a href="#" class="hover:text-light transition-colors duration-200"><i class="fa fa-cog mr-1"></i> 设置</a>
+      </div>
+      <button class="md:hidden text-white focus:outline-none">
+        <i class="fa fa-bars text-xl"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 主内容区 -->
+  <main class="container mx-auto px-4 py-8">
+    <!-- 候选人信息卡片 -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8 transform hover:shadow-xl transition-shadow duration-300">
+      <div class="flex flex-col md:flex-row md:items-center gap-6">
+        <div class="md:w-1/4">
+          <div class="relative w-40 h-40 mx-auto">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-full opacity-20 animate-pulse"></div>
+            <div class="relative w-full h-full bg-gray-200 rounded-full overflow-hidden">
+              <img src="https://picsum.photos/200/200?random=1" alt="候选人照片" class="w-full h-full object-cover">
+            </div>
+          </div>
+        </div>
+        <div class="md:w-3/4">
+          <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-2">
+            <span id="candidate-name">未填写姓名</span>
+            <span class="inline-block bg-secondary text-white text-sm px-3 py-1 rounded-full ml-2">复旦大学国际贸易专业</span>
+          </h2>
+          <p class="text-gray-600 mb-4">
+            <i class="fa fa-briefcase text-primary mr-2"></i>
+            大学期间担任学生会干事，曾在两家不同行业实习
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-primary">
+              <h3 class="font-semibold text-primary mb-1">优势</h3>
+              <p class="text-gray-700 text-sm">积极主动，对数据分析与沟通表达有热情，具备跨行业业务理解能力和团队协作意识，学习能力较强</p>
+            </div>
+            <div class="bg-red-50 p-3 rounded-lg border-l-4 border-danger">
+              <h3 class="font-semibold text-danger mb-1">改进方向</h3>
+              <p class="text-gray-700 text-sm">在压力处理、细节把控及问题解决的具体阐述上存在不足，需进一步提升</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数据可视化部分 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <!-- 六维度打标图表 -->
+      <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6 hover-scale">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-dark flex items-center">
+            <i class="fa fa-pie-chart text-accent mr-2"></i> 六维度打标分析
+          </h3>
+          <div class="text-sm text-gray-500">
+            <span id="update-time">更新于: 2025-06-14</span>
+          </div>
+        </div>
+        <div class="h-[350px]">
+          <canvas id="six-dimensions-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- 优势与不足分析 -->
+      <div class="bg-white rounded-xl shadow-lg p-6 hover-scale">
+        <h3 class="text-xl font-bold text-dark mb-6 flex items-center">
+          <i class="fa fa-tasks text-secondary mr-2"></i> 优势与不足分布
+        </h3>
+        <div class="space-y-4">
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium">沟通能力</span>
+              <span class="text-sm font-medium text-secondary">85%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-secondary h-2.5 rounded-full" style="width: 85%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium">问题解决</span>
+              <span class="text-sm font-medium text-warning">65%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-warning h-2.5 rounded-full" style="width: 65%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium">抗压能力</span>
+              <span class="text-sm font-medium text-warning">60%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-warning h-2.5 rounded-full" style="width: 60%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium">细节把控</span>
+              <span class="text-sm font-medium text-danger">55%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-danger h-2.5 rounded-full" style="width: 55%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium">团队协作</span>
+              <span class="text-sm font-medium text-secondary">80%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-secondary h-2.5 rounded-full" style="width: 80%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium">岗位认知</span>
+              <span class="text-sm font-medium text-secondary">90%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-secondary h-2.5 rounded-full" style="width: 90%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 详细数据表格 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- 表现不佳详情 -->
+      <div class="bg-white rounded-xl shadow-lg p-6 hover-scale">
+        <h3 class="text-xl font-bold text-dark mb-6 flex items-center">
+          <i class="fa fa-exclamation-triangle text-warning mr-2"></i> 表现不佳详情
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间点</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">回答原文</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">不佳原因</th>
+              </tr>
+            </thead>
+            <tbody id="poor-performance-table" class="divide-y divide-gray-200">
+              <!-- 动态填充数据 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 六维度打标详情 -->
+      <div class="bg-white rounded-xl shadow-lg p-6 hover-scale">
+        <h3 class="text-xl font-bold text-dark mb-6 flex items-center">
+          <i class="fa fa-list-alt text-primary mr-2"></i> 六维度打标详情
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">维度</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">标签</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">判定理由</th>
+              </tr>
+            </thead>
+            <tbody id="six-dimensions-table" class="divide-y divide-gray-200">
+              <!-- 动态填充数据 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white py-8 mt-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-lg font-bold mb-4">面试人员分析</h3>
+          <p class="text-gray-400 text-sm">
+            提供全面的面试数据分析和可视化，帮助招聘团队做出更明智的决策。
+          </p>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">快速链接</h3>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors duration-200">首页</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-200">候选人管理</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-200">分析报告</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-200">帮助中心</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold mb-4">联系我们</h3>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex items-center"><i class="fa fa-envelope-o mr-2"></i> support@example.com</li>
+            <li class="flex items-center"><i class="fa fa-phone mr-2"></i> +86 123 4567 8901</li>
+            <li class="flex items-center"><i class="fa fa-map-marker mr-2"></i> 上海市浦东新区张江高科技园区</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
+        <p>© 2025 面试人员分析. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 定义 JSON 数据
+    const interviewData = {
+      "整体检测": {
+        "整体总结": {
+          "姓名": "XX",
+          "教育背景": "复旦大学国际贸易专业",
+          "工作经历": "大学期间担任学生会干事，曾在两家不同行业实习",
+          "整体表现": "积极主动，对数据分析与沟通表达有热情，具备跨行业业务理解能力和团队协作意识，学习能力较强；但在压力处理、细节把控及问题解决的具体阐述上存在不足，需进一步提升。"
+        },
+        "表现不佳": [
+          {
+            "时间点": "39.76-40.7秒",
+            "回答原文": "嗯",
+            "不佳原因": "回答停顿过多，语言表达不流畅，未能快速衔接内容。"
+          },
+          {
+            "时间点": "44.44-49.58秒",
+            "回答原文": "嗯就是有的时候时间比较紧",
+            "不佳原因": "描述过往挑战时过于笼统，缺乏具体情境和解决措施，说服力不足。"
+          },
+          {
+            "时间点": "75.32-79.66秒",
+            "回答原文": "但是我嗯就是不太会",
+            "不佳原因": "面对团队协作中的问题，表现出被动和能力不足，未能体现积极解决问题的态度。"
+          },
+          {
+            "时间点": "129.64-133.02秒",
+            "回答原文": "有时候可能会太追求效率比，在整理报表的时候，会忽略了部分细节",
+            "不佳原因": "承认细节把控不足，但未说明具体改进方法，自我提升意识和解决方案阐述欠缺。"
+          }
+        ]
+      },
+      "六维度打标": {
+        "情绪稳定性与抗压能力": {
+          "tag": "情绪稳定",
+          "reason": "回答过程中眼神镇定，面部肌肉放松，坐姿保持端正，未出现频繁眨眼、身体僵硬等紧张表现"
+        },
+        "沟通意愿与表达能力": {
+          "tag": "积极沟通",
+          "reason": "主动分享过往经历与技能，回答内容详细，如提及团队合作中的问题处理方式，表现出主动交流的意愿"
+        },
+        "性格特质与岗位适配性": {
+          "tag": "严谨自信",
+          "reason": "坐姿端正，回答问题条理清晰，如分步骤描述解决团队矛盾的过程，展现出稳重的特质"
+        },
+        "诚信度与心理状态": {
+          "tag": "真诚坦诚",
+          "reason": "主动承认自身不足（如\"过于追求效率忽略细节\"），并提及改进措施，眼神稳定且身体朝向面试官"
+        },
+        "职业素养与细节意识": {
+          "tag": "礼仪规范",
+          "reason": "着装正式，坐姿端正，整体表现符合职场基本礼仪要求"
+        },
+        "对岗位的认知与兴趣": {
+          "tag": "准备充分",
+          "reason": "详细提及岗位核心职责，规划短期工作目标（如\"两个月内独立负责模块\"），表明对岗位有深入了解"
+        }
+      }
+    };
+
+    // 填充候选人姓名
+    document.getElementById('candidate-name').textContent = interviewData['整体检测']['整体总结']['姓名'];
+
+    // 填充表现不佳表格
+    const poorPerformanceTable = document.getElementById('poor-performance-table');
+    const poorPerformance = interviewData['整体检测']['表现不佳'];
+    
+    poorPerformance.forEach((item, index) => {
+      const row = document.createElement('tr');
+      row.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+      
+      const timePointCell = document.createElement('td');
+      timePointCell.className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900';
+      timePointCell.textContent = item['时间点'];
+      
+      const answerCell = document.createElement('td');
+      answerCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+      answerCell.textContent = item['回答原文'];
+      
+      const reasonCell = document.createElement('td');
+      reasonCell.className = 'px-6 py-4 text-sm text-gray-500';
+      reasonCell.textContent = item['不佳原因'];
+      
+      row.appendChild(timePointCell);
+      row.appendChild(answerCell);
+      row.appendChild(reasonCell);
+      poorPerformanceTable.appendChild(row);
+    });
+
+    // 填充六维度打标表格
+    const sixDimensionsTable = document.getElementById('six-dimensions-table');
+    const sixDimensions = interviewData['六维度打标'];
+    
+    // 定义标签颜色映射
+    const tagColors = {
+      "情绪稳定": "bg-blue-100 text-blue-800",
+      "积极沟通": "bg-green-100 text-green-800",
+      "严谨自信": "bg-purple-100 text-purple-800",
+      "真诚坦诚": "bg-yellow-100 text-yellow-800",
+      "礼仪规范": "bg-gray-100 text-gray-800",
+      "准备充分": "bg-indigo-100 text-indigo-800"
+    };
+    
+    Object.entries(sixDimensions).forEach(([dimension, { tag, reason }], index) => {
+      const row = document.createElement('tr');
+      row.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+      
+      const dimensionCell = document.createElement('td');
+      dimensionCell.className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900';
+      dimensionCell.textContent = dimension;
+      
+      const tagCell = document.createElement('td');
+      tagCell.className = 'px-6 py-4 whitespace-nowrap';
+      const tagSpan = document.createElement('span');
+      tagSpan.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${tagColors[tag]}`;
+      tagSpan.textContent = tag;
+      tagCell.appendChild(tagSpan);
+      
+      const reasonCell = document.createElement('td');
+      reasonCell.className = 'px-6 py-4 text-sm text-gray-500';
+      reasonCell.textContent = reason;
+      
+      row.appendChild(dimensionCell);
+      row.appendChild(tagCell);
+      row.appendChild(reasonCell);
+      sixDimensionsTable.appendChild(row);
+    });
+
+    // 绘制六维度打标图表
+    const ctx = document.getElementById('six-dimensions-chart').getContext('2d');
+    const dimensions = Object.keys(sixDimensions);
+    
+    // 为每个维度定义不同的颜色
+    const dimensionColors = [
+      'rgba(59, 130, 246, 0.7)',  // primary
+      'rgba(16, 185, 129, 0.7)',  // secondary
+      'rgba(139, 92, 246, 0.7)',  // accent
+      'rgba(245, 158, 11, 0.7)',  // warning
+      'rgba(239, 68, 68, 0.7)',   // danger
+      'rgba(6, 182, 214, 0.7)'    // info
+    ];
+    
+    // 为每个维度定义不同的边框颜色
+    const borderColors = [
+      'rgba(59, 130, 246, 1)',
+      'rgba(16, 185, 129, 1)',
+      'rgba(139, 92, 246, 1)',
+      'rgba(245, 158, 11, 1)',
+      'rgba(239, 68, 68, 1)',
+      'rgba(6, 182, 214, 1)'
+    ];
+    
+    // 为每个维度定义评分（1-10分）
+    const dimensionScores = [8, 8.5, 7.5, 8, 6.5, 9];
+    
+    const chart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: dimensions,
+        datasets: [{
+          label: '六维度评分',
+          data: dimensionScores,
+          backgroundColor: 'rgba(139, 92, 246, 0.2)',
+          borderColor: 'rgba(139, 92, 246, 1)',
+          borderWidth: 2,
+          pointBackgroundColor: dimensionColors,
+          pointBorderColor: borderColors,
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: dimensionColors,
+          pointHoverBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }]
+      },
+      options: {
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 10,
+            ticks: {
+              stepSize: 2,
+              backdropColor: 'transparent'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.label}: ${context.raw}/10`;
+              }
+            }
+          }
+        },
+        elements: {
+          line: {
+            tension: 0.1
+          }
+        }
+      }
+    });
+
+    // 添加动画效果
+    document.addEventListener('DOMContentLoaded', () => {
+      // 为表格行添加进入动画
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          row.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          row.style.opacity = '1';
+          row.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+    });
+  </script>
+</body>
+</html>    

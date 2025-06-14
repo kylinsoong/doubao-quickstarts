@@ -72,7 +72,7 @@ def asr():
     response = jsonify(results)
     response_str = response.get_data(as_text=True)
     #print(type(response_str))
-    return response_str
+    return {"asr": response_str}
 
 if __name__ == '__main__':
     app.run(debug=True)
