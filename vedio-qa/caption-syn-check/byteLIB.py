@@ -3,12 +3,22 @@ import requests
 import json
 from tos import HttpMethodType
 from volcenginesdkarkruntime import Ark
+import time
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 base_url = 'https://openspeech.bytedance.com/api/v1/vc'
 language = 'zh-CN'
+
+def log_time(func):
+    def wrapper(*args, **kwargs):
+        begin_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Function '{func.__name__}' maind in {end_time - begin_time:.2f} seconds")
+        return result
+    return wrapper
 
 def load_file_content(file_path: str) -> str:
     with open(file_path, 'r', encoding='utf-8') as file:
