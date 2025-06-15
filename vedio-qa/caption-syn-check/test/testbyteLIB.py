@@ -58,12 +58,14 @@ tos = ByteTOS(ak=ak, sk=sk, endpoint=endpoint, region=region, bucket=bucket)
 asr = ByteVideoASR(appid=appid, access_token=access_token)
 vlm = ByteVLM(api_key=api_key,model=model)
 
-obj_keys = ["qsmutual/020.mp4", "qsmutual/021.mp4"]
+obj_key = "qsmutual/021.mp4"
+url = tos.generate_signed_url(obj_key)
 
-urls = tos.generate_signed_urls(obj_keys)
+asr_results = asr.process(url)
 
-for url in urls:
-    asr_results = asr.process(url)
-    prompt = original_prompt.replace("{{ASR_JSON_SUBTITLES}}", asr_results)
-    results = vlm.process(prompt=prompt,video_url=url,thinking="disabled")
-    print(results)
+prompt = original_prompt.replace("{{ASR_JSON_SUBTITLES}}", asr_results)
+
+final_results = vlm.process(prompt=prompt,video_url=url,thinking="disabled")
+
+print(final_results)
+

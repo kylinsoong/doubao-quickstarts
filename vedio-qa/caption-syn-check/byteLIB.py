@@ -10,6 +10,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 base_url = 'https://openspeech.bytedance.com/api/v1/vc'
 language = 'zh-CN'
 
+def load_file_content(file_path: str) -> str:
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return file.read()
 
 class ByteVLM:
     def __init__(self, api_key, model):
