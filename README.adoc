@@ -6,4 +6,4 @@ Primary purpose of this repository is *stand on customer* to provide a *Pinciple
 
 * link:ocr/README.adoc[Select Best Model for processing OCR]
 * link:thinking/inference/README.adoc[Thinking model benchmark] 
-* link:vedio-qa/README.adoc[Exploring Vedio Quality Assurance]
+* link:vedio.quality.assurance/README.adoc[Exploring Vedio Quality Assurance]
