@@ -4,6 +4,9 @@ from byteLIB import ByteVLM
 from byteLIB import load_file_content
 from byteLIB import log_time
 import concurrent.futures
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def initialize():
@@ -31,12 +34,15 @@ def initialize():
 
 @log_time
 def process(vlm, prompt, url):
-    content, usage = vlm.analyze_image(prompt=prompt, image_url=url, thinking="disabled", temperature=0.01)
+    content, usage = vlm.analyze_image(prompt=prompt, image_url=url, temperature=0.01)
     return content
 
 
 @log_time
 def main():
+
+    logging.info("Visual Risk Control Start")
+
     vlm, prompt, data = initialize()
     contents = []
 
@@ -48,13 +54,15 @@ def main():
             url = future_to_url[future]
             try:
                 content = future.result()
-                contents.append(content)
+                json_content = json.loads(content)
+                contents.append(json_content)
             except Exception as exc:
                 print(f'{url} generated an exception: {exc}')
 
     with open('output.json', 'w', encoding='utf-8') as f:
         json.dump(contents, f, ensure_ascii=False)
 
+    logging.info("Visual Risk Control End")
 
 if __name__ == "__main__":
     main()
