@@ -2,6 +2,10 @@ import os
 import json
 from volcenginesdkarkruntime import Ark
 import time
+import logging
+
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 API_KEY = os.environ.get("ARK_API_KEY")
 API_EP_ID = os.environ.get("ARK_API_ENGPOINT_ID")
@@ -55,7 +59,7 @@ def analyze_video(video_url: str):
 def main():
 
     # DO NOT WORK
-    #video_url = "https://baoxian-crm.oss-accelerate.aliyuncs.com/momo_tracker_videos/1750774970_motion_video_6c69d36c-29ab-4a4e-91bb-82292229363d_1913753014424911873_1750773216.mp4"
+    video_url = "https://baoxian-crm.oss-accelerate.aliyuncs.com/momo_tracker_videos/1750774970_motion_video_6c69d36c-29ab-4a4e-91bb-82292229363d_1913753014424911873_1750773216.mp4"
     #video_url = "https://pub-kylin.tos-cn-beijing.volces.com/0001/1750773216.mp4"
     #video_url = "https://pub-kylin.tos-cn-beijing.volces.com/0001/1750773216_copy.mp4"
     #video_url = "https://pub-kylin.tos-cn-beijing.volces.com/0001/copy.mp4"
@@ -63,7 +67,7 @@ def main():
     # WORK
     #video_url = "https://pub-kylin.tos-cn-beijing.volces.com/0004/003.mp4"
     #video_url = "https://pub-kylin.tos-cn-beijing.volces.com/0001/1750773217.mp4"    
-    video_url = "https://pub-kylin.tos-cn-beijing.volces.com/0001/1750773218.mp4"    
+    #video_url = "https://pub-kylin.tos-cn-beijing.volces.com/0001/1750773218.mp4"    
 
     summary, usage = analyze_video(video_url)
     print()
