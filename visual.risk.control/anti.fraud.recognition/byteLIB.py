@@ -84,6 +84,43 @@ def generate_prompt():
     return prompt
 
 
+class ByteLLM:
+    def __init__(self, api_key, model):
+        self.api_key = api_key
+        self.model = model
+        self.logger = logging.getLogger(__name__)
+
+    def analyze(self, prompt, thinking=None, temperature=0.7, max_tokens=16000):
+        if not self.api_key or not self.model:
+            raise ValueError("Missing API_KEY or MODEL environment variables")
+
+        client = Ark(api_key=self.api_key)
+
+
+        params = {
+            "model": self.model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": temperature,
+            "max_tokens": max_tokens
+        }
+
+
+        if thinking is not None:
+            if isinstance(thinking, bool):
+                thinking = "enabled" if thinking else "disabled"
+            params["thinking"] = {"type": thinking}
+
+
+        completion = client.chat.completions.create(**params)
+
+        return completion.choices[0].message.content, completion.usage
+
+
 
 class ByteVLM:
     def __init__(self, api_key, model):
@@ -128,6 +165,48 @@ class ByteVLM:
 
         return completion.choices[0].message.content, completion.usage
         
+    def analyze_image_pair(self, prompt, pair, thinking=None, temperature=0.7, max_tokens=16000):
+        if not self.api_key or not self.model:
+            raise ValueError("Missing API_KEY or MODEL environment variables")
+
+        client = Ark(api_key=self.api_key)
+
+        message_content = [
+            {"type": "text", "text": prompt},
+            {
+                "type": "image_url",
+                "image_url": {"url":  pair[0]}
+            },
+            {
+                "type": "image_url",
+                "image_url": {"url":  pair[1]}
+            }
+        ]
+
+        params = {
+            "model": self.model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": message_content
+                }
+            ],
+            "temperature": temperature,
+            "max_tokens": max_tokens
+        }
+
+
+        if thinking is not None:
+            if isinstance(thinking, bool):
+                thinking = "enabled" if thinking else "disabled"
+            params["thinking"] = {"type": thinking}
+
+
+        completion = client.chat.completions.create(**params)
+
+        return completion.choices[0].message.content, completion.usage
+
+
 
 
     def analyze_video(self, prompt, video_url, thinking=None, fps=1.0, temperature=0.7, max_tokens=16000):

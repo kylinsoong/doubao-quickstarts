@@ -36,6 +36,17 @@ def process(vlm, prompt, person):
         logging.error(f"Error processing {person['face']}: {e}, {content}")
 
 
+
+def process(vlm, prompt, pair):
+    try:
+        content, usage = vlm.analyze_image(prompt=prompt, image_url=person['face'], thinking="disabled", temperature=0.01)
+        person['vlm'] = json.loads(content)
+        results.append(person)
+        #logging.info(f"Processed {person['face']} successfully. Usage: {usage}")
+    except Exception as e:
+        logging.error(f"Error processing {person['face']}: {e}, {content}")
+
+
 @log_time
 def execute():
 
