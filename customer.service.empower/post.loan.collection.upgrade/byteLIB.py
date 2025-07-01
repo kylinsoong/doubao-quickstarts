@@ -1,10 +1,12 @@
 import tos
+import os
 import requests
 import json
 from tos import HttpMethodType
 from volcenginesdkarkruntime import Ark
 import time
 import random
+import re
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -24,6 +26,40 @@ def log_time(func):
 def load_file_content(file_path: str) -> str:
     with open(file_path, 'r', encoding='utf-8') as file:
         return file.read()
+
+
+def load_folder_content(folder_path):
+    """
+    Load JSON files from a folder, sort them numerically, 
+    and return a list of tuples containing filename and formatted JSON string.
+    
+    Args:
+        folder_path (str): Path to the folder containing JSON files
+        
+    Returns:
+        list: List of tuples where each tuple contains (filename, formatted_json_str)
+    """
+    try:
+        # Get list of JSON files and sort them numerically
+        files = os.listdir(folder_path)
+        json_files = [f for f in files if f.lower().endswith('.json')]
+        json_files.sort(key=lambda x: int(re.search(r'\d+', x).group()))
+        
+        result = []
+        for filename in json_files:
+            file_path = os.path.join(folder_path, filename)
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+                # Parse and format JSON with 2-space indentation
+                parsed_json = json.loads(content)
+                formatted_json = json.dumps(parsed_json, ensure_ascii=False, indent=2)
+                result.append([filename, formatted_json])
+        
+        logging.info(f"Successfully loaded {len(result)} JSON files from folder '{folder_path}'")
+        return result
+    except Exception as e:
+        logging.error(f"Error loading role folder: {e}")
+        raise
 
 
 class ByteLLM:
