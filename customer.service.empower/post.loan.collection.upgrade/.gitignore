@@ -3,3 +3,6 @@ role
 inspection
 inspection_upgrade
 warning
+warning_upgrade
+labels
+labels_upgrade
