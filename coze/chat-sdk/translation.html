@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中信建设 AI+ 平台 - 智能翻译</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F52BA', // 中信蓝作为主色调
+                        secondary: '#1E3A8A', // 深蓝色作为辅助色
+                        accent: '#FF9500', // 橙色作为强调色
+                        neutral: '#F3F4F6', // 浅灰色作为背景
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .nav-item-active {
+                @apply bg-primary/10 text-primary border-l-4 border-primary;
+            }
+            .transition-content {
+                @apply transition-all duration-300 ease-in-out;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 min-h-screen flex overflow-hidden">
+    <!-- 左侧导航栏 -->
+    <aside class="bg-white shadow-lg w-64 flex-shrink-0 h-screen flex flex-col transition-all duration-300 ease-in-out z-10">
+        <!-- 平台Logo和名称 -->
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="bg-primary text-white p-2 rounded-lg">
+                    <i class="fa fa-bank text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-primary">中信建设</h1>
+                    <p class="text-sm text-gray-500">AI+ 智能平台</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 导航菜单 -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">智能应用</p>
+            <ul class="space-y-1">
+                <li>
+                    <a href="index.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-home w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>首页</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="translation.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content nav-item-active">
+                        <i class="fa fa-language w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>智能翻译</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="qa.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-comments w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>智能问答</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mt-6 mb-2">系统设置</p>
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-cog w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>设置</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-question-circle w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>帮助中心</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- 用户信息 -->
+        <div class="p-4 border-t border-gray-200">
+            <div class="flex items-center">
+                <img class="h-9 w-9 rounded-full object-cover" src="https://picsum.photos/id/1005/200/200" alt="用户头像">
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-gray-700">张工程师</p>
+                    <p class="text-xs text-gray-500">高级权限</p>
+                </div>
+                <button class="ml-auto text-gray-400 hover:text-gray-600">
+                    <i class="fa fa-sign-out"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="flex-1 overflow-y-auto bg-gray-50">
+        <!-- 顶部状态栏 -->
+        <header class="bg-white shadow-sm sticky top-0 z-10">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <h2 class="text-lg font-semibold">智能翻译</h2>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700 relative">
+                        <i class="fa fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                    </button>
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 智能翻译内容 -->
+        <div class="p-6">
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4">智能翻译</h3>
+                <p class="text-gray-600 mb-6">专业的工程、金融领域多语言翻译工具，支持多种格式和场景的翻译需求</p>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">翻译类型</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button class="px-4 py-2 rounded-md bg-primary text-white text-sm font-medium">文本翻译</button>
+                        <button class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-content">文档翻译</button>
+                        <button class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-content">图片翻译</button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">源语言</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-content">
+                            <option>中文 (简体)</option>
+                            <option>英语</option>
+                            <option>日语</option>
+                            <option>韩语</option>
+                            <option>法语</option>
+                            <option>西班牙语</option>
+                        </select>
+                        
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">输入文本</label>
+                            <textarea class="w-full p-3 border border-gray-300 rounded-lg h-48 focus:ring-2 focus:ring-primary focus:border-primary transition-content" placeholder="请输入需要翻译的文本..."></textarea>
+                            <div class="flex justify-between mt-2 text-sm text-gray-500">
+                                <span>0/5000 字符</span>
+                                <button class="text-primary hover:text-secondary transition-content">清空</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">目标语言</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-content">
+                            <option>英语</option>
+                            <option>中文 (简体)</option>
+                            <option>日语</option>
+                            <option>韩语</option>
+                            <option>法语</option>
+                            <option>西班牙语</option>
+                        </select>
+                        
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">翻译结果</label>
+                            <div class="w-full p-3 border border-gray-300 rounded-lg h-48 bg-gray-50 overflow-y-auto">
+                                <div class="text-gray-400 italic">翻译结果将显示在这里...</div>
+                            </div>
+                            <div class="flex justify-end mt-2">
+                                <button class="text-sm text-primary hover:text-secondary transition-content flex items-center">
+                                    <i class="fa fa-copy mr-1"></i> 复制结果
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-center">
+                    <button id="translate-btn" class="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-content flex items-center">
+                        <i class="fa fa-language mr-2"></i> 开始翻译
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-4">翻译历史</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">内容摘要</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">语言</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间</th>
+                                <th class="px-4 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 max-w-xs truncate">关于迪拜新机场项目的结构设计说明...</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">中 → 英</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">2023-06-15 14:30</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="text-primary hover:text-secondary transition-content">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 max-w-xs truncate">关于欧洲高铁项目的融资方案分析...</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">中 → 法</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">2023-06-14 09:15</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="text-primary hover:text-secondary transition-content">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 max-w-xs truncate">混凝土结构耐久性检测标准...</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">英 → 中</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">2023-06-12 16:45</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="text-primary hover:text-secondary transition-content">查看</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 text-center">
+                    <button class="text-sm text-primary hover:text-secondary transition-content">查看更多历史</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为导航链接添加交互效果
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('nav-item-active')) {
+                        this.classList.add('bg-gray-50');
+                    }
+                });
+                link.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('nav-item-active')) {
+                        this.classList.remove('bg-gray-50');
+                    }
+                });
+            });
+            
+            // 翻译功能模拟
+            const translateBtn = document.getElementById('translate-btn');
+            if (translateBtn) {
+                translateBtn.addEventListener('click', function() {
+                    const textarea = document.querySelector('textarea');
+                    const resultDiv = document.querySelector('.bg-gray-50.overflow-y-auto');
+                    
+                    if (textarea && resultDiv && textarea.value.trim()) {
+                        // 显示加载状态
+                        resultDiv.innerHTML = '<div class="text-gray-500 flex items-center justify-center h-full"><i class="fa fa-circle-o-notch fa-spin mr-2"></i> 正在翻译...</div>';
+                        
+                        // 模拟翻译延迟
+                        setTimeout(() => {
+                            // 简单的翻译模拟（实际应用中会调用API）
+                            const sampleTranslation = "This is a sample translation result. In a real application, this would be replaced with actual translation content based on the input text. The system supports professional terminology in engineering and financial fields.";
+                            resultDiv.innerHTML = `<p class="text-gray-800">${sampleTranslation}</p>`;
+                        }, 1500);
+                    } else if (textarea) {
+                        alert('请输入需要翻译的文本');
+                    }
+                });
+            }
+            
+            // 清空按钮功能
+            const clearBtn = document.querySelector('button:text-primary');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    const textarea = document.querySelector('textarea');
+                    if (textarea) {
+                        textarea.value = '';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

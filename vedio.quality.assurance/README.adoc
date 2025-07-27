@@ -1,7 +1,7 @@
-= Vedio Quality Assurance 
+= Video Quality Assurance 
 :toc: manual
 
-[options="Vedio Quality Assurance"]
+[options="Video Quality Assurance"]
 |===
 |ITEM | NOTES
 
@@ -9,8 +9,8 @@
 |link:caption.font.check[caption.font.check]             |Subtitle font and characters checking
 |link:person.detect[person.detect]                       |Object(Person) detection
 |link:scene.extraction[scene.extraction]                 |Extrcting sweet scene from whole vedio
-|link:content.tag.single[content.tag.single]             |Vedio content classification tagging 
-|link:content.tag.multiple[content.tag.multiple]         |Vedio analysis and multiple phrease tagging
+|link:content.tag.single[content.tag.single]             |Video content classification tagging 
+|link:content.tag.multiple[content.tag.multiple]         |Video analysis and multiple phrase tagging
 |link:object.detect[object.detect]                       |Object Detection, fuel the truck object detection
 |link:financial.dual.recording[financial.dual.recording] |Financial dual-recording video quality checking 
 

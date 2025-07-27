@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中信建设 AI+ 平台 - 智能问答</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F52BA', // 中信蓝作为主色调
+                        secondary: '#1E3A8A', // 深蓝色作为辅助色
+                        accent: '#FF9500', // 橙色作为强调色
+                        neutral: '#F3F4F6', // 浅灰色作为背景
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .nav-item-active {
+                @apply bg-primary/10 text-primary border-l-4 border-primary;
+            }
+            .transition-content {
+                @apply transition-all duration-300 ease-in-out;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 min-h-screen flex overflow-hidden">
+    <!-- 左侧导航栏 -->
+    <aside class="bg-white shadow-lg w-64 flex-shrink-0 h-screen flex flex-col transition-all duration-300 ease-in-out z-10">
+        <!-- 平台Logo和名称 -->
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="bg-primary text-white p-2 rounded-lg">
+                    <i class="fa fa-bank text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-primary">中信建设</h1>
+                    <p class="text-sm text-gray-500">AI+ 智能平台</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 导航菜单 -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">智能应用</p>
+            <ul class="space-y-1">
+                <li>
+                    <a href="index.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-home w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>首页</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="translation.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-language w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>智能翻译</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="qa.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content nav-item-active">
+                        <i class="fa fa-comments w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>智能问答</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mt-6 mb-2">系统设置</p>
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-cog w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>设置</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-question-circle w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>帮助中心</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- 用户信息 -->
+        <div class="p-4 border-t border-gray-200">
+            <div class="flex items-center">
+                <img class="h-9 w-9 rounded-full object-cover" src="https://picsum.photos/id/1005/200/200" alt="用户头像">
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-gray-700">张工程师</p>
+                    <p class="text-xs text-gray-500">高级权限</p>
+                </div>
+                <button class="ml-auto text-gray-400 hover:text-gray-600">
+                    <i class="fa fa-sign-out"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="flex-1 overflow-y-auto bg-gray-50">
+        <!-- 顶部状态栏 -->
+        <header class="bg-white shadow-sm sticky top-0 z-10">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <h2 class="text-lg font-semibold">智能问答</h2>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700 relative">
+                        <i class="fa fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                    </button>
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 智能问答内容 -->
+        <div class="p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold">智能问答</h3>
+                            <p class="text-gray-600 text-sm mt-1">基于中信建设知识库，为您提供专业解答</p>
+                        </div>
+                        
+                        <div class="flex-1 p-6 overflow-y-auto" id="chat-messages">
+                            <div class="space-y-6">
+                                <div class="flex">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                                        <i class="fa fa-robot"></i>
+                                    </div>
+                                    <div class="ml-3 max-w-lg">
+                                        <div class="bg-gray-100 rounded-lg rounded-tl-none p-4">
+                                            <p class="text-sm text-gray-800">您好！我是中信建设智能问答助手，很高兴为您服务。请问有什么可以帮助您的？</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">刚刚</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- 可以动态添加更多对话 -->
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 border-t border-gray-200">
+                            <div class="flex">
+                                <textarea id="question-input" class="flex-1 p-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-primary focus:border-primary transition-content" placeholder="请输入您的问题..."></textarea>
+                                <button id="send-question" class="bg-primary text-white px-4 rounded-r-lg hover:bg-secondary transition-content">
+                                    <i class="fa fa-paper-plane"></i>
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <span class="text-xs text-gray-500">热门问题:</span>
+                                <button class="text-xs text-primary hover:text-secondary transition-content popular-question">海外项目审批流程</button>
+                                <button class="text-xs text-primary hover:text-secondary transition-content popular-question">工程验收标准</button>
+                                <button class="text-xs text-primary hover:text-secondary transition-content popular-question">设备采购流程</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <h3 class="text-base font-semibold mb-4">知识分类</h3>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-primary transition-content">
+                                    <span class="flex items-center">
+                                        <i class="fa fa-building-o mr-2 text-gray-400"></i>
+                                        项目管理
+                                    </span>
+                                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">128</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-primary transition-content">
+                                    <span class="flex items-center">
+                                        <i class="fa fa-wrench mr-2 text-gray-400"></i>
+                                        工程技术
+                                    </span>
+                                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">256</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-primary transition-content">
+                                    <span class="flex items-center">
+                                        <i class="fa fa-money mr-2 text-gray-400"></i>
+                                        财务管理
+                                    </span>
+                                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">94</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-primary transition-content">
+                                    <span class="flex items-center">
+                                        <i class="fa fa-gavel mr-2 text-gray-400"></i>
+                                        法律法规
+                                    </span>
+                                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">72</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center justify-between py-2 text-sm text-gray-700 hover:text-primary transition-content">
+                                    <span class="flex items-center">
+                                        <i class="fa fa-users mr-2 text-gray-400"></i>
+                                        人力资源
+                                    </span>
+                                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">65</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-base font-semibold mb-4">常见问题</h3>
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="#" class="block text-sm text-gray-700 hover:text-primary transition-content line-clamp-2 common-question">海外工程项目的审批流程有哪些步骤？</a>
+                            </li>
+                            <li>
+                                <a href="#" class="block text-sm text-gray-700 hover:text-primary transition-content line-clamp-2 common-question">如何申请项目资金预算调整？</a>
+                            </li>
+                            <li>
+                                <a href="#" class="block text-sm text-gray-700 hover:text-primary transition-content line-clamp-2 common-question">国际工程合同中需要注意哪些法律条款？</a>
+                            </li>
+                            <li>
+                                <a href="#" class="block text-sm text-gray-700 hover:text-primary transition-content line-clamp-2 common-question">大型设备采购的流程和标准是什么？</a>
+                            </li>
+                            <li>
+                                <a href="#" class="block text-sm text-gray-700 hover:text-primary transition-content line-clamp-2 common-question">海外员工的派遣和管理制度是怎样的？</a>
+                            </li>
+                        </ul>
+                        <button class="mt-4 text-sm text-primary hover:text-secondary transition-content w-full text-center">查看全部</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为导航链接添加交互效果
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('nav-item-active')) {
+                        this.classList.add('bg-gray-50');
+                    }
+                });
+                link.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('nav-item-active')) {
+                        this.classList.remove('bg-gray-50');
+                    }
+                });
+            });
+            
+            // 智能问答功能
+            const sendButton = document.getElementById('send-question');
+            const questionInput = document.getElementById('question-input');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            if (sendButton && questionInput && chatMessages) {
+                sendButton.addEventListener('click', sendQuestion);
+                questionInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendQuestion();
+                    }
+                });
+            }
+            
+            // 热门问题点击事件
+            const popularQuestions = document.querySelectorAll('.popular-question');
+            popularQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    if (questionInput) {
+                        questionInput.value = this.textContent;
+                        questionInput.focus();
+                    }
+                });
+            });
+            
+            // 常见问题点击事件
+            const commonQuestions = document.querySelectorAll('.common-question');
+            commonQuestions.forEach(question => {
+                question.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (questionInput) {
+                        questionInput.value = this.textContent;
+                        questionInput.focus();
+                        // 自动发送问题
+                        setTimeout(sendQuestion, 300);
+                    }
+                });
+            });
+            
+            // 发送问题函数
+            function sendQuestion() {
+                const question = questionInput.value.trim();
+                if (!question) return;
+                
+                // 添加用户消息
+                addMessage(question, 'user');
+                
+                // 清空输入框
+                questionInput.value = '';
+                
+                // 模拟AI回复
+                setTimeout(() => {
+                    const answers = [
+                        "您的问题已收到，相关流程如下：首先需要提交申请表单，经部门经理审批后，再交由项目管理中心审核，最后由分管领导批准。整个流程大约需要3-5个工作日。",
+                        "根据公司规定，该类事项需要遵循《海外项目管理办法》第3章第12条的相关规定，建议您查阅该文件了解详细信息。如有疑问，可联系项目管理部进一步咨询。",
+                        "针对您提出的问题，我们需要结合具体项目情况来分析。请提供项目名称和所在地区，以便我为您提供更准确的答复。",
+                        "感谢您的提问。这是一个常见问题，解决方案主要包括三个步骤：1. 提交书面申请；2. 组织专家评审；3. 审批通过后执行。详细操作指南可在知识库中查询。"
+                    ];
+                    const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+                    addMessage(randomAnswer, 'ai');
+                }, 1000);
+            }
+            
+            // 添加消息到聊天区域
+            function addMessage(content, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'flex';
+                
+                if (sender === 'user') {
+                    messageDiv.className = 'flex justify-end';
+                    messageDiv.innerHTML = `
+                        <div class="max-w-lg">
+                            <div class="bg-primary text-white rounded-lg rounded-tr-none p-4">
+                                <p class="text-sm">${content}</p>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 text-right">刚刚</p>
+                        </div>
+                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center ml-3">
+                            <img src="https://picsum.photos/id/1005/200/200" alt="用户头像" class="h-full w-full rounded-full object-cover">
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                            <i class="fa fa-robot"></i>
+                        </div>
+                        <div class="ml-3 max-w-lg">
+                            <div class="bg-gray-100 rounded-lg rounded-tl-none p-4">
+                                <p class="text-sm text-gray-800">${content}</p>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">刚刚</p>
+                        </div>
+                    `;
+                }
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
+
