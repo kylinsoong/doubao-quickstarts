@@ -257,71 +257,6 @@
     </main>
 
     <script>
-        // 扣子智能体 API 配置
-        const KOUZI_API = {
-            agentId: '7531696470618554419',
-            baseUrl: 'https://www.volcengine.com',
-            tokenUrl: '/api/v1/tokens',
-            chatUrl: '/api/v1/chat',
-        };
-        
-        // Token 管理
-        const TokenManager = {
-            getToken: async function() {
-                // 从本地存储获取 token
-                const tokenData = JSON.parse(localStorage.getItem('kouziToken') || '{}');
-                const now = Date.now();
-                
-                // 检查 token 是否存在且有效
-                if (tokenData.token && tokenData.expireTime && tokenData.expireTime > now) {
-                    return tokenData.token;
-                }
-                
-                // Token 不存在或已过期，请求新 token
-                return this.refreshToken();
-            },
-            
-            refreshToken: async function() {
-                try {
-                    // 请求新 token
-                    const response = await fetch(`${KOUZI_API.baseUrl}${KOUZI_API.tokenUrl}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            agent_id: KOUZI_API.agentId
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Token 请求失败: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    if (!data.token) {
-                        throw new Error('获取 Token 失败');
-                    }
-                    
-                    // 计算过期时间 (提前5分钟过期以确保安全)
-                    const expireTime = Date.now() + (data.expire_time * 1000) - (5 * 60 * 1000);
-                    
-                    // 存储 token 和过期时间
-                    const tokenData = {
-                        token: data.token,
-                        expireTime: expireTime
-                    };
-                    
-                    localStorage.setItem('kouziToken', JSON.stringify(tokenData));
-                    return data.token;
-                } catch (error) {
-                    console.error('获取 Token 出错:', error);
-                    throw error;
-                }
-            }
-        };
-        
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
             // 为导航链接添加交互效果
@@ -343,12 +278,6 @@
             const sendButton = document.getElementById('send-question');
             const questionInput = document.getElementById('question-input');
             const chatMessages = document.getElementById('chat-messages');
-            
-            // 初始化时尝试获取 token，确保系统正常运行
-            TokenManager.getToken().catch(error => {
-                console.error('初始化 Token 失败:', error);
-                // 可以在这里添加初始化失败的提示
-            });
             
             if (sendButton && questionInput && chatMessages) {
                 sendButton.addEventListener('click', sendQuestion);
@@ -386,7 +315,7 @@
             });
             
             // 发送问题函数
-            async function sendQuestion() {
+            function sendQuestion() {
                 const question = questionInput.value.trim();
                 if (!question) return;
                 
@@ -396,94 +325,17 @@
                 // 清空输入框
                 questionInput.value = '';
                 
-                // 显示加载状态
-                const loadingId = showLoading();
-                
-                try {
-                    // 获取 token
-                    const token = await TokenManager.getToken();
-                    
-                    // 调用扣子智能体 API
-                    const response = await fetch(`${KOUZI_API.baseUrl}${KOUZI_API.chatUrl}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            agent_id: KOUZI_API.agentId,
-                            query: question
-                        })
-                    });
-                    
-                    // 移除加载状态
-                    removeLoading(loadingId);
-                    
-                    if (!response.ok) {
-                        throw new Error(`API 请求失败: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        throw new Error(data.error.message || '请求出错');
-                    }
-                    
-                    // 显示 AI 回复
-                    const answer = data.response || '抱歉，我无法回答这个问题。';
-                    addMessage(answer, 'ai');
-                    
-                } catch (error) {
-                    // 移除加载状态
-                    removeLoading(loadingId);
-                    
-                    console.error('API 调用出错:', error);
-                    
-                    // 显示错误消息
-                    addMessage(`抱歉，出现了一些问题: ${error.message}`, 'error');
-                    
-                    // 如果是 Token 相关错误，尝试刷新 Token
-                    if (error.message.includes('Token') || error.message.includes('认证') || error.message.includes('授权')) {
-                        try {
-                            await TokenManager.refreshToken();
-                        } catch (refreshError) {
-                            console.error('刷新 Token 失败:', refreshError);
-                        }
-                    }
-                }
-            }
-            
-            // 显示加载状态
-            function showLoading() {
-                const loadingId = 'loading-' + Date.now();
-                const loadingDiv = document.createElement('div');
-                loadingDiv.id = loadingId;
-                loadingDiv.className = 'flex';
-                loadingDiv.innerHTML = `
-                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
-                        <i class="fa fa-robot"></i>
-                    </div>
-                    <div class="ml-3 max-w-lg">
-                        <div class="bg-gray-100 rounded-lg rounded-tl-none p-4">
-                            <p class="text-sm text-gray-500 flex items-center">
-                                <i class="fa fa-circle-o-notch fa-spin mr-2"></i>
-                                正在思考...
-                            </p>
-                        </div>
-                    </div>
-                `;
-                
-                chatMessages.appendChild(loadingDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                return loadingId;
-            }
-            
-            // 移除加载状态
-            function removeLoading(loadingId) {
-                const loadingDiv = document.getElementById(loadingId);
-                if (loadingDiv) {
-                    loadingDiv.remove();
-                }
+                // 模拟AI回复
+                setTimeout(() => {
+                    const answers = [
+                        "您的问题已收到，相关流程如下：首先需要提交申请表单，经部门经理审批后，再交由项目管理中心审核，最后由分管领导批准。整个流程大约需要3-5个工作日。",
+                        "根据公司规定，该类事项需要遵循《海外项目管理办法》第3章第12条的相关规定，建议您查阅该文件了解详细信息。如有疑问，可联系项目管理部进一步咨询。",
+                        "针对您提出的问题，我们需要结合具体项目情况来分析。请提供项目名称和所在地区，以便我为您提供更准确的答复。",
+                        "感谢您的提问。这是一个常见问题，解决方案主要包括三个步骤：1. 提交书面申请；2. 组织专家评审；3. 审批通过后执行。详细操作指南可在知识库中查询。"
+                    ];
+                    const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+                    addMessage(randomAnswer, 'ai');
+                }, 1000);
             }
             
             // 添加消息到聊天区域
@@ -504,21 +356,7 @@
                             <img src="https://picsum.photos/id/1005/200/200" alt="用户头像" class="h-full w-full rounded-full object-cover">
                         </div>
                     `;
-                } else if (sender === 'error') {
-                    // 错误消息样式
-                    messageDiv.innerHTML = `
-                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-red-200 flex items-center justify-center text-red-600">
-                            <i class="fa fa-exclamation-circle"></i>
-                        </div>
-                        <div class="ml-3 max-w-lg">
-                            <div class="bg-red-50 border border-red-200 rounded-lg rounded-tl-none p-4">
-                                <p class="text-sm text-red-600">${content}</p>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">刚刚</p>
-                        </div>
-                    `;
                 } else {
-                    // AI 回复样式
                     messageDiv.innerHTML = `
                         <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
                             <i class="fa fa-robot"></i>
