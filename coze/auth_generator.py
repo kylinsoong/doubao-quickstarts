@@ -8,7 +8,7 @@ from cozepy.auth import JWTAuth
 coze_api_base = COZE_CN_BASE_URL
 
 # client ID
-jwt_oauth_client_id = os.getenv("COZE_JWT_OAUTH_CLIENT_ID")
+jwt_oauth_client_id = os.getenv("COZE_JWT_OAUTH_APP_ID")
 # private key
 jwt_oauth_private_key = os.getenv("COZE_JWT_OAUTH_PRIVATE_KEY")
 # path to the private key file (usually with .pem extension)

@@ -105,7 +105,7 @@
             <div class="flex items-center">
                 <img class="h-9 w-9 rounded-full object-cover" src="https://picsum.photos/id/1005/200/200" alt="用户头像">
                 <div class="ml-3">
-                    <p class="text-sm font-medium text-gray-700">张工程师</p>
+                    <p class="text-sm font-medium text-gray-700">YUAN</p>
                     <p class="text-xs text-gray-500">高级权限</p>
                 </div>
                 <button class="ml-auto text-gray-400 hover:text-gray-600">
@@ -302,6 +302,25 @@
             }
         });
     </script>
+
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.10/libs/cn/index.js"></script>
+<script>
+  new CozeWebSDK.WebChatClient({
+    config: {
+      bot_id: '7528344254805180450',
+    },
+    componentProps: {
+      title: 'Coze',
+    },
+    auth: {
+      type: 'token',
+      token: 'pat_yDnJc032X1UOYLVNr5mC5HPQDuKDCI5L08MGjaK62XwVeOUspsZShNmshsWxt3xF',
+      onRefreshToken: function () {
+        return 'pat_yDnJc032X1UOYLVNr5mC5HPQDuKDCI5L08MGjaK62XwVeOUspsZShNmshsWxt3xF'
+      }
+    }
+  });
+</script>
 </body>
 </html>
 

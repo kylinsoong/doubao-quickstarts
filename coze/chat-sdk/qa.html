@@ -105,7 +105,7 @@
             <div class="flex items-center">
                 <img class="h-9 w-9 rounded-full object-cover" src="https://picsum.photos/id/1005/200/200" alt="用户头像">
                 <div class="ml-3">
-                    <p class="text-sm font-medium text-gray-700">张工程师</p>
+                    <p class="text-sm font-medium text-gray-700">YUAN</p>
                     <p class="text-xs text-gray-500">高级权限</p>
                 </div>
                 <button class="ml-auto text-gray-400 hover:text-gray-600">
@@ -257,71 +257,6 @@
     </main>
 
     <script>
-        // 扣子智能体 API 配置
-        const KOUZI_API = {
-            agentId: '7531696470618554419',
-            baseUrl: 'https://www.volcengine.com',
-            tokenUrl: '/api/v1/tokens',
-            chatUrl: '/api/v1/chat',
-        };
-        
-        // Token 管理
-        const TokenManager = {
-            getToken: async function() {
-                // 从本地存储获取 token
-                const tokenData = JSON.parse(localStorage.getItem('kouziToken') || '{}');
-                const now = Date.now();
-                
-                // 检查 token 是否存在且有效
-                if (tokenData.token && tokenData.expireTime && tokenData.expireTime > now) {
-                    return tokenData.token;
-                }
-                
-                // Token 不存在或已过期，请求新 token
-                return this.refreshToken();
-            },
-            
-            refreshToken: async function() {
-                try {
-                    // 请求新 token
-                    const response = await fetch(`${KOUZI_API.baseUrl}${KOUZI_API.tokenUrl}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            agent_id: KOUZI_API.agentId
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Token 请求失败: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    if (!data.token) {
-                        throw new Error('获取 Token 失败');
-                    }
-                    
-                    // 计算过期时间 (提前5分钟过期以确保安全)
-                    const expireTime = Date.now() + (data.expire_time * 1000) - (5 * 60 * 1000);
-                    
-                    // 存储 token 和过期时间
-                    const tokenData = {
-                        token: data.token,
-                        expireTime: expireTime
-                    };
-                    
-                    localStorage.setItem('kouziToken', JSON.stringify(tokenData));
-                    return data.token;
-                } catch (error) {
-                    console.error('获取 Token 出错:', error);
-                    throw error;
-                }
-            }
-        };
-        
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
             // 为导航链接添加交互效果
@@ -343,12 +278,6 @@
             const sendButton = document.getElementById('send-question');
             const questionInput = document.getElementById('question-input');
             const chatMessages = document.getElementById('chat-messages');
-            
-            // 初始化时尝试获取 token，确保系统正常运行
-            TokenManager.getToken().catch(error => {
-                console.error('初始化 Token 失败:', error);
-                // 可以在这里添加初始化失败的提示
-            });
             
             if (sendButton && questionInput && chatMessages) {
                 sendButton.addEventListener('click', sendQuestion);
@@ -397,92 +326,58 @@
                 questionInput.value = '';
                 
                 // 显示加载状态
-                const loadingId = showLoading();
+                const loadingMessageId = addLoadingMessage();
                 
                 try {
-                    // 获取 token
-                    const token = await TokenManager.getToken();
-                    
-                    // 调用扣子智能体 API
-                    const response = await fetch(`${KOUZI_API.baseUrl}${KOUZI_API.chatUrl}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            agent_id: KOUZI_API.agentId,
-                            query: question
-                        })
-                    });
-                    
-                    // 移除加载状态
-                    removeLoading(loadingId);
+                    // 调用后端API获取回答
+                    const response = await fetch(`http://localhost:5000/qa?query=${encodeURIComponent(question)}`);
                     
                     if (!response.ok) {
-                        throw new Error(`API 请求失败: ${response.status}`);
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        throw new Error(data.error.message || '请求出错');
-                    }
-                    
-                    // 显示 AI 回复
-                    const answer = data.response || '抱歉，我无法回答这个问题。';
+                    const answer = await response.text();
+
+                    // 移除加载状态并显示回答
+                    removeLoadingMessage(loadingMessageId);
                     addMessage(answer, 'ai');
-                    
                 } catch (error) {
-                    // 移除加载状态
-                    removeLoading(loadingId);
-                    
-                    console.error('API 调用出错:', error);
-                    
-                    // 显示错误消息
-                    addMessage(`抱歉，出现了一些问题: ${error.message}`, 'error');
-                    
-                    // 如果是 Token 相关错误，尝试刷新 Token
-                    if (error.message.includes('Token') || error.message.includes('认证') || error.message.includes('授权')) {
-                        try {
-                            await TokenManager.refreshToken();
-                        } catch (refreshError) {
-                            console.error('刷新 Token 失败:', refreshError);
-                        }
-                    }
+                    // 处理错误
+                    removeLoadingMessage(loadingMessageId);
+                    addMessage(`抱歉，获取回答时出错: ${error.message}`, 'ai');
+                    console.error('Error fetching answer:', error);
                 }
             }
             
-            // 显示加载状态
-            function showLoading() {
-                const loadingId = 'loading-' + Date.now();
-                const loadingDiv = document.createElement('div');
-                loadingDiv.id = loadingId;
-                loadingDiv.className = 'flex';
-                loadingDiv.innerHTML = `
+            // 添加加载状态消息
+            function addLoadingMessage() {
+                const messageDiv = document.createElement('div');
+                const messageId = 'loading-' + Date.now();
+                messageDiv.id = messageId;
+                messageDiv.className = 'flex';
+                messageDiv.innerHTML = `
                     <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
                         <i class="fa fa-robot"></i>
                     </div>
                     <div class="ml-3 max-w-lg">
                         <div class="bg-gray-100 rounded-lg rounded-tl-none p-4">
-                            <p class="text-sm text-gray-500 flex items-center">
-                                <i class="fa fa-circle-o-notch fa-spin mr-2"></i>
-                                正在思考...
+                            <p class="text-sm text-gray-800">
+                                <i class="fa fa-spinner fa-spin mr-2"></i>正在思考中...
                             </p>
                         </div>
                     </div>
                 `;
                 
-                chatMessages.appendChild(loadingDiv);
+                chatMessages.appendChild(messageDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-                return loadingId;
+                return messageId;
             }
             
-            // 移除加载状态
-            function removeLoading(loadingId) {
-                const loadingDiv = document.getElementById(loadingId);
-                if (loadingDiv) {
-                    loadingDiv.remove();
+            // 移除加载状态消息
+            function removeLoadingMessage(messageId) {
+                const messageDiv = document.getElementById(messageId);
+                if (messageDiv) {
+                    chatMessages.removeChild(messageDiv);
                 }
             }
             
@@ -504,21 +399,7 @@
                             <img src="https://picsum.photos/id/1005/200/200" alt="用户头像" class="h-full w-full rounded-full object-cover">
                         </div>
                     `;
-                } else if (sender === 'error') {
-                    // 错误消息样式
-                    messageDiv.innerHTML = `
-                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-red-200 flex items-center justify-center text-red-600">
-                            <i class="fa fa-exclamation-circle"></i>
-                        </div>
-                        <div class="ml-3 max-w-lg">
-                            <div class="bg-red-50 border border-red-200 rounded-lg rounded-tl-none p-4">
-                                <p class="text-sm text-red-600">${content}</p>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">刚刚</p>
-                        </div>
-                    `;
                 } else {
-                    // AI 回复样式
                     messageDiv.innerHTML = `
                         <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
                             <i class="fa fa-robot"></i>
@@ -537,6 +418,24 @@
             }
         });
     </script>
+
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.10/libs/cn/index.js"></script>
+<script>
+  new CozeWebSDK.WebChatClient({
+    config: {
+      bot_id: '7531696470618554419',
+    },
+    componentProps: {
+      title: 'Coze',
+    },
+    auth: {
+      type: 'token',
+      token: 'pat_yDnJc032X1UOYLVNr5mC5HPQDuKDCI5L08MGjaK62XwVeOUspsZShNmshsWxt3xF',
+      onRefreshToken: function () {
+        return 'pat_yDnJc032X1UOYLVNr5mC5HPQDuKDCI5L08MGjaK62XwVeOUspsZShNmshsWxt3xF'
+      }
+    }
+  });
+</script>
 </body>
 </html>
-
