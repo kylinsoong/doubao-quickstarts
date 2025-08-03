@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中信建设 AI+ 平台 - 首页</title>
+    <title>中信建设 AI+ 平台 - 文档生成</title>
     <!-- 引入Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入Font Awesome -->
@@ -64,7 +64,7 @@
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">智能应用</p>
             <ul class="space-y-1">
                 <li>
-                    <a href="index.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content nav-item-active">
+                    <a href="index.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
                         <i class="fa fa-home w-5 h-5 mr-3 text-gray-500"></i>
                         <span>首页</span>
                     </a>
@@ -82,17 +82,17 @@
                     </a>
                 </li>
                 <li>
-            <a href="generate.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
-                <i class="fa fa-file-text w-5 h-5 mr-3 text-gray-500"></i>
-                <span>文档生成</span>
-            </a>
-        </li>
-        <li>
-            <a href="analysis.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
-                <i class="fa fa-bar-chart w-5 h-5 mr-3 text-gray-500"></i>
-                <span>文档分析</span>
-            </a>
-        </li>
+                    <a href="generate.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content nav-item-active">
+                        <i class="fa fa-file-text w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>文档生成</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="analysis.html" class="nav-link flex items-center px-3 py-3 text-sm font-medium rounded-md transition-content text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-bar-chart w-5 h-5 mr-3 text-gray-500"></i>
+                        <span>文档分析</span>
+                    </a>
+                </li>
             </ul>
             
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mt-6 mb-2">帮助中心</p>
@@ -132,7 +132,7 @@
         <!-- 顶部状态栏 -->
         <header class="bg-white shadow-sm sticky top-0 z-10">
             <div class="px-6 py-4 flex items-center justify-between">
-                <h2 class="text-lg font-semibold">平台首页</h2>
+                <h2 class="text-lg font-semibold">文档生成</h2>
                 <div class="flex items-center space-x-4">
                     <button class="text-gray-500 hover:text-gray-700 relative">
                         <i class="fa fa-bell text-lg"></i>
@@ -145,80 +145,73 @@
             </div>
         </header>
 
-        <!-- 首页内容 -->
+        <!-- 文档生成内容 -->
         <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-gradient-to-br from-primary to-secondary text-white rounded-xl p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold">智能翻译</h3>
-                        <i class="fa fa-language text-2xl"></i>
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <h3 class="text-lg font-semibold mb-4">智能文档生成</h3>
+                <p class="text-gray-600 mb-6">基于模板和需求自动生成各类业务文档，支持合同、报告、方案等多种文档类型</p>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">文档类型</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button class="px-4 py-2 rounded-md bg-primary text-white text-sm font-medium">项目报告</button>
+                        <button class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-content">合同文件</button>
+                        <button class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-content">会议纪要</button>
+                        <button class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-content">方案提案</button>
                     </div>
-                    <p class="text-white/80 mb-4">专业的工程、金融领域多语言智能翻译，支持文档、实时翻译</p>
-                    <a href="translation.html" class="inline-flex items-center text-sm font-medium text-white/90 hover:text-white transition-content">
-                        立即使用 <i class="fa fa-arrow-right ml-2"></i>
-                    </a>
                 </div>
                 
-                <div class="bg-gradient-to-br from-blue-400 to-indigo-500 text-white rounded-xl p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold">智能问答</h3>
-                        <i class="fa fa-comments text-2xl"></i>
-                    </div>
-                    <p class="text-white/80 mb-4">基于知识库的智能问答系统，解答工程技术、业务流程等问题</p>
-                    <a href="qa.html" class="inline-flex items-center text-sm font-medium text-white/90 hover:text-white transition-content">
-                        立即咨询 <i class="fa fa-arrow-right ml-2"></i>
-                    </a>
+                <div class="mb-6">
+                    <label for="document-title" class="block text-sm font-medium text-gray-700 mb-2">文档标题</label>
+                    <input type="text" id="document-title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-content" placeholder="请输入文档标题">
                 </div>
-                <div class="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">文档生成</h3>
-            <i class="fa fa-file-text text-2xl"></i>
-        </div>
-        <p class="text-white/80 mb-4">自动生成各类业务文档，支持合同、报告、方案等多种文档类型</p>
-        <a href="generate.html" class="inline-flex items-center text-sm font-medium text-white/90 hover:text-white transition-content">
-            立即生成 <i class="fa fa-arrow-right ml-2"></i>
-        </a>
-    </div>
-    
-    <div class="bg-gradient-to-br from-green-500 to-teal-500 text-white rounded-xl p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">文档分析</h3>
-            <i class="fa fa-bar-chart text-2xl"></i>
-        </div>
-        <p class="text-white/80 mb-4">智能分析文档内容，提取关键信息、摘要和数据，生成分析报告</p>
-        <a href="analysis.html" class="inline-flex items-center text-sm font-medium text-white/90 hover:text-white transition-content">
-            立即分析 <i class="fa fa-arrow-right ml-2"></i>
-        </a>
-    </div>    
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-                <h3 class="text-lg font-semibold mb-4">平台介绍</h3>
-                <p class="text-gray-700 mb-4">中信建设 AI+ 平台是为公司业务赋能的智能助手平台，集成了先进的人工智能技术，为员工提供高效、准确的智能翻译和智能问答服务，助力全球化业务发展和知识管理。</p>
-                <p class="text-gray-700">平台持续学习和进化，不断提升服务质量，满足不同场景下的智能化需求，是您工作中的得力助手。</p>
+                
+                <div class="mb-6">
+                    <label for="document-content" class="block text-sm font-medium text-gray-700 mb-2">文档内容要点</label>
+                    <textarea id="document-content" rows="6" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-content" placeholder="请输入文档的关键信息和要点..."></textarea>
+                </div>
+                
+                <div class="mt-6 flex justify-center">
+                    <button id="generate-btn" class="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-content flex items-center">
+                        <i class="fa fa-magic mr-2"></i> 生成文档
+                    </button>
+                </div>
             </div>
             
             <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-4">使用指南</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                            <i class="fa fa-language"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-base font-medium text-gray-900">智能翻译使用</h4>
-                            <p class="text-sm text-gray-600">支持文本、文档翻译，可选择多种语言，特别优化工程、金融专业术语。</p>
-                        </div>
-                    </div>
-                    <div class="flex">
-                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                            <i class="fa fa-comments"></i>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-base font-medium text-gray-900">智能问答使用</h4>
-                            <p class="text-sm text-gray-600">输入您的问题，系统将基于知识库提供准确答案，支持上下文对话。</p>
-                        </div>
-                    </div>
+                <h3 class="text-lg font-semibold mb-4">生成历史</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">文档名称</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                                <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">生成时间</th>
+                                <th class="px-4 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 max-w-xs truncate">海外项目可行性分析报告</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">项目报告</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">2023-06-15 10:23</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="text-primary hover:text-secondary transition-content">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 max-w-xs truncate">设备采购合同</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">合同文件</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">2023-06-14 16:45</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="text-primary hover:text-secondary transition-content">查看</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 text-center">
+                    <button class="text-sm text-primary hover:text-secondary transition-content">查看更多历史</button>
                 </div>
             </div>
         </div>
@@ -241,8 +234,27 @@
                     }
                 });
             });
+            
+            // 文档生成功能
+            const generateButton = document.getElementById('generate-btn');
+            const titleInput = document.getElementById('document-title');
+            const contentInput = document.getElementById('document-content');
+            
+            if (generateButton && titleInput && contentInput) {
+                generateButton.addEventListener('click', function() {
+                    const title = titleInput.value.trim();
+                    const content = contentInput.value.trim();
+                    
+                    if (!title || !content) {
+                        alert('请输入文档标题和内容要点');
+                        return;
+                    }
+                    
+                    // 这里可以添加文档生成的逻辑
+                    alert('文档生成中，请稍候...');
+                });
+            }
         });
     </script>
 </body>
 </html>
-
