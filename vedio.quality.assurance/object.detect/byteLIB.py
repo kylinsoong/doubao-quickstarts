@@ -37,7 +37,7 @@ class ByteVLM:
         self.model = model
         self.logger = logging.getLogger(__name__)
 
-    def analyze_video(self, prompt, video_url, thinking=None, fps=1.0, temperature=0.7):
+    def analyze_video(self, prompt, video_url, thinking=None, fps=1.0, max_tokens=4096, temperature=0.7):
         if not self.api_key or not self.model:
             raise ValueError("Missing API_KEY or MODEL environment variables")
 
@@ -65,6 +65,7 @@ class ByteVLM:
                     "content": message_content
                 }
             ],
+            "max_tokens": max_tokens,
             "temperature": temperature  # Add temperature parameter
         }
 
@@ -76,12 +77,13 @@ class ByteVLM:
         completion = client.chat.completions.create(**params)
         return completion.choices[0].message.content, completion.usage
 
-    def process(self, prompt, video_url, thinking=None, fps=1.0, temperature=0.7):
+    def process(self, prompt, video_url, thinking=None, fps=1.0, max_tokens=4096, temperature=0.7):
         summary, usage = self.analyze_video(
             prompt, 
             video_url, 
             thinking=thinking,
             fps=fps,
+            max_tokens=max_tokens,
             temperature=temperature  # Pass temperature to analyze_video
         )
         self.logger.info(f"Token usage: {usage}")
