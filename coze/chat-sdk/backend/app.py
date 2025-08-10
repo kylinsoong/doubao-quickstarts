@@ -21,10 +21,10 @@ def get_auth_token():
 
     coze_api_base = os.getenv("COZE_API_BASE") or COZE_CN_BASE_URL
 
-    jwt_oauth_client_id = os.getenv("COZE_JWT_OAUTH_APP_ID")
-    jwt_oauth_private_key = os.getenv("COZE_JWT_OAUTH_PRIVATE_KEY")
-    jwt_oauth_private_key_file_path = os.getenv("COZE_JWT_OAUTH_PRIVATE_KEY_FILE_PATH")
-    jwt_oauth_public_key_id = os.getenv("COZE_JWT_OAUTH_PUBLIC_KEY_ID")
+    jwt_oauth_client_id = os.getenv("COZE_JWT_OAUTH_APP_ID") or "1152759474689"
+    jwt_oauth_private_key = os.getenv("COZE_JWT_OAUTH_PRIVATE_KEY") or "private_key.pem"
+    jwt_oauth_private_key_file_path = os.getenv("COZE_JWT_OAUTH_PRIVATE_KEY_FILE_PATH") or "/app/keys/private_key.pem"
+    jwt_oauth_public_key_id = os.getenv("COZE_JWT_OAUTH_PUBLIC_KEY_ID") or "mucgAQkJawg7lxMH5cvTfD7Li0_y9-tEbFH4kPiytko"
 
     if jwt_oauth_private_key_file_path:
         with open(jwt_oauth_private_key_file_path, "r") as f:
@@ -162,22 +162,18 @@ def coze_chat_interaction(
 
 @app.route('/qa', methods=['GET'])
 def qa_endpoint():
-    # 获取查询参数
     query = request.args.get('query')
     if not query:
         return "缺少参数: query", 400
 
     print("received new query", query)
     
-    # 生成唯一用户ID
     user_id = str(uuid.uuid1())
     
-    # 调用聊天交互函数
     result = coze_chat_interaction(query=query, user_id=user_id)
     
     print(result)
     
-    # 处理返回结果
     if result["status"] == "ERROR":
         return f"错误: {result['error']}", 500
     elif result["status"] == "TIMEOUT":

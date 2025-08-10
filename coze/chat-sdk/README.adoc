@@ -1,0 +1,31 @@
+= What's this
+
+A Coze Bot Demo with web ui and backend chat bot.
+
+== Build & Run
+
+[source, bash]
+.*1. Build backend*
+----
+docker login --username=ZhiqiSong@39640346 kylin-cn-shanghai.cr.volces.com
+cd backend
+docker buildx build --platform linux/amd64,linux/arm64 -t kylin-cn-shanghai.cr.volces.com/poc/coze-ui-backend:0.1 --push .
+----
+
+[source, bash]
+.*2. Build ui*
+----
+docker buildx build --platform linux/amd64,linux/arm64 -t kylin-cn-shanghai.cr.volces.com/poc/coze-ui:0.1 --push .
+----
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----
