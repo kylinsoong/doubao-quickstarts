@@ -7,25 +7,25 @@ A Coze Bot Demo with web ui and backend chat bot.
 [source, bash]
 .*1. Build backend*
 ----
-docker login --username=ZhiqiSong@39640346 kylin-cn-shanghai.cr.volces.com
+docker login quay.io
 cd backend
-docker buildx build --platform linux/amd64,linux/arm64 -t kylin-cn-shanghai.cr.volces.com/poc/coze-ui-backend:0.1 --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t quay.io/kylin/coze-ui-backend:0.1 --push .
 ----
 
 [source, bash]
 .*2. Build ui*
 ----
-docker buildx build --platform linux/amd64,linux/arm64 -t kylin-cn-shanghai.cr.volces.com/poc/coze-ui:0.1 --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t quay.io/kylin/coze-ui:0.1 --push .
 ----
 
 [source, bash]
-.**
+.*3. Run backend*
 ----
-
+docker run -it --rm --name cozeui -p 5000:5000 quay.io/kylin/coze-ui-backend:0.1
 ----
 
 [source, bash]
-.**
+.*4. Run ui*
 ----
-
+docker run -it --rm --name cozeui -p 8080:80 quay.io/kylin/coze-ui:0.1
 ----
