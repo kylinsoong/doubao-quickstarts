@@ -29,3 +29,11 @@ docker run -it --rm --name cozeui -p 5000:5000 quay.io/kylin/coze-ui-backend:0.1
 ----
 docker run -it --rm --name cozeui -p 8080:80 quay.io/kylin/coze-ui:0.1
 ----
+
+[source, bash]
+.*5. Run on Server*
+----
+docker login quay.io
+docker run -it --rm -d --name cozeui-backend -p 5000:5000 quay.io/kylin/coze-ui-backend:0.1
+docker run -it --rm -d --name cozeui -p 8080:80 quay.io/kylin/coze-ui:0.1
+----

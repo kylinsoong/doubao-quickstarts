@@ -342,7 +342,8 @@
                 
                 try {
                     // 调用后端API获取回答
-                    const response = await fetch(`http://localhost:5000/qa?query=${encodeURIComponent(question)}`);
+                    //const response = await fetch(`http://localhost:5000/qa?query=${encodeURIComponent(question)}`);
+                    const response = await fetch(`http://alb-3vtxmniggcirk6096psm9wchy.cn-shanghai.volcalb.com/qa?query=${encodeURIComponent(question)}`);
                     
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
