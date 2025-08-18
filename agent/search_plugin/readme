@@ -1,0 +1,4 @@
+
+docker buildx build --platform linux/amd64,linux/arm64 -t quay.io/kylin/hiagent-plugin-search:0.1.5 --push .
+docker run -it --rm --name internet-search -p 8001:8001 -e ARK_API_KEY=$ARK_API_KEY quay.io/kylin/hiagent-plugin-search:0.1.5
+
