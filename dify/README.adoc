@@ -1,0 +1,59 @@
+= Dify Community on VKE
+
+== Download images
+
+[source, bash]
+.*Pull Images*
+----
+docker pull postgres:15-alpine 
+docker pull redis:6-alpine
+docker pull semitechnologies/weaviate:1.19.0
+docker pull langgenius/dify-sandbox:0.2.10
+docker pull ubuntu/squid:latest
+docker pull langgenius/dify-api:0.15.2
+docker pull langgenius/dify-web:0.15.2
+docker pull nginx:stable
+----
+
+[source, bash]
+.*Save Images*
+----
+docker save -o dify-0.15.2.tar.gz  postgres:15-alpine redis:6-alpine semitechnologies/weaviate:1.19.0 langgenius/dify-sandbox:0.2.10 ubuntu/squid:latest langgenius/dify-api:0.15.2 langgenius/dify-web:0.15.2 nginx:stable 
+----
+
+[source, bash]
+.*Load Images to Offline Env*
+----
+docker load -i dify-0.15.2.tar.gz
+----
+
+[source, bash]
+.*Tag & Push Images*
+----
+docker tag postgres:15-alpine kylin-cn-shanghai.cr.volces.com/dify/postgres:15-alpine
+docker tag redis:6-alpine kylin-cn-shanghai.cr.volces.com/dify/redis:6-alpine
+docker tag semitechnologies/weaviate:1.19.0 kylin-cn-shanghai.cr.volces.com/dify/semitechnologies/weaviate:1.19.0
+docker tag langgenius/dify-sandbox:0.2.10 kylin-cn-shanghai.cr.volces.com/dify/langgenius/dify-sandbox:0.2.10
+docker tag ubuntu/squid:latest kylin-cn-shanghai.cr.volces.com/dify/ubuntu/squid:latest
+docker tag langgenius/dify-api:0.15.2 kylin-cn-shanghai.cr.volces.com/dify/langgenius/dify-api:0.15.2
+docker tag langgenius/dify-web:0.15.2 kylin-cn-shanghai.cr.volces.com/dify/langgenius/dify-web:0.15.2
+docker tag nginx:stable kylin-cn-shanghai.cr.volces.com/dify/nginx:stable
+
+docker push kylin-cn-shanghai.cr.volces.com/dify/postgres:15-alpine 
+docker push kylin-cn-shanghai.cr.volces.com/dify/redis:6-alpine
+docker push kylin-cn-shanghai.cr.volces.com/dify/semitechnologies/weaviate:1.19.0
+docker push kylin-cn-shanghai.cr.volces.com/dify/langgenius/dify-sandbox:0.2.10
+docker push kylin-cn-shanghai.cr.volces.com/dify/ubuntu/squid:latest
+docker push kylin-cn-shanghai.cr.volces.com/dify/langgenius/dify-api:0.15.2
+docker push kylin-cn-shanghai.cr.volces.com/dify/langgenius/dify-web:0.15.2
+docker push kylin-cn-shanghai.cr.volces.com/dify/nginx:stable
+----
+
+== Install via manifest
+
+* link:0.15.2.3.yaml[0.15.2.3.yaml]
+
+[source, bash]
+----
+kubectl apply -f 0.15.2.3.yaml
+----
