@@ -1,0 +1,117 @@
+= How to run
+
+== Run on Local
+
+[source, bash]
+----
+pip install psycopg2-binary
+
+// update env.sh, make the connection string point to the correct instance
+chmod a+x env.sh 
+source env.sh 
+
+//run python
+python app.py 
+==================================================
+=== 开始PostgreSQL初始化测试 ===
+==================================================
+
+[INFO] 正在加载数据库配置...
+[SUCCESS] 数据库配置加载完成
+[INFO] 连接信息: postgres4998ef1c3e11.rds-pg.ivolces.com:5432 数据库: test
+
+[INFO] 正在测试数据库连接...
+[SUCCESS] 数据库连接成功
+
+[INFO] 正在执行: 创建测试表
+[SUCCESS] 创建测试表 执行成功
+
+[INFO] 正在执行: 插入测试数据
+[SUCCESS] 插入测试数据 执行成功
+
+[INFO] 正在执行: 查询测试数据
+[SUCCESS] 查询测试数据 执行成功
+[INFO] 查询结果:
+[INFO] 记录: (1, 'Test User', 'test@example.com', 30, datetime.datetime(2025, 8, 30, 16, 50, 40, 198139))
+
+[INFO] 正在执行: 更新测试数据
+[SUCCESS] 更新测试数据 执行成功
+
+[INFO] 正在执行: 验证数据更新
+[SUCCESS] 验证数据更新 执行成功
+[INFO] 更新后的数据:
+[INFO] (1, 'Test User', 'test@example.com', 31, datetime.datetime(2025, 8, 30, 16, 50, 40, 198139))
+
+[INFO] 正在执行: 删除测试数据
+[SUCCESS] 删除测试数据 执行成功
+
+[INFO] 正在执行: 验证数据删除
+[SUCCESS] 验证数据删除 执行成功
+[INFO] 删除后剩余记录数: 0
+
+[INFO] 正在执行: 清理测试表
+[SUCCESS] 清理测试表 执行成功
+
+[INFO] 数据库连接已关闭
+
+==================================================
+=== PostgreSQL初始化测试完成 ===
+==================================================
+----
+
+
+== Run with Docker
+
+[source, bash]
+----
+docker build -t dify-cn-beijing.cr.volces.com/byteplus/postgres-test:0.1 .
+
+docker run --rm -e DB_DATABASE=$DB_DATABASE -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=$DB_PASSWORD -e DB_HOST=$DB_HOST -e DB_PORT="5432" dify-cn-beijing.cr.volces.com/byteplus/postgres-test:0.1
+==================================================
+=== 开始PostgreSQL初始化测试 ===
+==================================================
+
+[INFO] 正在加载数据库配置...
+[SUCCESS] 数据库配置加载完成
+[INFO] 连接信息: postgres4998ef1c3e11.rds-pg.ivolces.com:5432 数据库: test
+
+[INFO] 正在测试数据库连接...
+[SUCCESS] 数据库连接成功
+
+[INFO] 正在执行: 创建测试表
+[SUCCESS] 创建测试表 执行成功
+
+[INFO] 正在执行: 插入测试数据
+[SUCCESS] 插入测试数据 执行成功
+
+[INFO] 正在执行: 查询测试数据
+[SUCCESS] 查询测试数据 执行成功
+[INFO] 查询结果:
+[INFO] 记录: (1, 'Test User', 'test@example.com', 30, datetime.datetime(2025, 8, 30, 17, 24, 37, 832902))
+
+[INFO] 正在执行: 更新测试数据
+[SUCCESS] 更新测试数据 执行成功
+
+[INFO] 正在执行: 验证数据更新
+[SUCCESS] 验证数据更新 执行成功
+[INFO] 更新后的数据:
+[INFO] (1, 'Test User', 'test@example.com', 31, datetime.datetime(2025, 8, 30, 17, 24, 37, 832902))
+
+[INFO] 正在执行: 删除测试数据
+[SUCCESS] 删除测试数据 执行成功
+
+[INFO] 正在执行: 验证数据删除
+[SUCCESS] 验证数据删除 执行成功
+[INFO] 删除后剩余记录数: 0
+
+[INFO] 正在执行: 清理测试表
+[SUCCESS] 清理测试表 执行成功
+
+[INFO] 数据库连接已关闭
+
+==================================================
+=== PostgreSQL初始化测试完成 ===
+==================================================
+----
+
+== Run on VKE

@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-test-job
+  namespace: dify
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgres-test
+        image: dify-cn-beijing.cr.volces.com/byteplus/postgres-test:0.1
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_USERNAME
+              optional: false
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_PASSWORD
+              optional: false
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_HOST
+              optional: false
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_PORT
+              optional: false
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_DATABASE
+              optional: false
+        command: ["python", "app.py"]
+      restartPolicy: Never
+  backoffLimit: 4
+  
