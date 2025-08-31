@@ -1,0 +1,623 @@
+# Dify API Server Start
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dify-api
+  labels:
+    app.kubernetes.io/instance: dify-api
+    app: dify-api
+  namespace: dify
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  minReadySeconds: 10
+  serviceName: dify-api
+  selector:
+    matchLabels:
+      app: dify-api
+  template:
+    metadata:
+      labels:
+        app: dify-api
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - name: dify-api-storage
+        hostPath:
+          path: /root/dify/app/api/storage
+          type: DirectoryOrCreate
+      containers:
+      - name: dify-api
+        image: dify-cn-beijing.cr.volces.com/dify/langgenius/dify-api:1.8.0
+        envFrom:
+        - configMapRef:
+            name: dify-shared-config
+        env:
+        - name: MODE
+          value: api
+        - name: SENTRY_DSN
+          # value: ''
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: API_SENTRY_DSN
+        - name: SENTRY_TRACES_SAMPLE_RATE
+          # value: '1.0'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: API_SENTRY_TRACES_SAMPLE_RATE
+        - name: SENTRY_PROFILES_SAMPLE_RATE
+          # value: '1.0'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: API_SENTRY_PROFILES_SAMPLE_RATE
+          # plugin settings
+        - name: 'PLUGIN_MAX_PACKAGE_SIZE'
+          # value: '52428800'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_MAX_PACKAGE_SIZE
+        - name: 'INNER_API_KEY_FOR_PLUGIN'
+          # value: 'QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_DIFY_INNER_API_KEY
+
+        - name: 'PLUGIN_REMOTE_INSTALL_HOST'
+          # value: 'dify-plugin-daemon'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: EXPOSE_PLUGIN_DEBUGGING_HOST
+        - name: 'PLUGIN_REMOTE_INSTALL_PORT'
+          # value: '5003'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: EXPOSE_PLUGIN_DEBUGGING_PORT
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        ports:
+        - containerPort: 5001
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: dify-api-storage
+          mountPath: /app/api/storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dify-api
+  namespace: dify
+spec:
+  ports:
+  - port: 5001
+    targetPort: 5001
+    protocol: TCP
+    name: dify-api
+  type: ClusterIP
+  selector:
+    app: dify-api
+
+# Dify API Server End
+# Dify Worker Server Start
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dify-worker
+  namespace: dify
+  labels:
+    app: dify-worker
+    app.kubernetes.io/instance: dify-worker
+spec:
+  serviceName: "dify-worker"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dify-worker
+  template:
+    metadata:
+      labels:
+        app: dify-worker
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - name: dify-api-storage
+        hostPath:
+          path: /root/dify/app/api/storage
+          type: DirectoryOrCreate
+      containers:
+      - name: dify-worker
+        image: dify-cn-beijing.cr.volces.com/dify/langgenius/dify-api:1.8.0
+        ports:
+        - containerPort: 5001
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: dify-shared-config
+        env:
+        # - name: CONSOLE_WEB_URL
+        #   value: ""
+        - name: MODE
+          value: worker
+
+        - name: CELERY_BROKER_URL
+          # value: >-
+          #     redis://:difyai123456@dify-redis:6379/1
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: CELERY_BROKER_URL
+        - name: SENTRY_DSN
+          # value: ''
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: API_SENTRY_DSN
+        - name: SENTRY_TRACES_SAMPLE_RATE
+          # value: '1.0'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: API_SENTRY_TRACES_SAMPLE_RATE
+        - name: SENTRY_PROFILES_SAMPLE_RATE
+          # value: '1.0'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: API_SENTRY_PROFILES_SAMPLE_RATE
+          # plugin settings
+        - name: 'PLUGIN_MAX_PACKAGE_SIZE'
+          # value: '52428800'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_MAX_PACKAGE_SIZE
+
+        - name: 'INNER_API_KEY_FOR_PLUGIN'
+          # value: 'QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_DIFY_INNER_API_KEY
+
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        volumeMounts:
+        - name: dify-api-storage
+          mountPath: /app/api/storage
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dify-worker
+  namespace: dify
+spec:
+  ports:
+  - protocol: TCP
+    port: 5001
+    targetPort: 5001
+  selector:
+    app: dify-worker
+  type: ClusterIP
+
+# Dify Worker Server End
+
+
+# Dify Worker Beat Server Start
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dify-worker-beat
+  labels:
+    app.kubernetes.io/instance: dify-worker-beat
+    app: dify-worker-beat
+  namespace: dify
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  minReadySeconds: 10
+  serviceName: dify-worker-beat
+  selector:
+    matchLabels:
+      app: dify-worker-beat
+  template:
+    metadata:
+      labels:
+        app: dify-worker-beat
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+
+      containers:
+      - name: dify-worker-beat
+        image: dify-cn-beijing.cr.volces.com/dify/langgenius/dify-api:1.8.0
+        envFrom:
+        - configMapRef:
+            name: dify-shared-config
+        env:
+        - name: MODE
+          value: beat
+
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        ports:
+        - containerPort: 5001
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dify-worker-beat
+  namespace: dify
+spec:
+  ports:
+  - protocol: TCP
+    port: 5001
+    targetPort: 5001
+  selector:
+    app: dify-worker-beat
+  type: ClusterIP
+
+# Dify Worker Beat Server End
+
+# Dify Web Server Start
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dify-web
+  namespace: dify
+  labels:
+    app: dify-web
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: dify-web
+  template:
+    metadata:
+      labels:
+        app: dify-web
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      automountServiceAccountToken: false
+      containers:
+      - name: dify-web
+        image: dify-cn-beijing.cr.volces.com/dify/langgenius/dify-web:1.8.0
+        env:
+        - name: EDITION
+          value: SELF_HOSTED
+        - name: 'PM2_INSTANCES'
+          value: '2'
+        - name: NEXT_TELEMETRY_DISABLED
+          value: "0"
+        - name: TEXT_GENERATION_TIMEOUT_MS
+          value: "60000"
+        - name: CONSOLE_API_URL
+          # value: ""
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: CONSOLE_API_URL
+        - name: APP_API_URL
+          # value: ""
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: APP_API_URL
+        - name: SENTRY_DSN
+          # value: ""
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: WEB_SENTRY_DSN
+
+        - name: CSP_WHITELIST
+          # value: ""
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: CSP_WHITELIST
+          # dify marketplace
+        - name: 'MARKETPLACE_API_URL'
+          # value: 'https://marketplace.dify.ai'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: MARKETPLACE_API_URL
+        - name: 'MARKETPLACE_URL'
+          # value: 'https://marketplace.dify.ai'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: MARKETPLACE_API_URL
+        - name: 'TOP_K_MAX_VALUE'
+          # value: ''
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: TOP_K_MAX_VALUE
+        - name: 'INDEXING_MAX_SEGMENTATION_TOKENS_LENGTH'
+          # value: ''
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: INDEXING_MAX_SEGMENTATION_TOKENS_LENGTH
+
+        - name: 'LOOP_NODE_MAX_COUNT'
+          # value: '100'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: LOOP_NODE_MAX_COUNT
+        - name: 'MAX_TOOLS_NUM'
+          # value: '10'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: MAX_TOOLS_NUM
+        - name: 'MAX_PARALLEL_LIMIT'
+          # value: '10'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: MAX_PARALLEL_LIMIT
+        - name: 'MAX_ITERATIONS_NUM'
+          # value: '5'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: MAX_ITERATIONS_NUM
+        - name: 'ENABLE_WEBSITE_JINAREADER'
+          # value: 'true'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: ENABLE_WEBSITE_JINAREADER
+        - name: 'ENABLE_WEBSITE_FIRECRAWL'
+          # value: 'true'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: ENABLE_WEBSITE_FIRECRAWL
+        - name: 'ENABLE_WEBSITE_WATERCRAWL'
+          # value: 'true'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: ENABLE_WEBSITE_WATERCRAWL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dify-web
+  namespace: dify
+spec:
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: dify-web
+  type: ClusterIP
+  selector:
+    app: dify-web
+
+# Dify Web Server End
+
+
+# Dify plugin daemon Start
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dify-plugin-daemon
+  namespace: dify
+  labels:
+    app: dify-plugin-daemon
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: dify-plugin-daemon
+  template:
+    metadata:
+      labels:
+        app: dify-plugin-daemon
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      automountServiceAccountToken: false
+      volumes:
+      - name: dify-plugin-daemon-storage
+        hostPath:
+          path: /root/dify/app/plugin/storage
+          type: DirectoryOrCreate
+      initContainers:
+      - name: wait-for-postgres
+        image: postgres:15-alpine
+        command: [ 'sh', '-c', 'until pg_isready -h dify-postgres -U postgres -d dify; do echo waiting for postgres; sleep 2; done;' ]
+      containers:
+      - name: dify-plugin-daemon
+        image: dify-cn-beijing.cr.volces.com/dify/langgenius/dify-plugin-daemon:0.2.0-local
+        resources:
+          limits:
+            memory: "1024Mi"
+            cpu: "2000m"
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5003
+          protocol: TCP
+          name: debug-port
+
+        - containerPort: 5002
+          protocol: TCP
+          name: service-port
+        envFrom:
+        - configMapRef:
+            name: dify-shared-config
+        env:
+
+        - name: CELERY_BROKER_URL
+          # value: >-
+          #   redis://:difyai123456@dify-redis:6379/1
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: CELERY_BROKER_URL
+        - name: 'DB_DATABASE'
+          # value: 'dify_plugin'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: DB_PLUGIN_DATABASE
+        - name: 'SERVER_PORT'
+          # value: '5002'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_DAEMON_PORT
+        # - name: 'EXPOSE_PLUGIN_DAEMON_PORT'
+        #   value: '5002'
+        - name: 'SERVER_KEY'
+          # value: 'lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_DAEMON_KEY
+        - name: 'MAX_PLUGIN_PACKAGE_SIZE'
+          # value: '52428800'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_MAX_PACKAGE_SIZE
+        - name: 'PPROF_ENABLED'
+          # value: 'false'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_PPROF_ENABLED
+        - name: 'DIFY_INNER_API_URL'
+          # value: 'http://dify-api:5001'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_DIFY_INNER_API_URL
+        - name: 'DIFY_INNER_API_KEY'
+          # value: 'QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_DIFY_INNER_API_KEY
+        - name: 'PLUGIN_REMOTE_INSTALLING_HOST'
+          # value: '0.0.0.0'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_DEBUGGING_HOST
+        - name: 'PLUGIN_REMOTE_INSTALLING_PORT'
+          # value: '5003'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_DEBUGGING_PORT
+        - name: 'PLUGIN_WORKING_PATH'
+          # value: '/app/storage/cwd'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_WORKING_PATH
+        - name: 'FORCE_VERIFYING_SIGNATURE'
+          # value: 'true'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: FORCE_VERIFYING_SIGNATURE
+        # - name: 'EXPOSE_PLUGIN_DEBUGGING_HOST'
+        #   value: 'localhost'
+        # - name: 'EXPOSE_PLUGIN_DEBUGGING_PORT'
+        #   value: '5003'
+        - name: 'PYTHON_ENV_INIT_TIMEOUT'
+          # value: '120'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_PYTHON_ENV_INIT_TIMEOUT
+        - name: 'PLUGIN_MAX_EXECUTION_TIMEOUT'
+          # value: '600'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PLUGIN_MAX_EXECUTION_TIMEOUT
+        - name: 'PIP_MIRROR_URL'
+          valueFrom:
+            configMapKeyRef:
+              name: dify-shared-config
+              key: PIP_MIRROR_URL
+        # - name: 'ENDPOINT_URL_TEMPLATE'
+        #   value: 'http://localhost/e/{hook_id}'
+        volumeMounts:
+        - name: dify-plugin-daemon-storage
+          mountPath: /app/storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dify-plugin-daemon
+  namespace: dify
+spec:
+  type: ClusterIP
+  selector:
+    app: dify-plugin-daemon
+  ports:
+  - port: 5003
+    targetPort: 5003
+    protocol: TCP
+    name: debug-port
+  - port: 5002
+    targetPort: 5002
+    protocol: TCP
+    name: service-port
+
+# Dify Plugin Daemon End
