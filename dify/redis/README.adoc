@@ -1,0 +1,30 @@
+= How to run
+
+== Run on Local
+
+[source, bash]
+----
+pip install redis
+
+chmod a+x env.sh 
+source env.sh 
+
+python app.py 
+Connecting to Redis at redis-cnlf3upueq7owrkoz.redis.ivolces.com:6379...
+Redis is working! Stored value: Hello Redis!
+Cleanup done.
+----
+
+== Run with Docker
+
+[source, bash]
+----
+docker build -t dify-cn-beijing.cr.volces.com/byteplus/redis-test:0.1 .
+
+docker run --rm -e REDIS_HOST=$REDIS_HOST -e REDIS_PORT=$REDIS_PORT -e REDIS_USERNAME=$REDIS_USERNAME -e REDIS_PASSWORD=$REDIS_PASSWORD dify-cn-beijing.cr.volces.com/byteplus/redis-test:0.1
+Connecting to Redis at redis-cnlf3upueq7owrkoz.redis.ivolces.com:6379...
+Redis is working! Stored value: Hello Redis!
+Cleanup done.
+----
+
+== Run on VKE

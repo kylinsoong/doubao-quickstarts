@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: redis-test-job
+  namespace: dify
+spec:
+  template:
+    spec:
+      containers:
+      - name: redis-test
+        image: dify-cn-beijing.cr.volces.com/byteplus/redis-test:0.1
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-redis
+              key: REDIS_HOST
+              optional: false
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-redis
+              key: REDIS_PORT
+              optional: false
+        - name: REDIS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-redis
+              key: REDIS_USERNAME
+              optional: false
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-redis
+              key: REDIS_PASSWORD
+              optional: false
+        command: ["python", "app.py"]
+      restartPolicy: Never
+  backoffLimit: 4
+  
