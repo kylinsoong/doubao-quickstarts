@@ -19,9 +19,9 @@ def generate_prompt():
     prompt = load_file_content("prompt.scene.extraction.ini")
     return prompt
 
-def process_videos(vlm, obj_keys):
-    urls = generate_urls(obj_keys)
+def process_videos(vlm, urls):
     for url in urls:
+        print(url)
         prompt = generate_prompt()
         results = vlm.process(prompt=prompt, video_url=url, thinking="enabled")
         print(results)
@@ -30,7 +30,7 @@ def process_videos(vlm, obj_keys):
 def main():
     vlm = initialize_clients()
 
-    obj_keys = ["0004/004.mp4"]
+    obj_keys = ["https://pub-kylin.tos-cn-beijing.volces.com/01/401.mp4", "https://pub-kylin.tos-cn-beijing.volces.com/01/402.mp4", "https://pub-kylin.tos-cn-beijing.volces.com/01/403.mp4", "https://pub-kylin.tos-cn-beijing.volces.com/01/404.mp4", "https://pub-kylin.tos-cn-beijing.volces.com/01/405.mp4"]
 
     process_videos(vlm, obj_keys)
 
