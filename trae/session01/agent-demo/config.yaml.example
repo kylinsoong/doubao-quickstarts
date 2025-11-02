@@ -1,0 +1,37 @@
+model:
+  agent:
+    name: deepseek-v3-1-terminus
+    api_key: 
+  video:
+    name: doubao-seedance-1-0-pro-250528
+    # if you want to use different api_key, just uncomment following line and complete api_key
+    # api_key: 
+  image:
+    name: doubao-seedream-4-0-250828
+    # if you want to use different api_key, just uncomment following line and complete api_key
+    # api_key: 
+
+volcengine:
+    # [optional] for Viking DB and `web_search` tool
+    access_key: 
+    secret_key: 
+
+database:
+  # [optional]
+  mysql:
+    host: 
+    user: 
+    password: 
+    database: 
+  opensearch:
+    host:  # should without `http://` or `https://` 
+    port: 9200  # default OpenSearch port
+    username: 
+    password: 
+
+logging:
+  # ERROR
+  # WARNING
+  # INFO
+  # DEBUG
+  level: DEBUG

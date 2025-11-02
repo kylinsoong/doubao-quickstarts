@@ -1,0 +1,55 @@
+= Vibe Coding
+
+== Quick Start
+
+[source, bash]
+.*1. veadk prepare*
+----
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install veadk-python
+----
+
+[source, bash]
+.*2. run helloword*
+----
+python main.py 
+----
+
+[source, bash]
+.*3. Prepare Agent*
+----
+$ cat test_agent/agent.py 
+from veadk import Agent
+
+agent = Agent(
+    name="TestAgent",
+    description="An assistant that help users.",
+    instruction="You are a helpful assistant that help users.",
+)
+
+root_agent = agent
+----
+
+[source, bash]
+.*4. Run ADK WEB*
+----
+veadk web
+----
+
+Access the agent via http://localhost:8000/
+
+[source, bash]
+.*5. Run Agent via CLI*
+----
+python app.py
+----
+
+
+
+[source, bash]
+.**
+----
+
+----
+

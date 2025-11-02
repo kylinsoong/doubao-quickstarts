@@ -1,0 +1,20 @@
+root_agent:
+  type: Agent # Agent | SequencialAgent | LoopAgent | ParallelAgent
+  name: planner
+  description: A planner that can generate a suggestion according to a city's weather.
+  instruction: Invoke weather reporter agent first to get the weather, then invoke suggester agent to get the suggestion. Return the final response to user.
+  sub_agents:
+    - ${sub_agent_1}
+    - ${sub_agent_2}
+
+sub_agent_1:
+  type: Agent
+  name: weather_reporter
+  description: A weather reporter agent to report the weather.
+  tools:
+    - name: veadk.tools.demo_tools.get_city_weather # tool 所在的模块及函数名称
+
+sub_agent_2:
+  type: Agent
+  name: suggester
+  description: A suggester agent that can give some clothing suggestions according to a city's weather.
