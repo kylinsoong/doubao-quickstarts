@@ -1,0 +1,153 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dify-worker
+  namespace: dify
+  labels:
+    app: dify-worker
+    app.kubernetes.io/instance: dify-worker
+spec:
+  serviceName: "dify-worker"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dify-worker
+  template:
+    metadata:
+      labels:
+        app: dify-worker
+    spec:
+      volumes:
+      - name: dify-api-storage
+        hostPath:
+          path: /root/dify/app/api/storage
+          type: DirectoryOrCreate
+      containers:
+      - name: dify-worker
+        image: dify-cn-beijing.cr.volces.com/dify/agent-api:0.15.3
+        ports:
+        - containerPort: 5001
+          protocol: TCP
+        env:
+        - name: CONSOLE_WEB_URL
+          value: ""
+        - name: MODE
+          value: worker
+        - name: LOG_LEVEL
+          value: INFO
+        - name: SECRET_KEY
+          value: "sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U"
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-postgresql
+              key: DB_PORT
+        - name: DB_DATABASE
+          value: dify
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-redis
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-redis
+              key: REDIS_PORT
+              # default redis username is empty
+        - name: REDIS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-redis
+              key: REDIS_USERNAME
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials-redis
+              key: REDIS_PASSWORD
+        - name: REDIS_USE_SSL
+          value: "false"
+        - name: REDIS_DB
+          value: "0"
+        - name: CELERY_BROKER_URL
+          value: >-
+            redis://$(REDIS_USERNAME):$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)/1
+        - name: WEB_API_CORS_ALLOW_ORIGINS
+          value: "*"
+        - name: CONSOLE_CORS_ALLOW_ORIGINS
+          value: "*"
+        - name: STORAGE_TYPE
+          value: opendal
+        - name: OPENDAL_SCHEME
+          value: fs
+        - name: OPENDAL_FS_ROOT
+          value: storage
+        - name: STORAGE_LOCAL_PATH
+          value: /app/api/storage
+        - name: VECTOR_STORE
+          value: weaviate
+        - name: WEAVIATE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials
+              key: weaviate-host
+        - name: WEAVIATE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: dify-credentials
+              key: weaviate-port
+        - name: WEAVIATE_ENDPOINT
+          value: http://$(WEAVIATE_HOST):$(WEAVIATE_PORT)
+        - name: WEAVIATE_API_KEY
+          value: "WVF5YThaHlkYwhGUSmCRgsX3tD5ngdN8pkih"
+        - name: SSRF_PROXY_HTTP_URL
+          value: 'http://dify-ssrf:3128'
+        - name: SSRF_PROXY_HTTPS_URL
+          value: 'http://dify-ssrf:3128'
+        - name: SENTRY_DSN
+          value: ''
+        - name: SENTRY_TRACES_SAMPLE_RATE
+          value: '1.0'
+        - name: SENTRY_PROFILES_SAMPLE_RATE
+          value: '1.0'
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        volumeMounts:
+        - name: dify-api-storage
+          mountPath: /app/api/storage
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dify-worker
+  namespace: dify
+spec:
+  ports:
+  - protocol: TCP
+    port: 5001
+    targetPort: 5001
+  selector:
+    app: dify-worker
+  type: ClusterIP
