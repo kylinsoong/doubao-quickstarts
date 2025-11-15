@@ -1,5 +1,3 @@
-# Dify Sandbox Server Start
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -256,4 +254,3 @@ spec:
   - protocol: TCP
     port: 3128
     targetPort: 3128
-# Dify SSRF Proxy End

@@ -1,47 +1,38 @@
-      
 apiVersion: v1
 kind: Namespace
 metadata:
   name: dify
 ---
-# Dify Credentials PostgreSQL(reference with the cloud sql)
 apiVersion: v1
 kind: Secret
 metadata:
-  name: dify-credentials-postgresql
+  name: dify-secret
   namespace: dify
 data:
-  DB_DATABASE: ZGlmeQ==
-  DB_HOST: cG9zdGdyZXM0OTk4ZWYxYzNlMTEucmRzLXBnLml2b2xjZXMuY29t
-  DB_PASSWORD: RGVtb0A2NjY=
-  DB_PORT: NTQzMg==
-  DB_USERNAME: a3lsaW4=
-type: Opaque
----
-# Dify Credentials Redis(reference with the cloud redis)
-apiVersion: v1
-kind: Secret
-metadata:
-  name: dify-credentials-redis
-  namespace: dify
-data:
-  REDIS_HOST: cmVkaXMtY25sZjN1cHVlcTdvd3Jrb3oucmVkaXMuaXZvbGNlcy5jb20=
+  MILVUS_PASSWORD: RGVtb0A2NjY=
+  MILVUS_USERNAME: cm9vdA==
+  PG_PASSWORD: RGVtb0A2NjY=
+  PG_USERNAME: a3lsaW4=
   REDIS_PASSWORD: RGVtb0A2NjY=
-  REDIS_PORT: NjM3OQ==
   REDIS_USERNAME: a3lsaW4=
+  VOLCENGINE_TOS_ACCESS_KEY: QUtMVFpHVTFOamRtTUdaaU5qVmlORFU0WmpnelptRTRZakZpTVRRNVl6SXdZekk=
+  VOLCENGINE_TOS_SECRET_KEY: VDBkT2FFMVhWWGxaYlZKcFRqSlpNMDVFWjNoT2VtZDNXbGRaZUUweVRtaFBWRVpyV1hwbk0xbHFhdz09
 type: Opaque
 ---
-# Dify Credentials
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
-  name: dify-credentials
+  name: dify-cm
   namespace: dify
 data:
-  # Base64 encoded weaviate host, default is dify-weaviate
-  weaviate-host: ZGlmeS13ZWF2aWF0ZQ==
-  # Base64 encoded weaviate port 8080
-  weaviate-port: ODA4MA==
-type: Opaque
-
-
+  MILVUS_URI: http://milvus-00glbppj6rkf.milvus.ivolces.com:19530
+  PG_DATABASE: dify
+  PG_HOST: postgres4998ef1c3e11.rds-pg.ivolces.com
+  PG_PORT: "5432"
+  REDIS_HOST: redis-cnlf3upueq7owrkoz.redis.ivolces.com
+  REDIS_PORT: "6379"
+  STORAGE_TYPE: volcengine-tos
+  VECTOR_STORE: milvus
+  VOLCENGINE_TOS_BUCKET_NAME: difyshuchuan
+  VOLCENGINE_TOS_ENDPOINT: tos-cn-beijing.ivolces.com
+  VOLCENGINE_TOS_REGION: cn-beijing

@@ -21,7 +21,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: dify-web
-        image: dify-cn-beijing.cr.volces.com/dify/agent-web:0.15.3
+        image: dify-cn-beijing.cr.volces.com/dify/langgenius/dify-web:0.15.3
         env:
         - name: EDITION
           value: SELF_HOSTED

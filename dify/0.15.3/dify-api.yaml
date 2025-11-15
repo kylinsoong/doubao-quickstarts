@@ -21,14 +21,9 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/os: linux
-      volumes:
-      - name: dify-api-storage
-        hostPath:
-          path: /root/dify/app/api/storage
-          type: DirectoryOrCreate
       containers:
       - name: dify-api
-        image: dify-cn-beijing.cr.volces.com/dify/agent-api:0.15.3
+        image: dify-cn-beijing.cr.volces.com/dify/langgenius/dify-api:0.15.3
         env:
         - name: MODE
           value: api
@@ -53,46 +48,48 @@ spec:
         - name: DB_USERNAME
           valueFrom:
             secretKeyRef:
-              name: dify-credentials-postgresql
-              key: DB_USERNAME
+              key: PG_USERNAME
+              name: dify-secret
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: dify-credentials-postgresql
-              key: DB_PASSWORD
+              key: PG_PASSWORD
+              name: dify-secret
         - name: DB_HOST
           valueFrom:
-            secretKeyRef:
-              name: dify-credentials-postgresql
-              key: DB_HOST
+            configMapKeyRef:
+              key: PG_HOST
+              name: dify-cm
         - name: DB_PORT
           valueFrom:
-            secretKeyRef:
-              name: dify-credentials-postgresql
-              key: DB_PORT
+            configMapKeyRef:
+              key: PG_PORT
+              name: dify-cm
         - name: DB_DATABASE
-          value: dify
+          valueFrom:
+            configMapKeyRef:
+              key: PG_DATABASE
+              name: dify-cm
         - name: REDIS_HOST
           valueFrom:
-            secretKeyRef:
-              name: dify-credentials-redis
+            configMapKeyRef:
               key: REDIS_HOST
+              name: dify-cm
         - name: REDIS_PORT
           valueFrom:
-            secretKeyRef:
-              name: dify-credentials-redis
+            configMapKeyRef:
               key: REDIS_PORT
-              # default redis username is empty
+              name: dify-cm
         - name: REDIS_USERNAME
           valueFrom:
             secretKeyRef:
-              name: dify-credentials-redis
               key: REDIS_USERNAME
+              name: dify-secret
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: dify-credentials-redis
               key: REDIS_PASSWORD
+              name: dify-secret
         - name: REDIS_USE_SSL
           value: "false"
         - name: REDIS_DB
@@ -105,29 +102,55 @@ spec:
         - name: CONSOLE_CORS_ALLOW_ORIGINS
           value: "*"
         - name: STORAGE_TYPE
-          value: opendal
-        - name: OPENDAL_SCHEME
-          value: fs
-        - name: OPENDAL_FS_ROOT
-          value: storage
-        - name: STORAGE_LOCAL_PATH
-          value: /app/api/storage
+          valueFrom:
+            configMapKeyRef:
+              key: STORAGE_TYPE
+              name: dify-cm
+        - name: VOLCENGINE_TOS_BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: VOLCENGINE_TOS_BUCKET_NAME
+              name: dify-cm
+        - name: VOLCENGINE_TOS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: VOLCENGINE_TOS_SECRET_KEY
+              name: dify-secret
+        - name: VOLCENGINE_TOS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: VOLCENGINE_TOS_ACCESS_KEY
+              name: dify-secret
+        - name: VOLCENGINE_TOS_REGION
+          valueFrom:
+            configMapKeyRef:
+              key: VOLCENGINE_TOS_REGION
+              name: dify-cm
+        - name: VOLCENGINE_TOS_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              key: VOLCENGINE_TOS_ENDPOINT
+              name: dify-cm
         - name: VECTOR_STORE
-          value: weaviate
-        - name: WEAVIATE_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: VECTOR_STORE
+              name: dify-cm
+        - name: MILVUS_URI
+          valueFrom:
+            configMapKeyRef:
+              key: MILVUS_URI
+              name: dify-cm
+        - name: MILVUS_USER
           valueFrom:
             secretKeyRef:
-              name: dify-credentials
-              key: weaviate-host
-        - name: WEAVIATE_PORT
+              key: MILVUS_USERNAME
+              name: dify-secret
+        - name: MILVUS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: dify-credentials
-              key: weaviate-port
-        - name: WEAVIATE_ENDPOINT
-          value: http://$(WEAVIATE_HOST):$(WEAVIATE_PORT)
-        - name: WEAVIATE_API_KEY
-          value: "WVF5YThaHlkYwhGUSmCRgsX3tD5ngdN8pkih"
+              key: MILVUS_PASSWORD
+              name: dify-secret
         - name: CODE_EXECUTION_ENDPOINT
           value: http://dify-sandbox:8194
         - name: CODE_EXECUTION_API_KEY
@@ -169,9 +192,6 @@ spec:
         ports:
         - containerPort: 5001
         imagePullPolicy: IfNotPresent
-        volumeMounts:
-        - name: dify-api-storage
-          mountPath: /app/api/storage
 ---
 apiVersion: v1
 kind: Service
