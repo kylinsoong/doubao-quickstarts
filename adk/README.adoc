@@ -52,6 +52,30 @@ uv pip install google-adk
 uv pip install veadk-python
 ----
 
+=== Mysql
+
+[source, bash]
+----
+docker run -d \
+  --name mysql \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -p 3306:3306 \
+  mysql:8.0
+----
+
+[source, bash]
+----
+docker exec -it mysql bash
+mysql -uroot -p
+----
+
+[source, bash]
+----
+CREATE DATABASE VEADK;
+USE VEADK;
+SHOW TABLES;
+----
+
 == Getting Start
 
 === my_agent
@@ -78,20 +102,43 @@ veadk web
 python my_agent/agent.py
 ----
 
-[source, bash]
-.**
-----
-
-----
+=== web_search_agent 
 
 [source, bash]
-.**
+----
+web_search_agent/agent.py
 ----
 
+=== terminal_agent
+
+[source, bash]
+.*ShortTermMemory Local File*
+----
+python terminal_agent/short_mem_local_agent.py
 ----
 
 [source, bash]
-.**
+.*ShortTermMemory Mysql*
+----
+python terminal_agent/short_mem_mysql_agent.py
 ----
 
+[source, bash]
+.*LongTermMemory Opensearch*
 ----
+python terminal_agent/long_mem_opensearch_agent.py
+----
+
+[source, bash]
+.*LongTermMemory Viking*
+----
+terminal_agent/long_mem_viking_agent.py
+----
+
+=== intent_recognition_agent
+
+[source, bash]
+----
+python intent_recognition_agent/agent.py 
+----
+

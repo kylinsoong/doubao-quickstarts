@@ -1,6 +1,0 @@
-model:
-  agent:
-    provider: openai
-    name: doubao-seed-1-6-251015
-    api_base: https://ark.cn-beijing.volces.com/api/v3/
-    api_key: d0e1c2ca-ae12-44e1-83bc-e88b43329d53
