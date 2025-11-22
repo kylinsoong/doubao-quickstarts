@@ -1,4 +1,4 @@
-= ADK
+= Mastering the Art of Agents
 :toc: manual
 
 == Concepts
@@ -14,7 +14,7 @@ Open Foundation:
 * Deployment Agnostic: VKE, Google Cloud
 * Interoperability: Easy to integrate with any framework
 
-=== Agent Development Kit
+=== Agent Development Kit 
 
 https://google.github.io/adk-docs/
 
@@ -39,6 +39,20 @@ Google ADK is built around a few core concepts that make it powerful and flexibl
 * Artifact Management: Artifacts allow agents to save, load, and manage files or binary data (like images or PDFs) associated with a session or user.
 * Runner: The engine that manages the execution flow, orchestrates agent interactions based on Events, and coordinates with backend services.
 
+=== VE Agent Development Kit
+
+https://volcengine.github.io/veadk-python/
+
+火山引擎智能体框架 VeADK（Volcengine Agent Development Kit），是由火山引擎推出的为 Agent 智能体的应用构建提供开发、部署、观测、评测等全流程云原生解决方案。
+
+相较于现有的智能体开发框架，VeADK 具备与火山引擎产品体系深度融合的优势，帮助开发者更高效地构建企业级 AI 智能体应用。
+
+
+=== Course
+
+* link:https://www.skills.google/course_templates/1382[Build intelligent agents with Agent Development Kit (ADK)]
+* link:https://www.skills.google/course_templates/1275[Deploy Multi-Agent Systems with Agent Development Kit (ADK)]
+* link:https://github.com/volcengine/veadk-python/blob/main/veadk_tutorial.ipynb[Volcengine Agent Development Kit 教程]
 
 == Development Environment
 
