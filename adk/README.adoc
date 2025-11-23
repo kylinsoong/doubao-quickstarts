@@ -218,15 +218,6 @@ veadk web
 
 ----
 
-=== Multiple Agents
-
-[source, bash]
-----
-veadk web
-
-python assistant_agent/main.py 
-----
-
 === RAG
 
 [source, bash]
@@ -247,6 +238,15 @@ python assistant_agent/main.py
 .**
 ----
 
+----
+
+=== Multiple Agents
+
+[source, bash]
+----
+veadk web
+
+python assistant_agent/main.py
 ----
 
 === Agent Deploy
