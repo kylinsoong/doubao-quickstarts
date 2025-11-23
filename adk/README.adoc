@@ -200,4 +200,59 @@ veadk web
 
 === MCP
 
+[source, bash]
+.**
+----
 
+----
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----
+
+=== Multiple Agents
+
+[source, bash]
+----
+veadk web
+
+python assistant_agent/main.py 
+----
+
+=== RAG
+
+[source, bash]
+.**
+----
+
+----
+
+=== A2A
+
+[source, bash]
+.**
+----
+
+----
+
+[source, bash]
+.**
+----
+
+----
+
+=== Agent Deploy
+
+[source, bash]
+.**
+----
+
+----
