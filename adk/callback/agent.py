@@ -298,7 +298,7 @@ def write_article(topic: str, word_count: int, tool_context: ToolContext) -> str
 # --- 定义智能体 ---
 # 将上面定义的回调函数注册到智能体中。
 chinese_content_moderator_agent = Agent(
-    name="ChineseContentModerator",
+    name="chinese-content-moderator",
     description="一个演示全链路回调和护栏功能的中文内容审查助手。",
     instruction="你是一个内容助手，可以根据用户要求撰写文章。利用好工具",
     tools=[write_article],
