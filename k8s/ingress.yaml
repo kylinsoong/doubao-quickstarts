@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-02
+  namespace: default  
+spec:
+  ingressClassName: alb-01  # ALBInstance 资源名称
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix 
+          backend:
+            service:
+              name: modelgateway-dev1 
+              port:
+                number: 80 

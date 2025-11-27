@@ -1,0 +1,14 @@
+apiVersion: loadbalancer.vke.volcengine.com/v1beta1
+kind: ALBInstance
+metadata:
+  name: alb-01 # ALBInstance 资源名称
+spec:
+  instanceID: "alb-xoyouoe8s8hs54ov5f95rm3i" # 已存在的 ALB 实例 ID
+  listeners:
+  - protocol: "HTTP" # 监听器的协议
+    port: 8080 # 监听器协议为 HTTP 时的监听端口
+    aclConfig:
+      aclEnabled: "on"
+      aclType: "white"
+      aclIDs:
+      - "acl-2tgv80851uku81***"
