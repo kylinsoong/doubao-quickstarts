@@ -16,8 +16,8 @@ root_agent = Agent(
         MCPToolset(
             connection_params=StdioConnectionParams(
                 server_params = StdioServerParameters(
-                    command='python3', # Command to run your MCP server script
-                    args=[PATH_TO_YOUR_MCP_SERVER_SCRIPT], # Argument is the path to the script
+                    command='python3', 
+                    args=[PATH_TO_YOUR_MCP_SERVER_SCRIPT], 
                 )
             )
         )
