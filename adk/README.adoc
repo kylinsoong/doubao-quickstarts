@@ -393,12 +393,33 @@ veadk web
 
 === RAG
 
+==== RAG Opensearch
+
 [source, bash]
-.**
+.*start from cli*
+----
+python rag_opensearch/cli.py
 ----
 
+[source, bash]
+.*start webui*
+----
+veadk web
 ----
 
+==== RAG Viking
+
+[source, bash]
+.*start from cli*
+----
+python rag_viking/cli.py
+----
+
+[source, bash]
+.*start webui*
+----
+veadk web
+----
 
 === Multiple Agents
 
@@ -412,7 +433,6 @@ python assistant_agent/main.py
 === Agent Deploy
 
 [source, bash]
-.**
 ----
-
+veadk deploy --access-key YOUR_AK --secret-key YOUR_SK --vefaas-app-name=youragentname --use-adk-web
 ----
