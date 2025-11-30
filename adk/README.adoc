@@ -200,22 +200,47 @@ veadk web
 
 === MCP
 
+* Model Context Protocol (MCP) is an open standard designed to standardize how Large Language Models (LLMs) like Doubao, Gemini and Claude communicate with external applications, data sources, and tools. Think of it as a universal connection mechanism that simplifies how LLMs obtain context, execute actions, and interact with various systems.
+* MCP follows a client-server architecture, defining how data (resources), interactive templates (prompts), and actionable functions (tools) are exposed by an MCP server and consumed by an MCP client (which could be an LLM host application or an AI agent).
+
+image:img/adk_empower_mcp.png[]
+
+* The MCPToolset class is ADK's primary mechanism for integrating tools from an MCP server. When you include an MCPToolset instance in your agent's tools list, it automatically handles the interaction with the specified MCP server. Here's how it works:
+** Connection Management: On initialization, MCPToolset establishes and manages the connection to the MCP server. This can be a local server process (using StdioServerParameters for communication over standard input/output) or a remote server (using SseServerParams for Server-Sent Events). The toolset also handles the graceful shutdown of this connection when the agent or application terminates.
+** Tool Discovery & Adaptation: Once connected, MCPToolset queries the MCP server for its available tools (via the list_tools MCP method). It then converts the schemas of these discovered MCP tools into ADK-compatible BaseTool instances.
+
+==== Local MCP Server
+
 [source, bash]
-.**
+.*1. start local mcp server*
 ----
-
-----
-
-[source, bash]
-.**
-----
-
+python mcp_local/local_mcp_server.py
 ----
 
 [source, bash]
-.**
+.*2. test from cli*
+----
+python mcp_local/cli.py
 ----
 
+[source, bash]
+.*3. test from web*
+----
+veadk web
+----
+
+==== Remote(Gaode Maps) MCP Server
+
+[source, bash]
+.*test from cli*
+----
+python mcp_amap/cli.py
+----
+
+[source, bash]
+.*test from web*
+----
+veadk web
 ----
 
 === RAG
