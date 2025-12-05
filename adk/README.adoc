@@ -433,6 +433,22 @@ python assistant_agent/main.py
 === Agent Deploy
 
 [source, bash]
+.*deploy*
 ----
-veadk deploy --access-key YOUR_AK --secret-key YOUR_SK --vefaas-app-name=youragentname --use-adk-web
+cd agent_deploy/veadk_web_agent/
+veadk deploy --volcengine-access-key YOUR_AK --volcengine-secret-key YOUR_SK --vefaas-app-name=youragentname --use-adk-web
+----
+
+[source, bash]
+.*deployment verify*
+----
+[2025-12-01 13:37:57][INFO][framework] [function][81cjjml1][get_info][Done] 获取目标函数详情：youragentname-fn 成功，Id: 81cjjml1
+[2025-12-01 13:37:57][INFO][framework] Output Function ID: 81cjjml1
+[2025-12-01 13:37:57][INFO][framework] [function][81cjjml1][update][Done] 选择 skip-update，将不会更新函数
+[2025-12-01 13:37:57][INFO][framework] [function][81cjjml1][get_info][Done] 获取目标函数详情：youragentname-fn 成功，Id: 81cjjml1
+[2025-12-01 13:37:57][INFO][framework] [function][81cjjml1][create_trigger_pre][Start] 开始创建 Gateway 和 Service
+[2025-12-01 13:37:57][INFO][framework] [apig_gateway][][get_info][Start] 获取远程网关资源详情
+[2025-12-01 13:37:57][INFO][framework] [function][81cjjml1][create_dependency_install][Start] 开始安装函数依赖
+[2025-12-01 13:37:57][INFO][framework] [apig_gateway][][get_info][Done] 网关名称 youragentname-gw-20251201133746 不存在
+[2025-12-01 13:37:57][INFO][framework] [apig_gateway][][get_info][Done] Gateway 开始创建
 ----
