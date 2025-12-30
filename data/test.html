@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>12月份收入类别图表</title>
+    <!-- 引入ECharts CDN，无需本地下载 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <style>
+        /* 图表容器样式，确保清晰展示 */
+        #incomeChart {
+            width: 800px;
+            height: 600px;
+            margin: 20px auto; /* 居中显示 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 图表容器 -->
+    <div id="incomeChart"></div>
+
+    <script>
+        // 初始化ECharts实例
+        var myChart = echarts.init(document.getElementById('incomeChart'));
+
+        // 核心数据（精准匹配你的收入数据，去除千分位便于计算，展示时自动还原）
+        var incomeData = [
+            {name: '数据要素计收', value: 1750000},
+            {name: '非数据要素计收', value: 2110040}
+        ];
+
+        // 图表配置项
+        var option = {
+            // 标题：明确展示12月份收入类别
+            title: {
+                text: '12月份收入类别构成图',
+                left: 'center',
+                textStyle: {
+                    fontSize: 18,
+                    fontWeight: 'bold'
+                }
+            },
+            // 图例：展示收入类别名称
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                textStyle: {
+                    fontSize: 14
+                }
+            },
+            // 饼图系列：核心展示区域
+            series: [
+                {
+                    name: '收入金额',
+                    type: 'pie',
+                    radius: ['40%', '70%'], // 环形饼图，更美观易读
+                    center: ['50%', '50%'],
+                    label: {
+                        show: true,
+                        fontSize: 13,
+                        // 标签显示：名称 + 带千分位金额 + 占比
+                        formatter: ''
+                    },
+                    data: incomeData,
+                    // 商务配色，区分度高
+                    color: ['#1890ff', '#f5222d']
+                }
+            ]
+        };
+
+        // 渲染图表
+        myChart.setOption(option);
+
+        // 窗口大小变化时，图表自适应调整
+        window.addEventListener('resize', function() {
+            myChart.resize();
+        });
+    </script>
+</body>
+</html>

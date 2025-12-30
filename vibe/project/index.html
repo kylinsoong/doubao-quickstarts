@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绩效评估应用</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>员工绩效评估系统</h1>
+        </header>
+        
+        <main>
+            <div class="controls">
+                <button id="addEmployeeBtn" class="btn btn-primary">添加员工</button>
+                <button id="exportBtn" class="btn btn-secondary">导出数据</button>
+            </div>
+            
+            <div class="search-section">
+                <input type="text" id="searchInput" placeholder="搜索员工姓名或部门...">
+            </div>
+            
+            <div class="filter-section">
+                <select id="departmentFilter">
+                    <option value="">所有部门</option>
+                    <option value="技术部">技术部</option>
+                    <option value="市场部">市场部</option>
+                    <option value="销售部">销售部</option>
+                    <option value="人力资源部">人力资源部</option>
+                    <option value="财务部">财务部</option>
+                </select>
+                <select id="performanceFilter">
+                    <option value="">所有绩效等级</option>
+                    <option value="优秀">优秀</option>
+                    <option value="良好">良好</option>
+                    <option value="合格">合格</option>
+                    <option value="待改进">待改进</option>
+                </select>
+            </div>
+            
+            <table id="performanceTable">
+                <thead>
+                    <tr>
+                        <th>员工ID</th>
+                        <th>姓名</th>
+                        <th>部门</th>
+                        <th>职位</th>
+                        <th>工作年限</th>
+                        <th>绩效评分</th>
+                        <th>绩效等级</th>
+                        <th>评估日期</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- 数据将通过JavaScript动态生成 -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+    
+    <!-- 添加/编辑员工模态框 -->
+    <div id="employeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">添加员工</h2>
+            <form id="employeeForm">
+                <input type="hidden" id="employeeId">
+                <div class="form-group">
+                    <label for="name">姓名:</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="department">部门:</label>
+                    <select id="department" required>
+                        <option value="技术部">技术部</option>
+                        <option value="市场部">市场部</option>
+                        <option value="销售部">销售部</option>
+                        <option value="人力资源部">人力资源部</option>
+                        <option value="财务部">财务部</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="position">职位:</label>
+                    <input type="text" id="position" required>
+                </div>
+                <div class="form-group">
+                    <label for="yearsOfService">工作年限:</label>
+                    <input type="number" id="yearsOfService" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="performanceScore">绩效评分:</label>
+                    <input type="number" id="performanceScore" min="0" max="100" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="evaluationDate">评估日期:</label>
+                    <input type="date" id="evaluationDate" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
