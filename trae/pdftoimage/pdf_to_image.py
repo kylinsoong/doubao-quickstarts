@@ -64,10 +64,10 @@ def pdf_to_images(pdf_path, output_folder=None, dpi=300, fmt='PNG'):
 
 if __name__ == "__main__":
     # 设置PDF文件路径
-    pdf_file_path = "/Users/bytedance/Downloads/0003.pdf"
+    pdf_file_path = "/Users/bytedance/Downloads/0103.pdf"
     
     # 设置输出文件夹
-    output_dir = os.path.join(os.path.dirname(__file__), "output_images_3")
+    output_dir = os.path.join(os.path.dirname(__file__), "output_images_03")
     
     try:
         print(f"开始转换PDF: {pdf_file_path}")
