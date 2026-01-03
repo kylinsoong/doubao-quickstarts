@@ -1,0 +1,35 @@
+common:
+  agent_name: agentkit-intent_identity_agent
+  entry_point: agentkit-intent_identity_agent.py
+  description: 消费信贷贷后催收意图打标
+  language: Python
+  language_version: '3.12'
+  agent_type: Wrapped Agent (Basic)
+  dependencies_file: requirements.txt
+  runtime_envs: {}
+  launch_type: cloud
+launch_types:
+  cloud:
+    region: cn-beijing
+    tos_bucket: agentkit-platform-{{account_id}}
+    tos_prefix: agentkit-builds
+    image_tag: '{{timestamp}}'
+    cr_instance_name: hj-cr-test
+    cr_namespace_name: agentkit
+    cr_repo_name: agentkit-intent_identity_agent
+    cr_auto_create_instance_type: Micro
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/agentkit-intent_identity_agent:20260103135646
+    build_timeout: 3600
+    cp_workspace_name: agentkit-cli-workspace
+    cp_pipeline_name: agentkit-intent_identity_agent-4wwvy5ym
+    cp_pipeline_id: 81804a0e01734906afa126ab8227d543
+    runtime_id: r-yecp7dm5tso2eybtnifb
+    runtime_name: agentkit-intent_identity_agent-4wwvy5ym
+    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-0lk2jfe
+    runtime_auth_type: key_auth
+    runtime_apikey_name: API-KEY-gj19pwu4
+    runtime_apikey: qSb5xkPtF9YDmRoN11KUSDvbj-MGIVoLsUtR
+    runtime_jwt_allowed_clients: []
+    runtime_endpoint: https://sd5caqhjdr43upa0e69cg.apigateway-cn-beijing.volceapi.com
+docker_build:
+  platform: auto

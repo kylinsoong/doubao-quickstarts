@@ -1,0 +1,35 @@
+common:
+  agent_name: agentkit-sentiment_tag_agent
+  entry_point: agentkit-sentiment_tag_agent.py
+  description: 消费信贷贷后催收情感分析
+  language: Python
+  language_version: '3.12'
+  agent_type: Wrapped Agent (Basic)
+  dependencies_file: requirements.txt
+  runtime_envs: {}
+  launch_type: cloud
+launch_types:
+  cloud:
+    region: cn-beijing
+    tos_bucket: agentkit-platform-{{account_id}}
+    tos_prefix: agentkit-builds
+    image_tag: '{{timestamp}}'
+    cr_instance_name: hj-cr-test
+    cr_namespace_name: agentkit
+    cr_repo_name: agentkit-sentiment_tag_agent
+    cr_auto_create_instance_type: Micro
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/agentkit-sentiment_tag_agent:20260103144721
+    build_timeout: 3600
+    cp_workspace_name: agentkit-cli-workspace
+    cp_pipeline_name: agentkit-sentiment_tag_agent-8grl53t9
+    cp_pipeline_id: c65b2d3ef5194f8c9eb073a7ca199e73
+    runtime_id: r-yecpbghbeoo2eybtfnin
+    runtime_name: agentkit-sentiment_tag_agent-8grl53t9
+    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-i46gund
+    runtime_auth_type: key_auth
+    runtime_apikey_name: API-KEY-ljtnv7ov
+    runtime_apikey: 5gDmZeezRTFjdovMxca_MEMYIpg5bPXfEI-i
+    runtime_jwt_allowed_clients: []
+    runtime_endpoint: https://sd5cbnujdr43upa0e6eog.apigateway-cn-beijing.volceapi.com
+docker_build:
+  platform: auto

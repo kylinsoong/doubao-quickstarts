@@ -1,0 +1,220 @@
+= Agentkit Quickstart
+:toc: manual
+
+
+== Development Environment
+
+=== Python
+
+[source,bash]
+----
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install -U agentkit-sdk-python
+----
+
+=== Volcengine AK/SK
+
+[source,bash]
+----
+export VOLCENGINE_ACCESS_KEY=<your_access_key>
+export VOLCENGINE_SECRET_KEY=<your_secret_key>
+----
+
+== Agent Development
+
+=== Simple Agent
+
+[source,bash]
+.*1. create agent project*
+----
+mkdir simple-agent && cd simple-agent
+----
+
+[source,bash]
+.*2. init agent*
+----
+agentkit init
+----
+
+[source,bash]
+.*3. config agent*
+----
+agentkit config
+----
+
+[source,bash]
+.*4. lunch agent*
+----
+agentkit launch
+----
+
+[source,bash]
+.*5. check agent status*
+----
+$ agentkit status
+
+✅ Service Status: RUNNING
+
+  🌐 Endpoint        https://sd5c87geo20h0ng5gqk40.apigateway-cn-beijing.volceapi.com          
+  ☁️ Service ID       r-yecovu3w8w54ppxu0c4e                                                    
+  📛 Runtime Name    simple_agent-f6v4mw1h                                                     
+  💿 Image           hj-cr-test-cn-beijing.cr.volces.com/agentkit/simple_agent:20260103104629  
+  💚 Health Check    ✔️ Healthy 
+----
+
+[source,bash]
+.*6. test agent*
+----
+$ curl -X POST https://sd5c87geo20h0ng5gqk40.apigateway-cn-beijing.volceapi.com/invoke \
+  -H "Authorization: Bearer <todo>" \
+  -H "Content-Type: application/json" \
+  -H "user_id: 123" \
+  -H "session_id: 123" \
+  -d '{"prompt": "你是谁?， 要求以 JSON 格式输出"}'
+
+{
+  "developer": "VeADK团队",
+  "internal_name": "Agent",
+  "specialties": [
+    {
+      "field": "数据科学",
+      "capabilities": [
+        "信息收集与事实核查",
+        "数据处理与分析"
+      ]
+    },
+    {
+      "field": "文档撰写",
+      "capabilities": [
+        "多章节文章创作",
+        "深度研究报告撰写"
+      ]
+    },
+    {
+      "field": "编程开发与问题解决",
+      "capabilities": [
+        "Python/JavaScript/SQL 等语言代码编写",
+        "bug 修复",
+        "用编程解决开发之外的各类问题"
+      ]
+    },
+    {
+      "field": "工具辅助任务",
+      "capabilities": [
+        "借助提供的工具和资源完成各类任务"
+      ]
+    }
+  ]
+}
+----
+
+=== Quality Check Agent
+
+[source,bash]
+.*1. init*
+----
+agentkit init --from-agent ./quality_check_agent.py 
+----
+
+[source,bash]
+.*2. config*
+----
+$ agentkit config
+
+
+╭──────────────────────────────  ◆ Configuration Complete ◆  ──────────────────────────────╮
+│                                                                                          │
+│  ► Great! Cloud build and deployment configuration is complete!                          │
+│                                                                                          │
+│    • Region: cn-beijing                                                                  │
+│    • Cr Instance Name: hj-cr-test                                                        │
+│    • Cr Namespace Name: agentkit                                                         │
+│    • Cr Repo Name: quality_check_agent                                                   │
+│    • Runtime Auth Type: key_auth                                                         │
+│    • Runtime Jwt Discovery Url:                                                          │
+│    • Runtime Jwt Allowed Clients: []                                                     │
+│                                                                                          │
+│  • You can now use "agentkit launch" to build and deploy your application to the cloud.  │
+│                                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────╯
+----
+
+[source,bash]
+.*3. lunch*
+----
+agentkit launch
+----
+
+[source,bash]
+.*4. test*
+----
+$ curl -X POST https://sd5c9ri3dr43upa0e67kg.apigateway-cn-beijing.volceapi.com/invoke \
+  -H "Authorization: Bearer <todo>" \
+  -H "Content-Type: application/json" \
+  -H "user_id: 123" \
+  -H "session_id: 123" \
+  -d @payload.json
+----
+
+=== Intent Itentity Agent
+
+[source,bash]
+.*1. init*
+----
+agentkit init --from-agent ./intent_identity_agent.py
+----
+
+[source,bash]
+.*2. config*
+----
+agentkit config
+----
+
+[source,bash]
+.*3. launch*
+----
+agentkit launch
+----
+
+[source,bash]
+.*4. test*
+----
+$ curl -X POST https://sd5caqhjdr43upa0e69cg.apigateway-cn-beijing.volceapi.com/invoke \
+  -H "Authorization: Bearer <todo>" \
+  -H "Content-Type: application/json" \
+  -H "user_id: 123" \
+  -H "session_id: 123" \
+  -d @payload.json
+----
+
+=== Sentiment Tag Agent
+
+[source,bash]
+.*1. init*
+----
+agentkit init --from-agent ./sentiment_tag_agent.py
+----
+
+[source,bash]
+.*2. config*
+----
+agentkit config
+----
+
+[source,bash]
+.*3. launch*
+----
+agentkit launch
+----
+
+[source,bash]
+.*4. test*
+----
+$ curl -X POST https://sd5cbnujdr43upa0e6eog.apigateway-cn-beijing.volceapi.com/invoke \
+  -H "Authorization: Bearer <todo>" \
+  -H "Content-Type: application/json" \
+  -H "user_id: 123" \
+  -H "session_id: 123" \
+  -d @payload.json
+----

@@ -1,0 +1,8 @@
+# AgentKit dependencies
+# veadk-python
+# veadk-python[extensions]
+
+# Add your Agent's additional dependencies below
+# Example:
+# requests
+# pandas
