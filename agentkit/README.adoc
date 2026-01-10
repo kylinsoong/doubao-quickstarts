@@ -11,6 +11,7 @@
 uv venv --python 3.12
 source .venv/bin/activate
 uv pip install -U agentkit-sdk-python
+uv pip install -U veadk-python
 ----
 
 === Volcengine AK/SK
@@ -218,3 +219,56 @@ $ curl -X POST https://sd5cbnujdr43upa0e6eog.apigateway-cn-beijing.volceapi.com/
   -H "session_id: 123" \
   -d @payload.json
 ----
+
+=== All In One Agent
+
+[options="header"]
+|===
+|Code |Launch & Run
+
+|
+[source,python]
+----
+agent = Agent(
+    name="all_in_one_demo",
+    description="all in one agent",
+    instruction="""你是一个智能助手，擅长用中文礼貌回复用户的问题。""",
+)
+short_term_memory = ShortTermMemory(backend="local")
+
+agent_server_app = AgentkitAgentServerApp(
+    agent=agent,
+    short_term_memory=short_term_memory,
+)
+----
+
+* *短期记忆*
+** *存储方式:* 本地内存（`backend="local"`）
+** *作用范围:* 单个 session_id 内的所有对话
+** *生命周期:* 进程重启后清空
+
+* *多轮对话*
+** 通过 `session_id` 关联同一会话
+** 每次调用时自动加载历史消息
+** Agent 根据上下文理解用户意图
+
+|
+[source,bash]
+.*launch*
+----
+agentkit launch
+----
+
+[source,bash]
+.*invoke*
+----
+agentkit invoke 'who are you'
+----
+
+[source,bash]
+.*client*
+----
+$ uv run client.py
+----
+
+|===

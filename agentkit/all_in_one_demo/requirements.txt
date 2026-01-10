@@ -1,0 +1,4 @@
+veadk-python[extensions]==0.5.5
+veadk-python==0.5.5
+agentkit-sdk-python==0.4.1
+volcengine-python-sdk>=4.0.33

@@ -1,0 +1,34 @@
+common:
+  agent_name: ALL_IN_ONE_AGENT
+  entry_point: agent.py
+  description: ''
+  language: Python
+  language_version: '3.12'
+  agent_type: Basic App
+  dependencies_file: requirements.txt
+  runtime_envs: {}
+  launch_type: cloud
+launch_types:
+  cloud:
+    region: cn-beijing
+    tos_bucket: agentkit-platform-{{account_id}}
+    tos_prefix: agentkit-builds
+    image_tag: '{{timestamp}}'
+    cr_instance_name: hj-cr-test
+    cr_namespace_name: agentkit
+    cr_repo_name: all_in_one_agent
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/all_in_one_agent:20260110160211
+    build_timeout: 3600
+    cp_workspace_name: agentkit-cli-workspace
+    cp_pipeline_name: ALL_IN_ONE_AGENT-jcftah7l
+    cp_pipeline_id: 97e334705b5142a481021a9fef7d20af
+    runtime_id: r-yed7nugg74ntl8dni4jr
+    runtime_name: ALL_IN_ONE_AGENT-jcftah7l
+    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-lmamlim
+    runtime_auth_type: key_auth
+    runtime_apikey_name: API-KEY-t50ckqw8
+    runtime_apikey: l0tgJvbJzLysWzeIxYB56q60rgyhaNmjrjrG
+    runtime_jwt_allowed_clients: []
+    runtime_endpoint: https://sd5h0g542p7crshr5lq60.apigateway-cn-beijing.volceapi.com
+docker_build:
+  platform: auto
