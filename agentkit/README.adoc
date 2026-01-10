@@ -222,7 +222,7 @@ $ curl -X POST https://sd5cbnujdr43upa0e6eog.apigateway-cn-beijing.volceapi.com/
 
 === All In One Agent
 
-[options="header"]
+[cols="5a,5a"]
 |===
 |Code |Launch & Run
 
