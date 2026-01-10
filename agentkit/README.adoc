@@ -222,10 +222,11 @@ $ curl -X POST https://sd5cbnujdr43upa0e6eog.apigateway-cn-beijing.volceapi.com/
 
 === All In One Agent
 
-[cols="5a,5a"]
+[cols="2,5a,5a"]
 |===
-|Code |Launch & Run
+|ID |Code |Launch & Run
 
+|1
 |
 [source,python]
 ----
@@ -270,5 +271,9 @@ agentkit invoke 'who are you'
 ----
 $ uv run client.py
 ----
+
+|2
+|
+|
 
 |===
