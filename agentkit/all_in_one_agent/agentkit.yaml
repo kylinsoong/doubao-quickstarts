@@ -1,5 +1,5 @@
 common:
-  agent_name: ALL_IN_ONE_AGENT
+  agent_name: all_in_one_agent
   entry_point: agent.py
   description: ''
   language: Python
@@ -17,18 +17,18 @@ launch_types:
     cr_instance_name: hj-cr-test
     cr_namespace_name: agentkit
     cr_repo_name: all_in_one_agent
-    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/all_in_one_agent:20260110160211
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/all_in_one_agent:20260111123435
     build_timeout: 3600
     cp_workspace_name: agentkit-cli-workspace
-    cp_pipeline_name: ALL_IN_ONE_AGENT-jcftah7l
-    cp_pipeline_id: 97e334705b5142a481021a9fef7d20af
-    runtime_id: r-yed7nugg74ntl8dni4jr
-    runtime_name: ALL_IN_ONE_AGENT-jcftah7l
-    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-lmamlim
+    cp_pipeline_name: all_in_one_agent-lttmvuz4
+    cp_pipeline_id: f1ef1b0431f249989d964e186c26d26f
+    runtime_id: r-yed9m3a4g0o2eybtmzyl
+    runtime_name: all_in_one_agent-lttmvuz4
+    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-zcmhs9f
     runtime_auth_type: key_auth
-    runtime_apikey_name: API-KEY-t50ckqw8
-    runtime_apikey: l0tgJvbJzLysWzeIxYB56q60rgyhaNmjrjrG
+    runtime_apikey_name: API-KEY-rp7ommdj
+    runtime_apikey: fpp_fHg0pTxcfR2fLVwjQOc4e-h8C0Xq8EHp
     runtime_jwt_allowed_clients: []
-    runtime_endpoint: https://sd5h0g542p7crshr5lq60.apigateway-cn-beijing.volceapi.com
+    runtime_endpoint: https://sd5hgaff7t2qr3dub7m2g.apigateway-cn-beijing.volceapi.com
 docker_build:
   platform: auto
