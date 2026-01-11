@@ -1,0 +1,33 @@
+common:
+  agent_name: finance_marketing_agent
+  entry_point: agent.py
+  description: 金融营销素材生成
+  language: Python
+  language_version: '3.12'
+  agent_type: Basic App
+  dependencies_file: requirements.txt
+  runtime_envs: {}
+  launch_type: cloud
+launch_types:
+  cloud:
+    region: cn-beijing
+    tos_bucket: agentkit-platform-{{account_id}}
+    tos_prefix: agentkit-builds
+    image_tag: '{{timestamp}}'
+    cr_instance_name: hj-cr-test
+    cr_namespace_name: agentkit
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/finance_marketing_agent-gno6:20260111151648
+    build_timeout: 3600
+    cp_workspace_name: agentkit-cli-workspace
+    cp_pipeline_name: finance_marketing_agent-0u3zf7i8
+    cp_pipeline_id: cdadee812347472e95fa47eb6e3d1c85
+    runtime_id: r-yeda6j6328o2eybtgsze
+    runtime_name: finance_marketing_agent-0u3zf7i8
+    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-oamz55j
+    runtime_auth_type: key_auth
+    runtime_apikey_name: API-KEY-h2snaani
+    runtime_apikey: rpk-0nBTMGxvuWTcTUwZanU1Ka5-j9ld5Voj
+    runtime_jwt_allowed_clients: []
+    runtime_endpoint: https://sd5hktpv7t2qr3dub8eng.apigateway-cn-beijing.volceapi.com
+docker_build:
+  platform: auto
