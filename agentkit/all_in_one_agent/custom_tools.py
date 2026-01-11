@@ -10,7 +10,7 @@ from typing import List
 #account_id = "your accountid" 
 
 g_knowledge_base_domain = "api-knowledgebase.mlp.cn-beijing.volces.com" 
-apikey = os.getenv("VIKING_SERVICE_API_KEY", "453eaedf-a5a8-424e-888c-e4003c5eb2f5") 
+apikey = os.getenv("VIKING_SERVICE_API_KEY") 
 service_resource_id = os.getenv("VIKING_SERVICE_RESOURCE_ID", "kb-service-41071740ecb092c6") 
 
 

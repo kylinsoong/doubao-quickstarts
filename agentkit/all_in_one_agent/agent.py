@@ -2,7 +2,7 @@ from agentkit.apps import AgentkitAgentServerApp
 from veadk import Agent, Runner
 from veadk.memory.short_term_memory import ShortTermMemory
 #from custom_tools import knowledge_service_search
-from .custom_tools import knowledge_service_search
+from custom_tools import knowledge_service_search
 
 app_name = "veadk_playground_app_short_term_local"
 user_id = "veadk_playground_user_short_term_local"
@@ -13,7 +13,12 @@ session_id = "veadk_playground_session_short_term_local"
 root_agent = Agent(
     name="all_in_one_agent",
     description="all in one agent",
-    instruction="""你是一个工具调用助手，严格按照插件返回的结构话内容回复，不做任何编辑""",
+    instruction="""
+    你是一个工具调用助手，严格按照插件返回的结构话内容回复，不做任何编辑
+    
+    输出示例：
+    ['<link1>', '<link2>', '<link3>']
+    """,
     tools=[knowledge_service_search],
 )
 

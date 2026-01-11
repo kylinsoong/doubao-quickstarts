@@ -17,7 +17,7 @@ launch_types:
     cr_instance_name: hj-cr-test
     cr_namespace_name: agentkit
     cr_repo_name: all_in_one_agent
-    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/all_in_one_agent:20260111123435
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/all_in_one_agent:20260111125935
     build_timeout: 3600
     cp_workspace_name: agentkit-cli-workspace
     cp_pipeline_name: all_in_one_agent-lttmvuz4
