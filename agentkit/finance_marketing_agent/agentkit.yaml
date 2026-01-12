@@ -16,7 +16,7 @@ launch_types:
     image_tag: '{{timestamp}}'
     cr_instance_name: hj-cr-test
     cr_namespace_name: agentkit
-    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/finance_marketing_agent-gno6:20260111151648
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/finance_marketing_agent-lyhr:20260112113607
     build_timeout: 3600
     cp_workspace_name: agentkit-cli-workspace
     cp_pipeline_name: finance_marketing_agent-0u3zf7i8

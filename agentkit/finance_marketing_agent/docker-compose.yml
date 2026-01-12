@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  finance-marketing-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+      - VIKING_SERVICE_API_KEY=${VIKING_SERVICE_API_KEY}
+      - VIKING_SERVICE_RESOURCE_ID=${VIKING_SERVICE_RESOURCE_ID}
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 60s

@@ -1,4 +1,15 @@
-veadk-python[extensions]==0.5.5
-veadk-python==0.5.5
-agentkit-sdk-python==0.4.1
-volcengine-python-sdk>=4.0.33
+# 配置管理
+pydantic-settings
+
+# HTTP请求
+requests
+
+# 日志处理
+python-json-logger
+
+# 测试框架
+pytest
+pytest-cov
+
+# Volcengine SDK
+volcengine
