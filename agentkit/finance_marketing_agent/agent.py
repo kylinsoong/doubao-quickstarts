@@ -41,7 +41,7 @@ short_term_memory = ShortTermMemory(
 logger.info("短期记忆初始化成功")
 
 # 创建主智能体
-consumer_finance_marketing_agent = Agent(
+finance_marketing_agent = Agent(
     name=config.agent.main_agent_name,
     description=config.agent.main_agent_description,
     instruction=CONSUMER_FINANCE_MARKETING_AGENT_PROMPT,
@@ -50,7 +50,7 @@ consumer_finance_marketing_agent = Agent(
 logger.info(f"主智能体 {config.agent.main_agent_name} 初始化成功")
 
 # 设置根智能体（模块级别，供ADK Web Server使用）
-root_agent = consumer_finance_marketing_agent
+root_agent = finance_marketing_agent
 logger.info("根智能体初始化成功")
 
 # 创建运行器

@@ -45,7 +45,7 @@ SEQUENTIAL_SERVICE_AGENT_PROMPT = """
 # 核心任务
 1. **用户信息预处理**：调用 `pre_process_agent`，从用户问题中提取查询知识库的关键词和生成营销素材的具体要求
 2. **知识库搜索**：使用预处理结果调用 `search_kb_agent`，查询相关营销素材底图
-3. **营销素材生成**：基于底图和生成要求调用 `generate_image_agent`，生成最终营销素材
+3. **营销图片编辑**：使用知识库搜索的结果底图和生成要求调用 `edit_image_agent`，生成最终营销素材
 
 # 工作流程约束
 1. 严格按照顺序执行三个子智能体，只有当前一个完成后才能执行下一个
@@ -56,7 +56,7 @@ SEQUENTIAL_SERVICE_AGENT_PROMPT = """
 # 智能体间通信规范
 1. 调用 `pre_process_agent` 时，直接传递用户的原始问题
 2. 调用 `search_kb_agent` 时，必须使用 `pre_process_agent` 输出中的 `query` 字段
-3. 调用 `generate_image_agent` 时，必须使用 `pre_process_agent` 输出中的 `requirment` 字段和 `search_kb_agent` 输出中的图片链接
+3. 调用 `edit_image_agent` 时，必须使用 `pre_process_agent` 输出中的 `requirment` 字段和 `search_kb_agent` 输出中的图片链接
 
 # 输出格式要求
 将三个子智能体的输出整合为一个完整的结果，包含：
