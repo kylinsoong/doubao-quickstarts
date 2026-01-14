@@ -1,7 +1,6 @@
 import os
 import sys
 import logging
-from logging.handlers import RotatingFileHandler
 
 from agentkit.apps import AgentkitAgentServerApp
 from veadk import Agent, Runner
@@ -13,21 +12,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # 导入配置和提示词
 from config import config
-from prompts import CONSUMER_FINANCE_MARKETING_AGENT_PROMPT
-from sub_agents.sequential_agent import sequential_service_agent
+from prompts import FINANCE_MARKETING_AGENT_PROMPT
+from sub_agents.promotional_text_creation import promotional_text_creation_agent
+from sub_agents.retrive_img_from_kb_generate_new_img import retrive_img_from_kb_generate_new_img_agent
+from sub_agents.promotional_image_generate import promotional_image_generate_agent
+from sub_agents.promotional_video_creation import promotional_video_creation_agent
 
-
-# 配置日志
+# 配置日志 - 只输出到控制台
 logging.basicConfig(
     level=getattr(logging, config.log.level.upper()),
     format=config.log.format,
     handlers=[
         logging.StreamHandler(sys.stdout),
-        RotatingFileHandler(
-            config.log.file or f"{config.app.app_name}.log",
-            maxBytes=10*1024*1024,  # 10MB
-            backupCount=5
-        )
     ]
 )
 
@@ -44,8 +40,13 @@ logger.info("短期记忆初始化成功")
 finance_marketing_agent = Agent(
     name=config.agent.main_agent_name,
     description=config.agent.main_agent_description,
-    instruction=CONSUMER_FINANCE_MARKETING_AGENT_PROMPT,
-    sub_agents=[sequential_service_agent],
+    instruction=FINANCE_MARKETING_AGENT_PROMPT,
+    sub_agents=[
+        promotional_text_creation_agent, 
+        promotional_image_generate_agent, 
+        promotional_video_creation_agent, 
+        retrive_img_from_kb_generate_new_img_agent
+        ],
 )
 logger.info(f"主智能体 {config.agent.main_agent_name} 初始化成功")
 

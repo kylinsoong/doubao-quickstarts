@@ -65,8 +65,8 @@ class EnhancedSequentialAgent(SequentialAgent):
 
 
 # 创建增强版串行智能体
-sequential_service_agent = EnhancedSequentialAgent(
-    name="sequential_service_agent",
+retrive_img_from_kb_generate_new_img_agent = EnhancedSequentialAgent(
+    name="retrive_img_from_kb_generate_new_img_agent",
     description="消费金融营销助手串行总控，负责按顺序协调子智能体工作，并进行质量控制",
     instruction=SEQUENTIAL_SERVICE_AGENT_PROMPT,
     sub_agents=[pre_process_agent, search_kb_agent, edit_image_agent],

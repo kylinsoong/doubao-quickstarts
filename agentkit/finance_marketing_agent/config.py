@@ -5,16 +5,15 @@ from typing import Optional
 
 class AppConfig(BaseSettings):
     """应用程序配置"""
-    app_name: str = "consumer_finance_marketing_agent"
+    app_name: str = "finance_marketing_agent"
     host: str = "0.0.0.0"
     port: int = 8000
     debug: bool = False
 
 
 class AgentConfig(BaseSettings):
-    """智能体配置"""
-    main_agent_name: str = "consumer_finance_marketing_agent"
-    main_agent_description: str = "消费金融营销助手，根据用户问题生成相应的营销素材"
+    main_agent_name: str = "finance_marketing_agent"
+    main_agent_description: str = "金融营销助手主智能体，能够根据用户意图选择合适的子智能体执行任务"
     sequential_agent_name: str = "sequential_service_agent"
     sequential_agent_description: str = "根据用户需求，逐步执行工作流，生成最佳回复结果"
 
