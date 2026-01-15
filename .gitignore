@@ -180,3 +180,5 @@ template.pptx
 *.pptx
 *.db
 __pycache__
+
+.trae
