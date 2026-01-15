@@ -1,11 +1,16 @@
 import json 
 import requests 
 import logging
+import os
+import sys
 
 from volcengine.auth.SignerV4 import SignerV4 
 from volcengine.base.Request import Request 
 from volcengine.Credentials import Credentials 
 from typing import List, Optional
+
+# 添加上级目录到 Python 路径，以便导入 config
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # 导入配置
 from config import config
@@ -13,20 +18,6 @@ from config import config
 # 设置日志
 logger = logging.getLogger(__name__)
 
-
-## 当query包含图片时，使用以下格式 
-# query = [ 
-#     { 
-#         "text": "你的问题", 
-#         "type": "text" 
-#     }, 
-#     { 
-#         "image_url": { 
-#             "url": "请传入可访问的图片URL或者Base64编码" 
-#         }, 
-#         "type": "image_url" 
-#     } 
-# ] 
 
 def prepare_request(method, path, params=None, data=None, doseq=0): 
     """准备请求对象"""
@@ -177,8 +168,11 @@ def knowledge_service_add_file(url: str, service_resource_id: Optional[str] = No
     
     # 使用默认资源ID（如果未提供）
     resource_id = service_resource_id or config.knowledge_service.resource_id
+   # print(resource_id, os.getenv("VIKING_SERVICE_RESOURCE_ID", ""))
+    logger.info(f"当前资源ID配置: {resource_id}")
     if not resource_id:
         logger.error("知识服务资源ID不能为空")
+        logger.error("请设置环境变量 VIKING_SERVICE_RESOURCE_ID 或在调用时提供 service_resource_id 参数")
         raise ValueError("service_resource_id is required or must be configured")
     
     try:
@@ -201,11 +195,8 @@ def knowledge_service_add_file(url: str, service_resource_id: Optional[str] = No
         
         # 构建请求参数
         request_params = {
+            "collection_name": "images",
             "add_type": "url",  # 固定为url方式
-            "resource_id": resource_id,
-            "doc_id": doc_id,
-            "doc_name": doc_name,
-            "doc_type": doc_type,
             "url": url
         }
         
@@ -240,3 +231,14 @@ def knowledge_service_add_file(url: str, service_resource_id: Optional[str] = No
     except Exception as e:
         logger.error(f"知识服务添加文件发生未知错误: {str(e)}")
         raise
+
+if __name__ == "__main__":
+    # 演示：通过 URL 向知识服务添加文件
+    demo_url = "https://ts1.tc.mm.bing.net/th/id/OIP-C.oLnKOfLPRGzydgYJmqFXjgHaCZ?rs=1&pid=ImgDetMain&o=7&rm=3"
+    try:
+        result = knowledge_service_add_file(url=demo_url)
+        print("添加文件成功，返回结果：", result)
+    except Exception as e:
+        print("添加文件失败：", e)
+
+

@@ -1,0 +1,10 @@
+# 子智能体包初始化文件
+# 导入所有子智能体，方便外部调用
+from .promotional_text_creation import promotional_text_creation_agent
+from .promotional_image_generate import promotional_image_generate_agent
+from .promotional_video_creation import promotional_video_creation_agent
+from .retrive_img_from_kb_generate_new_img import retrive_img_from_kb_generate_new_img_agent
+from .search_kb import search_kb_agent
+from .kb_query_rewriting import kb_query_rewriting_agent
+from .edit_image import edit_image_agent
+from .save_file_to_kb import save_file_to_kb_agent
