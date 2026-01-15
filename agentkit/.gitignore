@@ -1,6 +1,7 @@
 .venv
 .env
 config.yaml
+agentkit.yaml
 .log 
 .agentkit
 .adk
