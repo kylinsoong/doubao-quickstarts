@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 from prompts import SEQUENTIAL_SERVICE_AGENT_PROMPT
 from sub_agents.search_kb import search_kb_agent
 from sub_agents.edit_image import edit_image_agent
-from sub_agents.pre_process import pre_process_agent
+from sub_agents.kb_query_rewriting import kb_query_rewriting_agent
 from veadk import Runner
 from veadk.agents.sequential_agent import SequentialAgent
 
@@ -69,7 +69,7 @@ retrive_img_from_kb_generate_new_img_agent = EnhancedSequentialAgent(
     name="retrive_img_from_kb_generate_new_img_agent",
     description="消费金融营销助手串行总控，负责按顺序协调子智能体工作，并进行质量控制",
     instruction=SEQUENTIAL_SERVICE_AGENT_PROMPT,
-    sub_agents=[pre_process_agent, search_kb_agent, edit_image_agent],
+    sub_agents=[kb_query_rewriting_agent, search_kb_agent, edit_image_agent],
     version="1.0.0",
 )
 
