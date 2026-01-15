@@ -1,0 +1,35 @@
+common:
+  agent_name: visual_risk_control_agent
+  entry_point: agent.py
+  description: 视觉风险控制智能体，用于检测和分析图片中的风险特征
+  language: Python
+  language_version: '3.12'
+  agent_type: Basic App
+  dependencies_file: requirements.txt
+  runtime_envs: {}
+  launch_type: cloud
+launch_types:
+  cloud:
+    region: cn-beijing
+    tos_bucket: agentkit-platform-{{account_id}}
+    tos_prefix: agentkit-builds
+    image_tag: '{{timestamp}}'
+    cr_instance_name: hj-cr-test
+    cr_namespace_name: agentkit
+    cr_repo_name: visual_risk_control_agent
+    cr_auto_create_instance_type: Micro
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/visual_risk_control_agent:20260115205811
+    build_timeout: 3600
+    cp_workspace_name: agentkit-cli-workspace
+    cp_pipeline_name: visual_risk_control_agent-n138ftxm
+    cp_pipeline_id: 5a9bcad764f44eed8b3df6b7d4efcca0
+    runtime_id: r-yedl7b5o1sntl8dnlu80
+    runtime_name: visual_risk_control_agent-n138ftxm
+    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-2dvrtia
+    runtime_auth_type: key_auth
+    runtime_apikey_name: API-KEY-j2wxetbq
+    runtime_apikey: Pgmf4fdY4EP9neLv52Rzhju1eY7R0S_SRPbG
+    runtime_jwt_allowed_clients: []
+    runtime_endpoint: https://sd5ke9rp7t2mh8bfmj2q0.apigateway-cn-beijing.volceapi.com
+docker_build:
+  platform: auto
