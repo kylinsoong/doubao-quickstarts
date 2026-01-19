@@ -18,18 +18,18 @@ launch_types:
     cr_namespace_name: agentkit
     cr_repo_name: visual_risk_control_agent
     cr_auto_create_instance_type: Micro
-    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/visual_risk_control_agent:20260115205811
+    cr_image_full_url: hj-cr-test-cn-beijing.cr.volces.com/agentkit/visual_risk_control_agent:20260118151704
     build_timeout: 3600
     cp_workspace_name: agentkit-cli-workspace
-    cp_pipeline_name: visual_risk_control_agent-n138ftxm
-    cp_pipeline_id: 5a9bcad764f44eed8b3df6b7d4efcca0
-    runtime_id: r-yedl7b5o1sntl8dnlu80
-    runtime_name: visual_risk_control_agent-n138ftxm
-    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-2dvrtia
+    cp_pipeline_name: visual_risk_control_agent-08398ayi
+    cp_pipeline_id: 92522dc18bac40159701cb1b4a5830bc
+    runtime_id: r-yedse1snpcntl8dnixhu
+    runtime_name: visual_risk_control_agent-08398ayi
+    runtime_role_name: AgentKit-Runtime-Default-ServiceRole-oe37pte
     runtime_auth_type: key_auth
-    runtime_apikey_name: API-KEY-j2wxetbq
-    runtime_apikey: Pgmf4fdY4EP9neLv52Rzhju1eY7R0S_SRPbG
+    runtime_apikey_name: API-KEY-l1r2pbs6
+    runtime_apikey: vinO7vuxMCdshGCZQ_hPZzbw6zi_Il8Ndh-V
     runtime_jwt_allowed_clients: []
-    runtime_endpoint: https://sd5ke9rp7t2mh8bfmj2q0.apigateway-cn-beijing.volceapi.com
+    runtime_endpoint: https://sd5m8iqpitm8rf8ocepfg.apigateway-cn-beijing.volceapi.com
 docker_build:
   platform: auto
