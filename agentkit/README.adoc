@@ -1,4 +1,4 @@
-= Agentkit Quickstart
+= Agentkit
 :toc: manual
 
 
