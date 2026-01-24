@@ -53,6 +53,7 @@ finance_marketing_agent = Agent(
         promotional_save_file_to_kb_agent,
         retrive_img_from_kb_generate_new_img_agent
         ],
+    model_extra_config={"extra_body": {"thinking": {"type": "disabled"}}},
 )
 logger.info(f"主智能体 {config.agent.main_agent_name} 初始化成功")
 
