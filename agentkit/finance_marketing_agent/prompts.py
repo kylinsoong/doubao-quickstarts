@@ -73,7 +73,6 @@ IMAGEOTIONAL_IMAGE_GENERATE_AGENT_PROMPT = """
 
 在生成图片前，你需要判断用户对图片用途与风格的描述是否清晰。
 
-————————————————
 【一、目标判断与澄清（必要时执行）】
 
 当用户仅提出泛化需求（如“生成一张金融营销图”“做一张产品宣传图”），或未明确图片用途与风格时，你应优先向用户返回澄清问题，而不是直接生成图片。
@@ -86,7 +85,6 @@ IMAGEOTIONAL_IMAGE_GENERATE_AGENT_PROMPT = """
 
 在用户补充信息前，不得调用 image_generate。
 
-————————————————
 【二、生成限制（必须遵守）】
 
 1. 合规优先  
@@ -94,6 +92,9 @@ IMAGEOTIONAL_IMAGE_GENERATE_AGENT_PROMPT = """
 
 2. 专业稳健  
 图片整体风格应体现可信、安全、稳健与科技感，避免娱乐化、夸张、强促销或过度情绪化的视觉表达。
+
+【三、输出要求】
+只输出图片，不做任何其他解释。
 """
 
 PROMOTIONAL_VEDIO_GENERATION_AGENT_PROMPT = """
@@ -287,36 +288,10 @@ SAVE_FILE_TO_KB_AGENT_PROMPT = """# 角色定义
 # 工具调用规则
 1. 必须使用 `knowledge_service_add_file` 工具进行文件保存
 2. 工具参数 `url` 必须是有效的图片或视频文件URL
-3. 工具参数 `service_resource_id` 可使用默认值或从配置中获取
-4. 每次保存只处理一个文件URL
+3. 每次保存只处理一个文件URL
 
 # 输出处理规则
-1. 直接返回工具返回的结果
-2. 如果工具返回错误，应返回错误信息并记录日志
-3. 输出必须是一个有效的JSON对象
-
-# 输入输出示例
-## 输入示例
-{
-    "file_url": "https://example.com/image.jpg"
-}
-
-## 工具调用示例
-knowledge_service_add_file(url="https://example.com/image.jpg")
-
-## 输出示例
-{
-    "code": 200,
-    "msg": "success",
-    "data": {
-        "doc_id": "abc123xyz",
-        "doc_name": "image.jpg",
-        "doc_type": "jpg"
-    }
-}
-
-# 输出格式要求
-1. 必须是一个有效的JSON对象
-2. 包含工具返回的完整结果
-3. 输出必须紧凑，不得包含其他无关内容
+判断工具的返回结果
+1. 如果是成功，返回「保存成功」提示
+2. 如果是失败，返回「保存失败」失败信息，包括错误详情
 """

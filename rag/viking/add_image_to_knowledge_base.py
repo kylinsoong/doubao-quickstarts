@@ -5,23 +5,35 @@
 
 使用说明：
 1. 确保已安装必要的库：pip install requests volcengine
-2. 替换AK和SK为您的实际访问密钥
+2. 设置环境变量：
+   - VOLCENGINE_ACCESS_KEY: 您的Access Key
+   - VOLCENGINE_SECRET_KEY: 您的Secret Key
+   - IMAGE_URL: 图片的URL地址
 3. 运行脚本：python add_image_to_knowledge_base.py
 """
 
 import json
+import os
 
-# 配置信息 - 请根据实际情况修改
-AK = ""  # 替换为您的Access Key
-SK = ""  # 替换为您的Secret Key
+# 配置信息 - 从环境变量读取
+AK = os.environ.get("VOLCENGINE_ACCESS_KEY")  # 从环境变量读取Access Key
+SK = os.environ.get("VOLCENGINE_SECRET_KEY")  # 从环境变量读取Secret Key
 REGION = "cn-beijing"  # 地域
 
 # 知识库和图片信息
 KB_NAME = "images"  # 知识库名称
-IMAGE_URL = ""
+IMAGE_URL = os.environ.get("IMAGE_URL")  # 从环境变量读取图片URL
 DOC_ID = "image_1"  # 文档ID，需唯一
 DOC_NAME = "Example_Image"  # 文档名称
 DOC_TYPE = "png"  # 文档类型
+
+# 检查环境变量是否设置
+if not AK:
+    raise ValueError("请设置环境变量 VOLCENGINE_ACCESS_KEY")
+if not SK:
+    raise ValueError("请设置环境变量 VOLCENGINE_SECRET_KEY")
+if not IMAGE_URL:
+    raise ValueError("请设置环境变量 IMAGE_URL")
 
 # 使用viking_knowledgebase模块发送请求
 try:

@@ -1,6 +1,9 @@
 import json 
 import requests 
 import logging
+import os
+import uuid
+import urllib.parse
 
 from volcengine.auth.SignerV4 import SignerV4 
 from volcengine.base.Request import Request 
@@ -155,88 +158,96 @@ def knowledge_service_search(query: str, service_resource_id: Optional[str] = No
         return []
 
 
-def knowledge_service_add_file(url: str, service_resource_id: Optional[str] = None) -> dict:
-    """
-    知识服务添加文件工具，用于通过URL方式向知识库添加文件。
+
+def knowledge_service_add_file(file_url):
+    """Add file to knowledge base service"""
+    AK = os.environ.get("VOLCENGINE_ACCESS_KEY")  
+    SK = os.environ.get("VOLCENGINE_SECRET_KEY")  
+    REGION = os.environ.get("VOLCENGINE_KB_REGION", "cn-beijing")  
+    KB_NAME = os.environ.get("VOLCENGINE_KB_NAME", "images")  
     
-    参数:
-    url: 待上传的文件URL链接（必填）
-    service_resource_id: 知识服务资源ID（可选，默认使用配置中的值）
+    # Extract filename from FILE_URL
+    parsed_url = urllib.parse.urlparse(file_url)
+    filename = os.path.basename(parsed_url.path)
+    # Remove query parameters if any
+    if '?' in filename:
+        filename = filename.split('?')[0]
+    # Get doc name (without extension)
+    if '.' in filename:
+        DOC_NAME = filename.rsplit('.', 1)[0]
+    else:
+        DOC_NAME = filename
+    # Get file extension and map to doc_type
+    if '.' in filename:
+        ext = filename.rsplit('.', 1)[1].lower()
+        # Map extensions to doc_type (only support image and video)
+        if ext in ['jpg', 'jpeg']:
+            DOC_TYPE = 'jpeg'
+        elif ext in ['png']:
+            DOC_TYPE = 'png'
+        elif ext in ['webp']:
+            DOC_TYPE = 'webp'
+        elif ext in ['bmp']:
+            DOC_TYPE = 'bmp'
+        elif ext in ['mp4']:
+            DOC_TYPE = 'mp4'
+        else:
+            raise ValueError(f"Unsupported file extension: {ext}. Only support image (jpg, jpeg, png, webp, bmp) and video (mp4) types.")
+    else:
+        raise ValueError("No file extension found in URL. Please provide a URL with a valid file extension.")
     
-    返回:
-    dict: 包含操作结果的字典
-    """
-    import os
-    import hashlib
-    import datetime
+    # Generate DOC_ID with UUID and prefix
+    DOC_ID = f"_agent_add_{str(uuid.uuid4()).replace('-', '')}"
+    # Print values
+    print(f"FILE_URL: {file_url}")
+    print(f"DOC_NAME: {DOC_NAME}")
+    print(f"DOC_TYPE: {DOC_TYPE}")
+    print(f"DOC_ID: {DOC_ID}")
     
-    # 参数验证
-    if not url:
-        logger.error("URL参数不能为空")
-        raise ValueError("url is required")
-    
-    # 使用默认资源ID（如果未提供）
-    resource_id = service_resource_id or config.knowledge_service.resource_id
-    if not resource_id:
-        logger.error("知识服务资源ID不能为空")
-        raise ValueError("service_resource_id is required or must be configured")
+    if not AK:
+        raise ValueError("Please set the environment variable VOLCENGINE_ACCESS_KEY")
+    if not SK:
+        raise ValueError("Please set the environment variable VOLCENGINE_SECRET_KEY")
     
     try:
+        from volcengine.viking_knowledgebase.VikingKnowledgeBaseService import VikingKnowledgeBaseService
         
-        # 从URL自动生成必要参数
-        # 提取文件名作为doc_name
-        doc_name = os.path.basename(url)
-        
-        # 从文件名提取文件类型（扩展名）作为doc_type
-        doc_type = os.path.splitext(doc_name)[1].lower().lstrip('.')
-        if not doc_type:
-            doc_type = "txt"  # 默认类型
-        
-        # 生成唯一的doc_id（基于URL和时间戳的哈希值）
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        doc_id = hashlib.md5(f"{url}_{timestamp}".encode()).hexdigest()
-        
-        method = "POST"
-        path = "/api/knowledge/doc/add"
-        
-        # 构建请求参数
-        request_params = {
-            "add_type": "url",  # 固定为url方式
-            "resource_id": resource_id,
-            "doc_id": doc_id,
-            "doc_name": doc_name,
-            "doc_type": doc_type,
-            "url": url
-        }
-        
-        
-        # 准备请求
-        info_req = prepare_request(method=method, path=path, data=request_params)
-        
-        # 发送请求
-        logger.info(f"发送知识服务添加文件请求，URL: {url}, doc_name: {doc_name}")
-        rsp = requests.request(
-            method=info_req.method,
-            url=f"http://{config.knowledge_service.domain}{info_req.path}",
-            headers=info_req.headers,
-            data=info_req.body,
-            timeout=config.knowledge_service.timeout
+        # Create service instance
+        service = VikingKnowledgeBaseService(
+            host="api-knowledgebase.mlp.cn-beijing.volces.com",
+            region=REGION,
+            ak=AK,
+            sk=SK,
+            scheme="https"
         )
         
-        rsp.encoding = "utf-8"
-        rsp.raise_for_status()  # 检查HTTP错误
+        # Build request parameters
+        params = {
+            "collection_name": KB_NAME,
+            "add_type": "url",
+            "doc_id": DOC_ID,
+            "doc_name": DOC_NAME,
+            "doc_type": DOC_TYPE,
+            "url": file_url
+        }
         
-        # 解析响应
-        response_data = rsp.json()
-        logger.info(f"知识服务添加文件请求成功: {response_data}")
-        return response_data
+        # Send request using json method, api parameter is "AddDoc"
+        # Convert params to JSON string
+        import json as json_module
+        response = service.json("AddDoc", {}, json_module.dumps(params))
         
-    except requests.exceptions.RequestException as e:
-        logger.error(f"知识服务添加文件请求失败: {str(e)}")
-        raise
-    except json.JSONDecodeError:
-        logger.error(f"解析知识服务添加文件响应失败: {rsp.text[:100]}...")
-        raise
+        print("\nResponse using viking_knowledgebase module:")
+        print(f"Response content: {json.dumps(response, indent=2, ensure_ascii=False)}")
+        
+        return response
+        
+    except ImportError as e:
+        print(f"\nModule import error: {str(e)}")
+        print("Please make sure volcengine library is installed: pip install volcengine")
+        return {"error": str(e), "type": "ImportError"}
+    
     except Exception as e:
-        logger.error(f"知识服务添加文件发生未知错误: {str(e)}")
-        raise
+        print(f"\nError occurred: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e), "type": "Exception"}
