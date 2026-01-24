@@ -16,8 +16,10 @@ from prompts import FINANCE_MARKETING_AGENT_PROMPT
 from sub_agents.promotional_text_creation import promotional_text_creation_agent
 from sub_agents.retrive_img_from_kb_generate_new_img import retrive_img_from_kb_generate_new_img_agent
 from sub_agents.promotional_image_generate import promotional_image_generate_agent
+from sub_agents.promotional_image_modify import promotional_image_modify_agent
 from sub_agents.promotional_video_creation import promotional_video_creation_agent
-from sub_agents.save_file_to_kb import save_file_to_kb_agent
+from sub_agents.promotional_search_kb import promotional_search_kb_agent
+from sub_agents.promotional_save_file_to_kb import promotional_save_file_to_kb_agent
 
 # 配置日志 - 只输出到控制台
 logging.basicConfig(
@@ -45,9 +47,11 @@ finance_marketing_agent = Agent(
     sub_agents=[
         promotional_text_creation_agent, 
         promotional_image_generate_agent, 
+        promotional_image_modify_agent,
         promotional_video_creation_agent, 
-        retrive_img_from_kb_generate_new_img_agent,
-        save_file_to_kb_agent
+        promotional_search_kb_agent,
+        promotional_save_file_to_kb_agent,
+        retrive_img_from_kb_generate_new_img_agent
         ],
 )
 logger.info(f"主智能体 {config.agent.main_agent_name} 初始化成功")

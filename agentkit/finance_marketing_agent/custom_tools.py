@@ -69,7 +69,7 @@ def prepare_request(method, path, params=None, data=None, doseq=0):
     return r 
 
 
-def knowledge_service_search(query: str, service_resource_id: Optional[str] = None) -> List[str]: 
+def knowledge_service_search(query: str) -> List[str]: 
     """
     知识服务搜索工具，用于从知识服务中检索相关信息并返回图片链接。
     
@@ -86,7 +86,7 @@ def knowledge_service_search(query: str, service_resource_id: Optional[str] = No
         raise ValueError("query is required") 
     
     # 使用默认资源ID（如果未提供）
-    resource_id = service_resource_id or config.knowledge_service.resource_id
+    resource_id = config.knowledge_service.resource_id
     if not resource_id: 
         logger.error("知识服务资源ID不能为空")
         raise ValueError("service_resource_id is required") 
@@ -240,7 +240,7 @@ def knowledge_service_add_file(file_url):
         print(f"Response content: {json.dumps(response, indent=2, ensure_ascii=False)}")
         
         return response
-        
+
     except ImportError as e:
         print(f"\nModule import error: {str(e)}")
         print("Please make sure volcengine library is installed: pip install volcengine")
