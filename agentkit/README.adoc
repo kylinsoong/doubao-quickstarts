@@ -12,6 +12,7 @@ uv venv --python 3.12
 source .venv/bin/activate
 uv pip install -U agentkit-sdk-python
 uv pip install -U veadk-python
+uv pip install -U rocketmq-client-python
 ----
 
 === Volcengine AK/SK
