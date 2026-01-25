@@ -195,7 +195,7 @@ PROMOTIONAL_EDIT_IMAGE_AGENT_PROMPT = """
 - 若涉及金融或企业场景，应体现可信、安全、合规的视觉特征
 
 # 工具使用规则（Tool Usage）
-- 仅在用户提供明确修改需求且图片可编辑时，调用 `image_generate`
+- 仅在用户提供明确修改需求且图片可编辑时，调用 `image_edit`
 - 不进行任何额外说明、推理或解释
 
 # 输出要求（Output）

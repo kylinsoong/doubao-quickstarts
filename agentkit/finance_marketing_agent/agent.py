@@ -5,6 +5,9 @@ import logging
 from agentkit.apps import AgentkitAgentServerApp
 from veadk import Agent, Runner
 from veadk.memory.short_term_memory import ShortTermMemory
+from veadk.memory.long_term_memory import LongTermMemory
+from google.adk.agents.callback_context import CallbackContext
+from dotenv import load_dotenv
 
 
 # Add current directory to Python path to support sub_agents imports
@@ -32,6 +35,14 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+load_dotenv()
+
+memory_name = os.getenv("DATABASE_VIKINGMEM_COLLECTION")
+if not memory_name:
+    raise ValueError("DATABASE_VIKINGMEM_COLLECTION environment variable is not set")
+
+# 使用viking作为长期记忆存储，可按需切换 mem0
+long_term_memory = LongTermMemory(backend="viking", index=memory_name)
 
 # 初始化短期记忆
 short_term_memory = ShortTermMemory(
@@ -39,11 +50,16 @@ short_term_memory = ShortTermMemory(
 )
 logger.info("短期记忆初始化成功")
 
+async def after_agent_execution(callback_context: CallbackContext):
+    session = callback_context._invocation_context.session
+    await long_term_memory.add_session_to_memory(session)
+    
 # 创建主智能体
 finance_marketing_agent = Agent(
     name=config.agent.main_agent_name,
     description=config.agent.main_agent_description,
     instruction=FINANCE_MARKETING_AGENT_PROMPT,
+    long_term_memory=long_term_memory,
     sub_agents=[
         promotional_text_creation_agent, 
         promotional_image_generate_agent, 
@@ -54,6 +70,7 @@ finance_marketing_agent = Agent(
         retrive_img_from_kb_generate_new_img_agent
         ],
     model_extra_config={"extra_body": {"thinking": {"type": "disabled"}}},
+    after_agent_callback=after_agent_execution,
 )
 logger.info(f"主智能体 {config.agent.main_agent_name} 初始化成功")
 
