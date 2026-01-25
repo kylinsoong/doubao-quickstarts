@@ -4,6 +4,8 @@ Primary purpose of this repository is *stand on customer* to provide a *Pinciple
 
 == Items
 
+* link:agentkit/README.adoc[Agent Development Kit]
+* link:agentskills/README.adoc[Agent Skill]
 * link:ocr/README.adoc[Select Best Model for processing OCR]
 * link:thinking/inference/README.adoc[Thinking model benchmark] 
 * link:vedio.process/README.adoc[Exploring Vedio Quality Assurance]
