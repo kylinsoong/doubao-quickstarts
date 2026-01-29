@@ -1,0 +1,7 @@
+{
+  "websocket_url": "wss://openspeech.bytedance.com/api/v3/realtime/dialogue",
+  "app_id": "123456789",
+  "access_key": "your-access-key",
+  "resource_id": "volc.speech.dialog",
+  "app_key": "PlgVMyYm7fT3QnU6"
+}

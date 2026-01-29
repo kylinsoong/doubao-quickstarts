@@ -5,4 +5,5 @@ agentkit.yaml
 .log 
 .agentkit
 .adk
+*.pcm
 
