@@ -299,11 +299,11 @@ class StreamingService(BaseStreamServer):
             asyncio.create_task(receive_service_responses()),
         ]
         # Start all tasks
-        # 等待所有任务完成（添加异常处理）
+        # Wait for all tasks to complete (with exception handling)
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for result in results:
             if isinstance(result, Exception):
-                stream_logger.error(f"任务执行异常: {result}")
+                stream_logger.error(f"Task execution exception: {result}")
 
 
 async def main():
