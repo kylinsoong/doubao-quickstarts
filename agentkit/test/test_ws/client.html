@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>WS Client</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 16px; }
+      #log { border: 1px solid #ccc; padding: 12px; height: 320px; overflow: auto; white-space: pre-wrap; }
+      .row { margin-top: 12px; display: flex; gap: 8px; }
+      input { flex: 1; padding: 8px; }
+      button { padding: 8px 12px; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h2>WebSocket Client</h2>
+    <div id="status">Status: <b>connecting...</b></div>
+
+    <div class="row">
+      <input id="msg" placeholder="Type message..." />
+      <button id="sendBtn">Send</button>
+      <button id="closeBtn">Close</button>
+    </div>
+
+    <h3>Log</h3>
+    <div id="log"></div>
+
+    <script>
+      const WS_URL = "ws://127.0.0.1:8765";
+      const statusEl = document.querySelector("#status b");
+      const logEl = document.querySelector("#log");
+      const msgEl = document.querySelector("#msg");
+      const sendBtn = document.querySelector("#sendBtn");
+      const closeBtn = document.querySelector("#closeBtn");
+
+      function log(line) {
+        const ts = new Date().toLocaleTimeString();
+        logEl.textContent += `[${ts}] ${line}\n`;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      const ws = new WebSocket(WS_URL);
+
+      ws.onopen = () => {
+        statusEl.textContent = "connected";
+        log("✅ connected to " + WS_URL);
+      };
+
+      ws.onmessage = (evt) => {
+        log("⬅️ recv: " + evt.data);
+      };
+
+      ws.onerror = (err) => {
+        log("❌ error: " + (err?.message || "unknown"));
+      };
+
+      ws.onclose = (evt) => {
+        statusEl.textContent = "closed";
+        log(`🔌 closed (code=${evt.code}, reason=${evt.reason || "n/a"})`);
+      };
+
+      sendBtn.onclick = () => {
+        const text = msgEl.value.trim();
+        if (!text) return;
+
+        if (ws.readyState !== WebSocket.OPEN) {
+          log("⚠️ ws not open, cannot send");
+          return;
+        }
+
+        ws.send(text);
+        log("➡️ sent: " + text);
+        msgEl.value = "";
+        msgEl.focus();
+      };
+
+      msgEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendBtn.click();
+      });
+
+      closeBtn.onclick = () => {
+        ws.close(1000, "client closing");
+      };
+    </script>
+  </body>
+</html>
+

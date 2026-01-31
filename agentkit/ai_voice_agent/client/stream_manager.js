@@ -3,7 +3,7 @@
  */
 
 class StreamManager extends SoundHandler {
-    constructor(serverUrl = 'wss://adk-audio-assistant-234439745674.us-central1.run.app') {
+    constructor(serverUrl = '') {
         super(serverUrl);
 
         // Video streaming properties
